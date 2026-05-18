@@ -1,0 +1,97 @@
+.create-cp {
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  font-family: var(--font-family);
+}
+
+.create-cp-main {
+  padding: var(--spacing-2xl) var(--spacing-xl);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.cp-form {
+  background-color: var(--bg-card);
+  padding: var(--spacing-2xl);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-soft);
+}
+
+.form-group {
+  margin-bottom: var(--spacing-xl);
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: var(--padding-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-input);
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  outline: none;
+  transition: border-color var(--transition-normal);
+  background: var(--bg-input);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: var(--border-focus);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+  line-height: var(--line-height-comfortable);
+}
+
+.form-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-2xl);
+}
+
+.btn {
+  padding: 10px 24px;
+  border-radius: var(--radius-button);
+  font-size: var(--font-size-sm);
+  text-decoration: none;
+  transition: all var(--transition-normal);
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+}
+
+.btn:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  background-color: var(--accent-dark);
+  color: var(--bg-primary);
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-brown);
+}
+
+.btn-secondary {
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+  background-color: var(--bg-card);
+  border-color: var(--border-medium);
+}
