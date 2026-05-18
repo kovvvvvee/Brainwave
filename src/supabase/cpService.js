@@ -71,7 +71,7 @@ export async function updateCp(id, cpData) {
       description: cpData.description,
       characters: cpData.characters,
       keywords: cpData.keywords,
-      emotional_tone: cpData.emotional_tone,
+      emotional_tone: cpData.emotionalTone,
       relationship_core: cpData.relationshipCore,
       interaction_style: cpData.interactionStyle,
       ooc_rules: cpData.oocRules,
