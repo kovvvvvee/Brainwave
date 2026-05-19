@@ -19,6 +19,8 @@ export async function createCp(cpData) {
         relationship_memory: cpData.relationshipMemory,
         speech_style_memory: cpData.speechStyleMemory,
         writing_style_memory: cpData.writingStyleMemory,
+        creative_notes: cpData.creativeNotes,
+        source_material: cpData.sourceMaterial,
       }
     ])
     .select()
@@ -81,6 +83,8 @@ export async function updateCp(id, cpData) {
       relationship_memory: cpData.relationshipMemory,
       speech_style_memory: cpData.speechStyleMemory,
       writing_style_memory: cpData.writingStyleMemory,
+      creative_notes: cpData.creativeNotes,
+      source_material: cpData.sourceMaterial,
     })
     .eq('id', id)
     .eq('user_id', window.CURRENT_USER_ID)

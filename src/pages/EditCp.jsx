@@ -10,15 +10,13 @@ function EditCp() {
     name: '',
     description: '',
     characters: '',
-    keywords: '',
-    emotionalTone: '',
-    relationshipCore: '',
-    interactionStyle: '',
+    creativeNotes: '',
+    sourceMaterial: '',
     oocRules: '',
-    writingStyle: '',
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [showAdvanced, setShowAdvanced] = useState(false)
 
   useEffect(() => {
     fetchCp()
@@ -31,12 +29,9 @@ function EditCp() {
         name: data.name || '',
         description: data.description || '',
         characters: data.characters || '',
-        keywords: data.keywords || '',
-        emotionalTone: data.emotional_tone || '',
-        relationshipCore: data.relationship_core || '',
-        interactionStyle: data.interaction_style || '',
+        creativeNotes: data.creative_notes || '',
+        sourceMaterial: data.source_material || '',
         oocRules: data.ooc_rules || '',
-        writingStyle: data.writing_style || '',
       })
     } catch (error) {
       console.error('获取CP详情失败:', error)
@@ -66,12 +61,9 @@ function EditCp() {
         name: formData.name,
         description: formData.description,
         characters: formData.characters,
-        keywords: formData.keywords,
-        emotional_tone: formData.emotionalTone,
-        relationship_core: formData.relationshipCore,
-        interaction_style: formData.interactionStyle,
-        ooc_rules: formData.oocRules,
-        writing_style: formData.writingStyle,
+        creativeNotes: formData.creativeNotes,
+        sourceMaterial: formData.sourceMaterial,
+        oocRules: formData.oocRules,
       })
       alert('档案更新成功')
       navigate(`/cp/${id}`)
@@ -116,14 +108,14 @@ function EditCp() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="description">CP关系描述</label>
+            <label htmlFor="description">他们之间，最像什么？</label>
             <textarea
               id="description"
               name="description"
               value={formData.description}
               onChange={handleChange}
-              placeholder="描述CP之间的关系"
-              rows={4}
+              placeholder="他们像两把互相磨损的刀。&#10;谁都没有回头，但谁都在等。"
+              rows={3}
             />
           </div>
 
@@ -140,80 +132,55 @@ function EditCp() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="keywords">关键词</label>
-            <input
-              type="text"
-              id="keywords"
-              name="keywords"
-              value={formData.keywords}
-              onChange={handleChange}
-              placeholder="输入关键词，用逗号分隔"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="emotionalTone">情感基调</label>
-            <input
-              type="text"
-              id="emotionalTone"
-              name="emotionalTone"
-              value={formData.emotionalTone}
-              onChange={handleChange}
-              placeholder="例如：甜蜜、虐心、拉扯"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="relationshipCore">关系核心</label>
+            <label htmlFor="creativeNotes">创作备注</label>
             <textarea
-              id="relationshipCore"
-              name="relationshipCore"
-              value={formData.relationshipCore}
+              id="creativeNotes"
+              name="creativeNotes"
+              value={formData.creativeNotes}
               onChange={handleChange}
-              placeholder="描述CP关系的核心驱动力"
-              rows={3}
+              placeholder="记录相处习惯、情绪状态、关系细节、对话习惯、潜台词、关系氛围、小动作等"
+              rows={6}
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="interactionStyle">互动模式</label>
+            <label htmlFor="sourceMaterial">原作内容</label>
             <textarea
-              id="interactionStyle"
-              name="interactionStyle"
-              value={formData.interactionStyle}
+              id="sourceMaterial"
+              name="sourceMaterial"
+              value={formData.sourceMaterial}
               onChange={handleChange}
-              placeholder="描述角色之间的互动方式"
-              rows={3}
+              placeholder="记录原作世界观、原作剧情、原作人物关系、原作设定、原作性格基调等"
+              rows={6}
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="oocRules">OOC规则</label>
-            <textarea
-              id="oocRules"
-              name="oocRules"
-              value={formData.oocRules}
-              onChange={handleChange}
-              placeholder="描述角色OOC的界定规则"
-              rows={3}
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="writingStyle">文风偏好</label>
-            <textarea
-              id="writingStyle"
-              name="writingStyle"
-              value={formData.writingStyle}
-              onChange={handleChange}
-              placeholder="描述期望的文风特点"
-              rows={3}
-            />
+          <div className="advanced-section">
+            <button
+              type="button"
+              className="advanced-toggle"
+              onClick={() => setShowAdvanced(!showAdvanced)}
+            >
+              {showAdvanced ? '▼ 高级设定' : '▶ 高级设定'}
+            </button>
+            {showAdvanced && (
+              <div className="form-group">
+                <label htmlFor="oocRules">OOC规则</label>
+                <textarea
+                  id="oocRules"
+                  name="oocRules"
+                  value={formData.oocRules}
+                  onChange={handleChange}
+                  placeholder="描述角色OOC的界定规则"
+                  rows={3}
+                />
+              </div>
+            )}
           </div>
 
           <div className="form-actions">
             <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-              {isSubmitting ? '保存中...' : '保存'}
+              {isSubmitting ? '保存中...' : '保存这段关系'}
             </button>
             <Link to={`/cp/${id}`} className="btn btn-secondary">取消</Link>
           </div>
