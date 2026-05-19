@@ -6,6 +6,7 @@ export async function createCp(cpData) {
     .from('cp')
     .insert([
       {
+        user_id: window.CURRENT_USER_ID,
         name: cpData.name,
         description: cpData.description,
         characters: cpData.characters,
@@ -36,6 +37,7 @@ export async function getCps() {
   const { data, error } = await supabase
     .from('cp')
     .select('*')
+    .eq('user_id', window.CURRENT_USER_ID)
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -81,6 +83,7 @@ export async function updateCp(id, cpData) {
       writing_style_memory: cpData.writingStyleMemory,
     })
     .eq('id', id)
+    .eq('user_id', window.CURRENT_USER_ID)
     .select()
     .single()
 

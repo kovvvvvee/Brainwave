@@ -8,6 +8,7 @@ export async function createInspiration(inspirationData) {
     .from('inspiration')
     .insert([
       {
+        user_id: window.CURRENT_USER_ID,
         cp_id: inspirationData.cp_id,
         au_id: inspirationData.au_id || null,
         content: inspirationData.content,
@@ -33,6 +34,7 @@ export async function getInspirationById(id) {
     .from('inspiration')
     .select('*')
     .eq('id', id)
+    .eq('user_id', window.CURRENT_USER_ID)
     .single()
 
   if (error) {
@@ -56,6 +58,7 @@ export async function updateInspiration(id, inspirationData) {
       pinned_at: inspirationData.is_pinned ? new Date().toISOString() : null,
     })
     .eq('id', id)
+    .eq('user_id', window.CURRENT_USER_ID)
     .select()
     .single()
 
@@ -73,6 +76,7 @@ export async function toggleFavorite(id) {
     .from('inspiration')
     .select('is_favorite')
     .eq('id', id)
+    .eq('user_id', window.CURRENT_USER_ID)
     .single()
 
   if (!current) {
@@ -100,6 +104,7 @@ export async function togglePin(id) {
     .from('inspiration')
     .select('is_pinned')
     .eq('id', id)
+    .eq('user_id', window.CURRENT_USER_ID)
     .single()
 
   if (!current) {
@@ -129,6 +134,7 @@ export async function getFavoriteInspirations() {
   const { data, error } = await supabase
     .from('inspiration')
     .select('*')
+    .eq('user_id', window.CURRENT_USER_ID)
     .eq('is_favorite', true)
     .order('created_at', { ascending: false })
 
@@ -145,6 +151,7 @@ export async function getInspirationsByCpId(cpId) {
   const { data, error } = await supabase
     .from('inspiration')
     .select('*')
+    .eq('user_id', window.CURRENT_USER_ID)
     .eq('cp_id', cpId)
     .order('is_pinned', { ascending: false })
     .order('pinned_at', { ascending: false })
@@ -163,6 +170,7 @@ export async function getInspirationsByAuId(auId) {
   const { data, error } = await supabase
     .from('inspiration')
     .select('*')
+    .eq('user_id', window.CURRENT_USER_ID)
     .eq('au_id', auId)
     .order('is_pinned', { ascending: false })
     .order('pinned_at', { ascending: false })
@@ -181,6 +189,7 @@ export async function getUncategorizedInspirationsByCpId(cpId) {
   const { data, error } = await supabase
     .from('inspiration')
     .select('*')
+    .eq('user_id', window.CURRENT_USER_ID)
     .eq('cp_id', cpId)
     .is('au_id', null)
     .order('is_pinned', { ascending: false })
@@ -200,6 +209,7 @@ export async function getAllUncategorizedInspirations() {
   const { data, error } = await supabase
     .from('inspiration')
     .select('*')
+    .eq('user_id', window.CURRENT_USER_ID)
     .is('cp_id', null)
     .is('au_id', null)
     .order('is_pinned', { ascending: false })
@@ -220,6 +230,7 @@ export async function deleteInspiration(id) {
     .from('inspiration')
     .delete()
     .eq('id', id)
+    .eq('user_id', window.CURRENT_USER_ID)
 
   if (error) {
     console.error('Error deleting inspiration:', error)

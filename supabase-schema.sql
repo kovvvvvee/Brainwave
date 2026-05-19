@@ -1,6 +1,7 @@
 -- Create CP table
 CREATE TABLE cp (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID,
   name TEXT NOT NULL,
   description TEXT,
   characters TEXT,
@@ -36,6 +37,7 @@ CREATE TABLE au (
 -- Create inspiration table
 CREATE TABLE inspiration (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID,
   cp_id UUID REFERENCES cp(id) ON DELETE CASCADE,
   au_id UUID REFERENCES au(id) ON DELETE SET NULL,
   content TEXT NOT NULL,
@@ -64,6 +66,7 @@ CREATE TABLE inspiration_tags (
 -- Create expansion_history table for AI expansion records
 CREATE TABLE expansion_history (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID,
   inspiration_id UUID NOT NULL REFERENCES inspiration(id) ON DELETE CASCADE,
   content TEXT NOT NULL,
   style TEXT CHECK (style IN ('克制', '清冷', '暧昧', '疯感', '温柔')),

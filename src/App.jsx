@@ -10,6 +10,14 @@ import AuDetail from './pages/AuDetail'
 import InspirationDetail from './pages/InspirationDetail'
 import UncategorizedInspirations from './pages/UncategorizedInspirations'
 
+// Generate and store user_id for data isolation
+let userId = localStorage.getItem('user_id')
+if (!userId) {
+  userId = crypto.randomUUID()
+  localStorage.setItem('user_id', userId)
+}
+window.CURRENT_USER_ID = userId
+
 function App() {
   return (
     <BrowserRouter>

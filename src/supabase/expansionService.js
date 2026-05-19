@@ -6,6 +6,7 @@ export async function createExpansion(expansionData) {
     .from('expansion_history')
     .insert([
       {
+        user_id: window.CURRENT_USER_ID,
         inspiration_id: expansionData.inspirationId,
         content: expansionData.content,
         style: expansionData.style,
@@ -29,6 +30,7 @@ export async function getExpansionsByInspirationId(inspirationId) {
   const { data, error } = await supabase
     .from('expansion_history')
     .select('*')
+    .eq('user_id', window.CURRENT_USER_ID)
     .eq('inspiration_id', inspirationId)
     .order('created_at', { ascending: false })
 
@@ -46,6 +48,7 @@ export async function getExpansionById(id) {
     .from('expansion_history')
     .select('*')
     .eq('id', id)
+    .eq('user_id', window.CURRENT_USER_ID)
     .single()
 
   if (error) {
@@ -62,6 +65,7 @@ export async function deleteExpansion(id) {
     .from('expansion_history')
     .delete()
     .eq('id', id)
+    .eq('user_id', window.CURRENT_USER_ID)
 
   if (error) {
     console.error('Error deleting expansion:', error)
@@ -77,6 +81,7 @@ export async function updateExpansion(id, content) {
     .from('expansion_history')
     .update({ content })
     .eq('id', id)
+    .eq('user_id', window.CURRENT_USER_ID)
     .select()
     .single()
 
