@@ -10,17 +10,13 @@ export async function createCp(cpData) {
         name: cpData.name,
         description: cpData.description,
         characters: cpData.characters,
-        keywords: cpData.keywords,
-        emotional_tone: cpData.emotionalTone,
-        relationship_core: cpData.relationshipCore,
-        interaction_style: cpData.interactionStyle,
         ooc_rules: cpData.oocRules,
-        writing_style: cpData.writingStyle,
         relationship_memory: cpData.relationshipMemory,
         speech_style_memory: cpData.speechStyleMemory,
         writing_style_memory: cpData.writingStyleMemory,
         creative_notes: cpData.creativeNotes,
         source_material: cpData.sourceMaterial,
+        relationship_summary: cpData.relationshipSummary,
       }
     ])
     .select()
@@ -74,17 +70,13 @@ export async function updateCp(id, cpData) {
       name: cpData.name,
       description: cpData.description,
       characters: cpData.characters,
-      keywords: cpData.keywords,
-      emotional_tone: cpData.emotionalTone,
-      relationship_core: cpData.relationshipCore,
-      interaction_style: cpData.interactionStyle,
       ooc_rules: cpData.oocRules,
-      writing_style: cpData.writingStyle,
       relationship_memory: cpData.relationshipMemory,
       speech_style_memory: cpData.speechStyleMemory,
       writing_style_memory: cpData.writingStyleMemory,
       creative_notes: cpData.creativeNotes,
       source_material: cpData.sourceMaterial,
+      relationship_summary: cpData.relationshipSummary,
     })
     .eq('id', id)
     .eq('user_id', window.CURRENT_USER_ID)

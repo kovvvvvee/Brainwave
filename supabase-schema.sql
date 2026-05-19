@@ -16,6 +16,7 @@ CREATE TABLE cp (
   writing_style_memory TEXT,
   creative_notes TEXT,
   source_material TEXT,
+  relationship_summary TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 

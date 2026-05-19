@@ -8,7 +8,7 @@ function CreateCp() {
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
     name: '',
-    description: '',
+    relationshipSummary: '',
     characters: '',
     creativeNotes: '',
     sourceMaterial: '',
@@ -63,11 +63,11 @@ function CreateCp() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="description">他们之间，最像什么？</label>
+            <label htmlFor="relationshipSummary">他们之间，最像什么？</label>
             <textarea
-              id="description"
-              name="description"
-              value={formData.description}
+              id="relationshipSummary"
+              name="relationshipSummary"
+              value={formData.relationshipSummary}
               onChange={handleChange}
               placeholder="他们像两把互相磨损的刀。&#10;谁都没有回头，但谁都在等。"
               rows={3}

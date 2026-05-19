@@ -171,7 +171,9 @@ function CpDetail() {
 
           <div className="cp-info-card">
             <h3 className="cp-name">{cp.name}</h3>
-            <p className="cp-description">{cp.description || '暂无描述'}</p>
+            {cp.relationship_summary && (
+              <p className="cp-description">{cp.relationship_summary}</p>
+            )}
             
             {cp.characters && (
               <div className="cp-field">
@@ -180,31 +182,17 @@ function CpDetail() {
               </div>
             )}
             
-            {cp.keywords && (
+            {cp.creative_notes && (
               <div className="cp-field">
-                <span className="field-label">关键词：</span>
-                <span className="field-value">{cp.keywords}</span>
+                <span className="field-label">创作备注：</span>
+                <span className="field-value">{cp.creative_notes}</span>
               </div>
             )}
             
-            {cp.emotional_tone && (
+            {cp.source_material && (
               <div className="cp-field">
-                <span className="field-label">情感基调：</span>
-                <span className="field-value">{cp.emotional_tone}</span>
-              </div>
-            )}
-            
-            {cp.relationship_core && (
-              <div className="cp-field">
-                <span className="field-label">关系核心：</span>
-                <span className="field-value">{cp.relationship_core}</span>
-              </div>
-            )}
-            
-            {cp.interaction_style && (
-              <div className="cp-field">
-                <span className="field-label">互动模式：</span>
-                <span className="field-value">{cp.interaction_style}</span>
+                <span className="field-label">原作内容：</span>
+                <span className="field-value">{cp.source_material}</span>
               </div>
             )}
             
@@ -212,13 +200,6 @@ function CpDetail() {
               <div className="cp-field">
                 <span className="field-label">OOC规则：</span>
                 <span className="field-value">{cp.ooc_rules}</span>
-              </div>
-            )}
-            
-            {cp.writing_style && (
-              <div className="cp-field">
-                <span className="field-label">文风偏好：</span>
-                <span className="field-value">{cp.writing_style}</span>
               </div>
             )}
           </div>
