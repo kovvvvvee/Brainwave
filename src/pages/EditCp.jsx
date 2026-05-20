@@ -88,7 +88,6 @@ function EditCp() {
   return (
     <div className="create-cp">
       <header className="page-header">
-        <Link to={`/cp/${id}`} className="back-link">← 返回CP详情</Link>
         <h1>完善档案</h1>
       </header>
 

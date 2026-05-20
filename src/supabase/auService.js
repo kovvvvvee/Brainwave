@@ -2,28 +2,26 @@ import { supabase } from './client'
 
 // Create a new AU
 export async function createAu(auData) {
+  const payload = {
+    user_id: window.CURRENT_USER_ID,
+    cp_id: auData.cp_id,
+    name: auData.name,
+    description: auData.description,
+    world_notes: auData.worldNotes,
+    relationship_state: auData.relationshipState,
+  }
+
+  console.log('AU PAYLOAD:', payload)
+
   const { data, error } = await supabase
     .from('au')
-    .insert([
-      {
-        cp_id: auData.cp_id,
-        name: auData.name,
-        description: auData.description,
-        world_setting: auData.worldSetting,
-        era_background: auData.eraBackground,
-        occupation_setting: auData.occupationSetting,
-        atmosphere: auData.atmosphere,
-        behavior_pattern: auData.behaviorPattern,
-        writing_style: auData.writingStyle,
-        worldview_memory: auData.worldviewMemory,
-        atmosphere_memory: auData.atmosphereMemory,
-      }
-    ])
+    .insert([payload])
     .select()
     .single()
 
   if (error) {
-    console.error('Error creating AU:', error)
+    console.error('FULL AU ERROR:', error)
+    console.error('AU ERROR DETAILS:', JSON.stringify(error, null, 2))
     throw error
   }
 
@@ -35,7 +33,10 @@ export async function getAusByCpId(cpId) {
   const { data, error } = await supabase
     .from('au')
     .select('*')
+    .eq('user_id', window.CURRENT_USER_ID)
     .eq('cp_id', cpId)
+    .order('is_pinned', { ascending: false })
+    .order('pinned_at', { ascending: false })
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -69,16 +70,13 @@ export async function updateAu(id, auData) {
     .update({
       name: auData.name,
       description: auData.description,
-      world_setting: auData.worldSetting,
-      era_background: auData.eraBackground,
-      occupation_setting: auData.occupationSetting,
-      atmosphere: auData.atmosphere,
-      behavior_pattern: auData.behaviorPattern,
-      writing_style: auData.writingStyle,
-      worldview_memory: auData.worldviewMemory,
-      atmosphere_memory: auData.atmosphereMemory,
+      world_notes: auData.worldNotes,
+      relationship_state: auData.relationshipState,
+      is_pinned: auData.is_pinned,
+      pinned_at: auData.is_pinned ? new Date().toISOString() : null,
     })
     .eq('id', id)
+    .eq('user_id', window.CURRENT_USER_ID)
     .select()
     .single()
 
@@ -96,6 +94,7 @@ export async function deleteAu(id) {
     .from('au')
     .delete()
     .eq('id', id)
+    .eq('user_id', window.CURRENT_USER_ID)
 
   if (error) {
     console.error('Error deleting AU:', error)
@@ -103,4 +102,35 @@ export async function deleteAu(id) {
   }
 
   return true
+}
+
+// Toggle pin status for AU
+export async function toggleAuPin(id) {
+  const { data: current } = await supabase
+    .from('au')
+    .select('is_pinned')
+    .eq('id', id)
+    .eq('user_id', window.CURRENT_USER_ID)
+    .single()
+
+  if (!current) {
+    throw new Error('AU not found')
+  }
+
+  const { data, error } = await supabase
+    .from('au')
+    .update({
+      is_pinned: !current.is_pinned,
+      pinned_at: !current.is_pinned ? new Date().toISOString() : null
+    })
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (error) {
+    console.error('Error toggling AU pin:', error)
+    throw error
+  }
+
+  return data
 }

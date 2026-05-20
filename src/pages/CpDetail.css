@@ -189,11 +189,6 @@
   font-size: 1.25rem;
 }
 
-.favorite-indicator {
-  color: var(--accent-gold);
-  font-size: 1.25rem;
-  margin-left: var(--spacing-xs);
-}
 
 .inspiration-content {
   display: block;

@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { getCps } from '../supabase/cpService'
 import { getAusByCpId } from '../supabase/auService'
-import { createInspiration, getInspirationsByCpId } from '../supabase/inspirationService'
+import { createInspiration, getRecentInspirations } from '../supabase/inspirationService'
+import { getTagsForInspiration } from '../supabase/tagService'
 import './Home.css'
 
 function Home() {
@@ -12,15 +13,15 @@ function Home() {
   const [cps, setCps] = useState([])
   const [aus, setAus] = useState([])
   const [recentInspirations, setRecentInspirations] = useState([])
+  const [inspirationTags, setInspirationTags] = useState({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [loading, setLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [searchResults, setSearchResults] = useState([])
-  const [showSearchResults, setShowSearchResults] = useState(false)
-  const [favoriteInspirations, setFavoriteInspirations] = useState([])
+  const [showCount, setShowCount] = useState(2)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   useEffect(() => {
     fetchCps()
+    fetchRecentInspirations()
   }, [])
 
   useEffect(() => {
@@ -52,73 +53,23 @@ function Home() {
     }
   }
 
-  const handleSearch = async (query) => {
-    setSearchQuery(query)
-    if (!query.trim()) {
-      setSearchResults([])
-      setShowSearchResults(false)
-      return
-    }
+  const fetchRecentInspirations = async () => {
+    try {
+      const data = await getRecentInspirations()
+      setRecentInspirations(data)
 
-    const results = []
-    const lowerQuery = query.toLowerCase()
-
-    // Search CPs
-    const matchedCps = cps.filter(cp => 
-      cp.name.toLowerCase().includes(lowerQuery)
-    )
-    matchedCps.forEach(cp => {
-      results.push({
-        type: 'cp',
-        id: cp.id,
-        name: cp.name,
-        description: cp.description
-      })
-    })
-
-    // Search AUs
-    const allAus = []
-    for (const cp of cps) {
-      const cpAus = await getAusByCpId(cp.id)
-      allAus.push(...cpAus)
-    }
-    const matchedAus = allAus.filter(au => 
-      au.name.toLowerCase().includes(lowerQuery)
-    )
-    matchedAus.forEach(au => {
-      results.push({
-        type: 'au',
-        id: au.id,
-        name: au.name,
-        description: au.description,
-        cpId: au.cp_id
-      })
-    })
-
-    // Search Inspirations
-    for (const cp of cps) {
-      try {
-        const inspirations = await getInspirationsByCpId(cp.id)
-        const matchedInspirations = inspirations.filter(insp => 
-          insp.content.toLowerCase().includes(lowerQuery)
-        )
-        matchedInspirations.forEach(insp => {
-          results.push({
-            type: 'inspiration',
-            id: insp.id,
-            content: insp.content,
-            cpId: cp.id,
-            cpName: cp.name
-          })
-        })
-      } catch (error) {
-        console.error('搜索灵感失败:', error)
+      // Fetch tags for each inspiration
+      const tagsMap = {}
+      for (const inspiration of data) {
+        const tags = await getTagsForInspiration(inspiration.id)
+        tagsMap[inspiration.id] = tags
       }
+      setInspirationTags(tagsMap)
+    } catch (error) {
+      console.error('获取最近灵感失败:', error)
     }
-
-    setSearchResults(results)
-    setShowSearchResults(true)
   }
+
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -166,42 +117,7 @@ function Home() {
     <div className="home">
       <header className="home-header">
         <h1>Brainwave</h1>
-        <p className="subtitle">私人创作空间 · 记录灵感 · AI扩写</p>
-        <div className="search-container">
-          <input
-            type="text"
-            className="search-input"
-            placeholder="搜索灵感、CP、AU..."
-            value={searchQuery}
-            onChange={(e) => handleSearch(e.target.value)}
-          />
-          {showSearchResults && searchResults.length > 0 && (
-            <div className="search-results">
-              {searchResults.map((result, index) => (
-                <div key={`${result.type}-${result.id}-${index}`} className="search-result-item">
-                  {result.type === 'cp' && (
-                    <Link to={`/cp/${result.id}`} className="search-result-link">
-                      <span className="result-type">CP</span>
-                      <span className="result-name">{result.name}</span>
-                    </Link>
-                  )}
-                  {result.type === 'au' && (
-                    <Link to={`/au/${result.id}`} className="search-result-link">
-                      <span className="result-type">AU</span>
-                      <span className="result-name">{result.name}</span>
-                    </Link>
-                  )}
-                  {result.type === 'inspiration' && (
-                    <Link to={`/inspiration/${result.id}`} className="search-result-link">
-                      <span className="result-type">灵感</span>
-                      <span className="result-content">{result.content.substring(0, 50)}...</span>
-                    </Link>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        <p className="subtitle">私人创作空间</p>
       </header>
 
       <main className="home-main">
@@ -255,53 +171,57 @@ function Home() {
           </form>
         </section>
 
-        <section className="favorite-inspirations-section">
-          <h2 className="section-title">星标灵感</h2>
-          <div className="favorite-inspirations-list">
-            {favoriteInspirations.length === 0 ? (
-              <div className="favorite-inspirations-placeholder">
-                <p>暂无星标灵感</p>
+        <section className="continue-writing-section">
+          <h2 className="section-title">继续写</h2>
+          <div className="continue-writing-list">
+            {recentInspirations.length === 0 ? (
+              <div className="continue-writing-placeholder">
+                <p>开始记录你的第一条灵感</p>
               </div>
             ) : (
-              favoriteInspirations.map((inspiration) => (
-                <div key={inspiration.id} className="favorite-inspiration-item">
-                  <Link to={`/inspiration/${inspiration.id}`} className="favorite-inspiration-content">
-                    {inspiration.content.substring(0, 100)}{inspiration.content.length > 100 ? '...' : ''}
-                  </Link>
-                  <span className="favorite-star">★</span>
-                </div>
-              ))
+              <>
+                {recentInspirations.slice(0, showCount).map((inspiration) => (
+                  <div key={inspiration.id} className={`continue-writing-item ${inspiration.is_pinned ? 'item-pinned' : ''}`}>
+                    {inspiration.is_pinned && <span className="pin-indicator">📌</span>}
+                    <Link to={`/inspiration/${inspiration.id}`} className="continue-writing-content">
+                      {inspiration.content}
+                    </Link>
+                    {inspirationTags[inspiration.id] && inspirationTags[inspiration.id].length > 0 && (
+                      <div className="inspiration-tags">
+                        {inspirationTags[inspiration.id].map(tag => (
+                          <span key={tag.id} className="tag-badge">
+                            {tag.name}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <div className="continue-writing-footer">
+                      <p className="continue-writing-time">
+                        {new Date(inspiration.created_at).toLocaleString('zh-CN')}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+                {recentInspirations.length > 2 && (
+                  <button 
+                    className="expand-more-btn"
+                    onClick={() => {
+                      if (isExpanded) {
+                        setShowCount(2)
+                        setIsExpanded(false)
+                      } else {
+                        setShowCount(recentInspirations.length)
+                        setIsExpanded(true)
+                      }
+                    }}
+                  >
+                    {isExpanded ? '收起' : '展开更多'}
+                  </button>
+                )}
+              </>
             )}
           </div>
         </section>
-
-        <section className="recent-inspirations-section">
-          <h2 className="section-title">最近灵感</h2>
-          <div className="recent-inspirations-placeholder">
-            <p>暂无最近灵感</p>
-          </div>
-        </section>
-
-        <section className="uncategorized-inspirations-section">
-          <h2 className="section-title">未分类灵感</h2>
-          <div className="uncategorized-inspirations-placeholder">
-            <Link to="/uncategorized" className="btn btn-secondary btn-small">
-              📦 打开收纳箱
-            </Link>
-          </div>
-        </section>
-
-        <div className="action-links">
-          <Link to="/cp-list" className="link">
-            查看CP列表
-          </Link>
-          <Link to="/create-cp" className="link">
-            创建新CP
-          </Link>
-          <Link to="/uncategorized" className="link">
-            未分类灵感
-          </Link>
-        </div>
       </main>
     </div>
   )

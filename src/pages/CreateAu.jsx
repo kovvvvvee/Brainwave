@@ -9,12 +9,8 @@ function CreateAu() {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    worldSetting: '',
-    eraBackground: '',
-    occupationSetting: '',
-    atmosphere: '',
-    behaviorPattern: '',
-    writingStyle: '',
+    worldNotes: '',
+    relationshipState: '',
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -44,7 +40,6 @@ function CreateAu() {
   return (
     <div className="create-au">
       <header className="page-header">
-        <Link to={`/cp/${cpId}`} className="back-link">← 返回CP详情</Link>
         <h1>创建新AU</h1>
       </header>
 
@@ -70,80 +65,32 @@ function CreateAu() {
               name="description"
               value={formData.description}
               onChange={handleChange}
-              placeholder="描述AU的世界观设定"
-              rows={4}
+              placeholder="自然记录这个世界：世界背景、时间状态、人物位置、关系环境、故事气质、社会规则..."
+              rows={8}
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="worldSetting">世界观</label>
+            <label htmlFor="worldNotes">世界观档案</label>
             <textarea
-              id="worldSetting"
-              name="worldSetting"
-              value={formData.worldSetting}
+              id="worldNotes"
+              name="worldNotes"
+              value={formData.worldNotes}
               onChange={handleChange}
-              placeholder="描述AU的世界观设定"
-              rows={3}
+              placeholder="记录这个世界的核心设定、时代背景、职业设定等..."
+              rows={5}
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="eraBackground">时代背景</label>
+            <label htmlFor="relationshipState">世界里的他们</label>
             <textarea
-              id="eraBackground"
-              name="eraBackground"
-              value={formData.eraBackground}
+              id="relationshipState"
+              name="relationshipState"
+              value={formData.relationshipState}
               onChange={handleChange}
-              placeholder="描述AU的时代背景"
-              rows={3}
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="occupationSetting">职业设定</label>
-            <textarea
-              id="occupationSetting"
-              name="occupationSetting"
-              value={formData.occupationSetting}
-              onChange={handleChange}
-              placeholder="描述角色的职业设定"
-              rows={3}
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="atmosphere">氛围</label>
-            <textarea
-              id="atmosphere"
-              name="atmosphere"
-              value={formData.atmosphere}
-              onChange={handleChange}
-              placeholder="描述AU的整体氛围"
-              rows={3}
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="behaviorPattern">行为模式</label>
-            <textarea
-              id="behaviorPattern"
-              name="behaviorPattern"
-              value={formData.behaviorPattern}
-              onChange={handleChange}
-              placeholder="描述角色在该AU中的行为模式"
-              rows={3}
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="writingStyle">文风偏好</label>
-            <textarea
-              id="writingStyle"
-              name="writingStyle"
-              value={formData.writingStyle}
-              onChange={handleChange}
-              placeholder="描述该AU期望的文风特点"
-              rows={3}
+              placeholder="描述他们在这个世界里的关系状态：谁更靠近谁、谁先失控、谁在逃避、谁更像陌生人、谁在维持关系..."
+              rows={5}
             />
           </div>
 

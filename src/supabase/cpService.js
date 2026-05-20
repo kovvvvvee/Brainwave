@@ -2,28 +2,28 @@ import { supabase } from './client'
 
 // Create a new CP
 export async function createCp(cpData) {
+  const payload = {
+    user_id: window.CURRENT_USER_ID,
+    name: cpData.name,
+    description: cpData.description,
+    characters: cpData.characters,
+    ooc_rules: cpData.oocRules,
+    creative_notes: cpData.creativeNotes,
+    source_material: cpData.sourceMaterial,
+    relationship_summary: cpData.relationshipSummary,
+  }
+
+  console.log('CP insert payload:', payload)
+
   const { data, error } = await supabase
     .from('cp')
-    .insert([
-      {
-        user_id: window.CURRENT_USER_ID,
-        name: cpData.name,
-        description: cpData.description,
-        characters: cpData.characters,
-        ooc_rules: cpData.oocRules,
-        relationship_memory: cpData.relationshipMemory,
-        speech_style_memory: cpData.speechStyleMemory,
-        writing_style_memory: cpData.writingStyleMemory,
-        creative_notes: cpData.creativeNotes,
-        source_material: cpData.sourceMaterial,
-        relationship_summary: cpData.relationshipSummary,
-      }
-    ])
+    .insert([payload])
     .select()
     .single()
 
   if (error) {
-    console.error('Error creating CP:', error)
+    console.error('Create CP full error:', error)
+    console.error('Create CP details:', JSON.stringify(error, null, 2))
     throw error
   }
 
@@ -36,6 +36,8 @@ export async function getCps() {
     .from('cp')
     .select('*')
     .eq('user_id', window.CURRENT_USER_ID)
+    .order('is_pinned', { ascending: false })
+    .order('pinned_at', { ascending: false })
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -71,12 +73,11 @@ export async function updateCp(id, cpData) {
       description: cpData.description,
       characters: cpData.characters,
       ooc_rules: cpData.oocRules,
-      relationship_memory: cpData.relationshipMemory,
-      speech_style_memory: cpData.speechStyleMemory,
-      writing_style_memory: cpData.writingStyleMemory,
       creative_notes: cpData.creativeNotes,
       source_material: cpData.sourceMaterial,
       relationship_summary: cpData.relationshipSummary,
+      is_pinned: cpData.is_pinned,
+      pinned_at: cpData.is_pinned ? new Date().toISOString() : null,
     })
     .eq('id', id)
     .eq('user_id', window.CURRENT_USER_ID)
@@ -97,6 +98,7 @@ export async function deleteCp(id) {
     .from('cp')
     .delete()
     .eq('id', id)
+    .eq('user_id', window.CURRENT_USER_ID)
 
   if (error) {
     console.error('Error deleting CP:', error)
@@ -104,4 +106,35 @@ export async function deleteCp(id) {
   }
 
   return true
+}
+
+// Toggle pin status for CP
+export async function toggleCpPin(id) {
+  const { data: current } = await supabase
+    .from('cp')
+    .select('is_pinned')
+    .eq('id', id)
+    .eq('user_id', window.CURRENT_USER_ID)
+    .single()
+
+  if (!current) {
+    throw new Error('CP not found')
+  }
+
+  const { data, error } = await supabase
+    .from('cp')
+    .update({
+      is_pinned: !current.is_pinned,
+      pinned_at: !current.is_pinned ? new Date().toISOString() : null
+    })
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (error) {
+    console.error('Error toggling CP pin:', error)
+    throw error
+  }
+
+  return data
 }

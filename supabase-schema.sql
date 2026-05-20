@@ -5,35 +5,26 @@ CREATE TABLE cp (
   name TEXT NOT NULL,
   description TEXT,
   characters TEXT,
-  keywords TEXT,
-  emotional_tone TEXT,
-  relationship_core TEXT,
-  interaction_style TEXT,
   ooc_rules TEXT,
-  writing_style TEXT,
-  relationship_memory TEXT,
-  speech_style_memory TEXT,
-  writing_style_memory TEXT,
   creative_notes TEXT,
   source_material TEXT,
   relationship_summary TEXT,
+  is_pinned BOOLEAN DEFAULT FALSE,
+  pinned_at TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Create AU table
 CREATE TABLE au (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID,
   cp_id UUID NOT NULL REFERENCES cp(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   description TEXT,
-  world_setting TEXT,
-  era_background TEXT,
-  occupation_setting TEXT,
-  atmosphere TEXT,
-  behavior_pattern TEXT,
-  writing_style TEXT,
-  worldview_memory TEXT,
-  atmosphere_memory TEXT,
+  world_notes TEXT,
+  relationship_state TEXT,
+  is_pinned BOOLEAN DEFAULT FALSE,
+  pinned_at TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -44,7 +35,6 @@ CREATE TABLE inspiration (
   cp_id UUID REFERENCES cp(id) ON DELETE CASCADE,
   au_id UUID REFERENCES au(id) ON DELETE SET NULL,
   content TEXT NOT NULL,
-  is_favorite BOOLEAN DEFAULT FALSE,
   is_pinned BOOLEAN DEFAULT FALSE,
   pinned_at TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -115,8 +105,13 @@ CREATE POLICY "Allow all operations on expansion_history" ON expansion_history
 -- Create indexes for faster searches
 CREATE INDEX idx_cp_name ON cp(name);
 CREATE INDEX idx_cp_created_at ON cp(created_at DESC);
+CREATE INDEX idx_cp_is_pinned ON cp(is_pinned);
+CREATE INDEX idx_cp_pinned_at ON cp(pinned_at DESC);
 CREATE INDEX idx_au_cp_id ON au(cp_id);
+CREATE INDEX idx_au_user_id ON au(user_id);
 CREATE INDEX idx_au_created_at ON au(created_at DESC);
+CREATE INDEX idx_au_is_pinned ON au(is_pinned);
+CREATE INDEX idx_au_pinned_at ON au(pinned_at DESC);
 CREATE INDEX idx_inspiration_cp_id ON inspiration(cp_id);
 CREATE INDEX idx_inspiration_au_id ON inspiration(au_id);
 CREATE INDEX idx_inspiration_created_at ON inspiration(created_at DESC);

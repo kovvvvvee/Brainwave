@@ -14,13 +14,6 @@ function CpDetail() {
   const [uncategorizedInspirations, setUncategorizedInspirations] = useState([])
   const [inspirationTags, setInspirationTags] = useState({})
   const [loading, setLoading] = useState(true)
-  const [isEditingMemory, setIsEditingMemory] = useState(false)
-  const [memoryData, setMemoryData] = useState({
-    relationshipMemory: '',
-    speechStyleMemory: '',
-    writingStyleMemory: ''
-  })
-  const [isSavingMemory, setIsSavingMemory] = useState(false)
 
   useEffect(() => {
     fetchCp()
@@ -32,11 +25,6 @@ function CpDetail() {
     try {
       const data = await getCpById(id)
       setCp(data)
-      setMemoryData({
-        relationshipMemory: data.relationship_memory || '',
-        speechStyleMemory: data.speech_style_memory || '',
-        writingStyleMemory: data.writing_style_memory || ''
-      })
     } catch (error) {
       console.error('获取CP详情失败:', error)
     }
@@ -94,39 +82,6 @@ function CpDetail() {
     }
   }
 
-  const handleEditMemory = () => {
-    setIsEditingMemory(true)
-  }
-
-  const handleCancelMemoryEdit = () => {
-    setIsEditingMemory(false)
-    setMemoryData({
-      relationshipMemory: cp.relationship_memory || '',
-      speechStyleMemory: cp.speech_style_memory || '',
-      writingStyleMemory: cp.writing_style_memory || ''
-    })
-  }
-
-  const handleSaveMemory = async () => {
-    setIsSavingMemory(true)
-    try {
-      await updateCp(id, {
-        ...cp,
-        relationshipMemory: memoryData.relationshipMemory,
-        speechStyleMemory: memoryData.speechStyleMemory,
-        writingStyleMemory: memoryData.writingStyleMemory
-      })
-      await fetchCp()
-      setIsEditingMemory(false)
-      alert('创作记忆已更新')
-    } catch (error) {
-      console.error('更新创作记忆失败:', error)
-      alert('更新创作记忆失败，请重试')
-    } finally {
-      setIsSavingMemory(false)
-    }
-  }
-
   if (loading) {
     return (
       <div className="cp-detail">
@@ -151,7 +106,6 @@ function CpDetail() {
   return (
     <div className="cp-detail">
       <header className="page-header">
-        <Link to="/cp-list" className="back-link">← 返回CP列表</Link>
         <h1>CP详情</h1>
       </header>
 
@@ -205,90 +159,6 @@ function CpDetail() {
           </div>
         </section>
 
-        <section className="memory-section">
-          <div className="section-header">
-            <h2 className="section-title">创作记忆</h2>
-            {!isEditingMemory ? (
-              <button className="btn btn-secondary btn-small" onClick={handleEditMemory}>
-                编辑记忆
-              </button>
-            ) : (
-              <div className="memory-edit-actions">
-                <button className="btn btn-primary btn-small" onClick={handleSaveMemory} disabled={isSavingMemory}>
-                  {isSavingMemory ? '保存中...' : '保存'}
-                </button>
-                <button className="btn btn-secondary btn-small" onClick={handleCancelMemoryEdit} disabled={isSavingMemory}>
-                  取消
-                </button>
-              </div>
-            )}
-          </div>
-
-          <div className="memory-card">
-            {isEditingMemory ? (
-              <div className="memory-edit-form">
-                <div className="memory-field">
-                  <label className="memory-label">关系气质记忆</label>
-                  <textarea
-                    className="memory-textarea"
-                    value={memoryData.relationshipMemory}
-                    onChange={(e) => setMemoryData({...memoryData, relationshipMemory: e.target.value})}
-                    placeholder="记录CP关系的气质特点，如：压抑、克制、长期拉扯、不擅长表达等..."
-                    rows={4}
-                    disabled={isSavingMemory}
-                  />
-                </div>
-                <div className="memory-field">
-                  <label className="memory-label">说话方式记忆</label>
-                  <textarea
-                    className="memory-textarea"
-                    value={memoryData.speechStyleMemory}
-                    onChange={(e) => setMemoryData({...memoryData, speechStyleMemory: e.target.value})}
-                    placeholder="记录角色说话习惯，如：话少、冷淡、情绪化、喜欢反问等..."
-                    rows={4}
-                    disabled={isSavingMemory}
-                  />
-                </div>
-                <div className="memory-field">
-                  <label className="memory-label">文风记忆</label>
-                  <textarea
-                    className="memory-textarea"
-                    value={memoryData.writingStyleMemory}
-                    onChange={(e) => setMemoryData({...memoryData, writingStyleMemory: e.target.value})}
-                    placeholder="记录该CP常见文风，如：留白感强、意识流、情绪压抑等..."
-                    rows={4}
-                    disabled={isSavingMemory}
-                  />
-                </div>
-              </div>
-            ) : (
-              <div className="memory-display">
-                {memoryData.relationshipMemory && (
-                  <div className="memory-item">
-                    <span className="memory-item-label">关系气质</span>
-                    <p className="memory-item-content">{memoryData.relationshipMemory}</p>
-                  </div>
-                )}
-                {memoryData.speechStyleMemory && (
-                  <div className="memory-item">
-                    <span className="memory-item-label">说话方式</span>
-                    <p className="memory-item-content">{memoryData.speechStyleMemory}</p>
-                  </div>
-                )}
-                {memoryData.writingStyleMemory && (
-                  <div className="memory-item">
-                    <span className="memory-item-label">文风</span>
-                    <p className="memory-item-content">{memoryData.writingStyleMemory}</p>
-                  </div>
-                )}
-                {!memoryData.relationshipMemory && !memoryData.speechStyleMemory && !memoryData.writingStyleMemory && (
-                  <p className="memory-empty">暂无创作记忆，点击"编辑记忆"开始记录</p>
-                )}
-              </div>
-            )}
-          </div>
-        </section>
-
         <section className="au-list-section">
           <div className="section-header">
             <h2 className="section-title">AU列表</h2>
@@ -336,7 +206,6 @@ function CpDetail() {
                       ))}
                     </div>
                   )}
-                  {inspiration.is_favorite && <span className="favorite-indicator">★</span>}
                   <div className="inspiration-footer">
                     <p className="inspiration-time">
                       {new Date(inspiration.created_at).toLocaleString('zh-CN')}

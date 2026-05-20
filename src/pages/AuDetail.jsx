@@ -16,12 +16,6 @@ function AuDetail() {
   const [editName, setEditName] = useState('')
   const [editDescription, setEditDescription] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isEditingMemory, setIsEditingMemory] = useState(false)
-  const [memoryData, setMemoryData] = useState({
-    worldviewMemory: '',
-    atmosphereMemory: ''
-  })
-  const [isSavingMemory, setIsSavingMemory] = useState(false)
 
   useEffect(() => {
     fetchAu()
@@ -32,10 +26,6 @@ function AuDetail() {
     try {
       const data = await getAuById(id)
       setAu(data)
-      setMemoryData({
-        worldviewMemory: data.worldview_memory || '',
-        atmosphereMemory: data.atmosphere_memory || ''
-      })
     } catch (error) {
       console.error('获取AU详情失败:', error)
     }
@@ -117,36 +107,6 @@ function AuDetail() {
     }
   }
 
-  const handleEditMemory = () => {
-    setIsEditingMemory(true)
-  }
-
-  const handleCancelMemoryEdit = () => {
-    setIsEditingMemory(false)
-    setMemoryData({
-      worldviewMemory: au.worldview_memory || '',
-      atmosphereMemory: au.atmosphere_memory || ''
-    })
-  }
-
-  const handleSaveMemory = async () => {
-    setIsSavingMemory(true)
-    try {
-      await updateAu(id, {
-        ...au,
-        worldviewMemory: memoryData.worldviewMemory,
-        atmosphereMemory: memoryData.atmosphereMemory
-      })
-      await fetchAu()
-      setIsEditingMemory(false)
-      alert('创作记忆已更新')
-    } catch (error) {
-      console.error('更新创作记忆失败:', error)
-      alert('更新创作记忆失败，请重试')
-    } finally {
-      setIsSavingMemory(false)
-    }
-  }
 
   if (loading) {
     return (
@@ -172,7 +132,6 @@ function AuDetail() {
   return (
     <div className="au-detail">
       <header className="page-header">
-        <Link to={`/cp/${au.cp_id}`} className="back-link">← 返回CP详情</Link>
         <h1>AU详情</h1>
       </header>
 
@@ -230,117 +189,23 @@ function AuDetail() {
               <h3 className="au-name">{au.name}</h3>
               <p className="au-description">{au.description || '暂无描述'}</p>
               
-              {au.world_setting && (
+              {au.world_notes && (
                 <div className="au-field">
-                  <span className="field-label">世界观：</span>
-                  <span className="field-value">{au.world_setting}</span>
+                  <span className="field-label">世界观档案：</span>
+                  <span className="field-value">{au.world_notes}</span>
                 </div>
               )}
               
-              {au.era_background && (
+              {au.relationship_state && (
                 <div className="au-field">
-                  <span className="field-label">时代背景：</span>
-                  <span className="field-value">{au.era_background}</span>
-                </div>
-              )}
-              
-              {au.occupation_setting && (
-                <div className="au-field">
-                  <span className="field-label">职业设定：</span>
-                  <span className="field-value">{au.occupation_setting}</span>
-                </div>
-              )}
-              
-              {au.atmosphere && (
-                <div className="au-field">
-                  <span className="field-label">氛围：</span>
-                  <span className="field-value">{au.atmosphere}</span>
-                </div>
-              )}
-              
-              {au.behavior_pattern && (
-                <div className="au-field">
-                  <span className="field-label">行为模式：</span>
-                  <span className="field-value">{au.behavior_pattern}</span>
-                </div>
-              )}
-              
-              {au.writing_style && (
-                <div className="au-field">
-                  <span className="field-label">文风偏好：</span>
-                  <span className="field-value">{au.writing_style}</span>
+                  <span className="field-label">世界里的他们：</span>
+                  <span className="field-value">{au.relationship_state}</span>
                 </div>
               )}
             </div>
           )}
         </section>
 
-        <section className="memory-section">
-          <div className="section-header">
-            <h2 className="section-title">创作记忆</h2>
-            {!isEditingMemory ? (
-              <button className="btn btn-secondary btn-small" onClick={handleEditMemory}>
-                编辑记忆
-              </button>
-            ) : (
-              <div className="memory-edit-actions">
-                <button className="btn btn-primary btn-small" onClick={handleSaveMemory} disabled={isSavingMemory}>
-                  {isSavingMemory ? '保存中...' : '保存'}
-                </button>
-                <button className="btn btn-secondary btn-small" onClick={handleCancelMemoryEdit} disabled={isSavingMemory}>
-                  取消
-                </button>
-              </div>
-            )}
-          </div>
-
-          <div className="memory-card">
-            {isEditingMemory ? (
-              <div className="memory-edit-form">
-                <div className="memory-field">
-                  <label className="memory-label">世界观记忆</label>
-                  <textarea
-                    className="memory-textarea"
-                    value={memoryData.worldviewMemory}
-                    onChange={(e) => setMemoryData({...memoryData, worldviewMemory: e.target.value})}
-                    placeholder="记录世界观特征，如：末日、缺水、高压社会等..."
-                    rows={4}
-                    disabled={isSavingMemory}
-                  />
-                </div>
-                <div className="memory-field">
-                  <label className="memory-label">氛围记忆</label>
-                  <textarea
-                    className="memory-textarea"
-                    value={memoryData.atmosphereMemory}
-                    onChange={(e) => setMemoryData({...memoryData, atmosphereMemory: e.target.value})}
-                    placeholder="记录整体氛围，如：潮湿、阴冷、压抑、雨夜感等..."
-                    rows={4}
-                    disabled={isSavingMemory}
-                  />
-                </div>
-              </div>
-            ) : (
-              <div className="memory-display">
-                {memoryData.worldviewMemory && (
-                  <div className="memory-item">
-                    <span className="memory-item-label">世界观</span>
-                    <p className="memory-item-content">{memoryData.worldviewMemory}</p>
-                  </div>
-                )}
-                {memoryData.atmosphereMemory && (
-                  <div className="memory-item">
-                    <span className="memory-item-label">氛围</span>
-                    <p className="memory-item-content">{memoryData.atmosphereMemory}</p>
-                  </div>
-                )}
-                {!memoryData.worldviewMemory && !memoryData.atmosphereMemory && (
-                  <p className="memory-empty">暂无创作记忆，点击"编辑记忆"开始记录</p>
-                )}
-              </div>
-            )}
-          </div>
-        </section>
 
         <section className="inspiration-list-section">
           <h2 className="section-title">已归档灵感</h2>
@@ -367,7 +232,6 @@ function AuDetail() {
                       ))}
                     </div>
                   )}
-                  {inspiration.is_favorite && <span className="favorite-indicator">★</span>}
                   <div className="inspiration-footer">
                     <p className="inspiration-time">
                       {new Date(inspiration.created_at).toLocaleString('zh-CN')}

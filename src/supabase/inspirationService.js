@@ -53,7 +53,6 @@ export async function updateInspiration(id, inspirationData) {
       cp_id: inspirationData.cp_id,
       au_id: inspirationData.au_id || null,
       content: inspirationData.content,
-      is_favorite: inspirationData.is_favorite,
       is_pinned: inspirationData.is_pinned,
       pinned_at: inspirationData.is_pinned ? new Date().toISOString() : null,
     })
@@ -64,34 +63,6 @@ export async function updateInspiration(id, inspirationData) {
 
   if (error) {
     console.error('Error updating inspiration:', error)
-    throw error
-  }
-
-  return data
-}
-
-// Toggle favorite status
-export async function toggleFavorite(id) {
-  const { data: current } = await supabase
-    .from('inspiration')
-    .select('is_favorite')
-    .eq('id', id)
-    .eq('user_id', window.CURRENT_USER_ID)
-    .single()
-
-  if (!current) {
-    throw new Error('Inspiration not found')
-  }
-
-  const { data, error } = await supabase
-    .from('inspiration')
-    .update({ is_favorite: !current.is_favorite })
-    .eq('id', id)
-    .select()
-    .single()
-
-  if (error) {
-    console.error('Error toggling favorite:', error)
     throw error
   }
 
@@ -129,17 +100,19 @@ export async function togglePin(id) {
   return data
 }
 
-// Get all favorite inspirations
-export async function getFavoriteInspirations() {
+// Get all recent inspirations for "continue writing" stream
+export async function getRecentInspirations() {
   const { data, error } = await supabase
     .from('inspiration')
     .select('*')
     .eq('user_id', window.CURRENT_USER_ID)
-    .eq('is_favorite', true)
+    .order('is_pinned', { ascending: false })
+    .order('pinned_at', { ascending: false })
     .order('created_at', { ascending: false })
+    .limit(20)
 
   if (error) {
-    console.error('Error fetching favorite inspirations:', error)
+    console.error('Error fetching recent inspirations:', error)
     throw error
   }
 
@@ -218,6 +191,24 @@ export async function getAllUncategorizedInspirations() {
 
   if (error) {
     console.error('Error fetching all uncategorized inspirations:', error)
+    throw error
+  }
+
+  return data
+}
+
+// Get all inspirations (for the inspiration flow page)
+export async function getAllInspirations() {
+  const { data, error } = await supabase
+    .from('inspiration')
+    .select('*')
+    .eq('user_id', window.CURRENT_USER_ID)
+    .order('is_pinned', { ascending: false })
+    .order('pinned_at', { ascending: false })
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Error fetching all inspirations:', error)
     throw error
   }
 

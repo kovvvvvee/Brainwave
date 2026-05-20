@@ -1,6 +1,6 @@
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import { getInspirationById, updateInspiration, deleteInspiration, toggleFavorite, togglePin } from '../supabase/inspirationService'
+import { getInspirationById, updateInspiration, deleteInspiration, togglePin } from '../supabase/inspirationService'
 import { getCpById } from '../supabase/cpService'
 import { getAuById } from '../supabase/auService'
 import { getExpansionsByInspirationId, createExpansion, updateExpansion } from '../supabase/expansionService'
@@ -127,15 +127,6 @@ function InspirationDetail() {
     }
   }
 
-  const handleToggleFavorite = async () => {
-    try {
-      const updated = await toggleFavorite(inspiration.id)
-      setInspiration({ ...inspiration, is_favorite: updated.is_favorite })
-    } catch (error) {
-      console.error('切换星标失败:', error)
-      alert('切换星标失败，请重试')
-    }
-  }
 
   const handleTogglePin = async () => {
     try {
@@ -242,38 +233,25 @@ function InspirationDetail() {
   return (
     <div className="inspiration-detail">
       <header className="page-header">
-        {/* 弱化显示归属信息 */}
-        {(cp || au) && (
-          <div className="breadcrumb">
-            {cp && <Link to={`/cp/${cp.id}`} className="breadcrumb-link">{cp.name}</Link>}
-            {cp && au && <span className="breadcrumb-separator"> → </span>}
-            {au && <Link to={`/au/${au.id}`} className="breadcrumb-link">{au.name}</Link>}
-          </div>
-        )}
+        <div className="header-left">
+        </div>
         <div className="header-actions">
           {!isEditing && (
             <>
               <button 
-                className={`btn btn-icon ${inspiration.is_favorite ? 'btn-favorite-active' : 'btn-favorite'}`} 
-                onClick={handleToggleFavorite}
-                title={inspiration.is_favorite ? '取消星标' : '添加星标'}
-              >
-                ★
-              </button>
-              <button 
-                className={`btn btn-icon ${inspiration.is_pinned ? 'btn-pin-active' : 'btn-pin'}`} 
+                className="action-text-btn"
                 onClick={handleTogglePin}
                 title={inspiration.is_pinned ? '取消置顶' : '置顶'}
               >
-                📌
+                {inspiration.is_pinned ? '取消置顶' : '置顶'}
               </button>
-              <button className="btn btn-expansion btn-small" onClick={() => setShowExpansionModal(true)}>
+              <button className="action-text-btn" onClick={() => setShowExpansionModal(true)}>
                 AI扩写
               </button>
-              <button className="btn btn-secondary btn-small" onClick={handleEdit}>
+              <button className="action-text-btn" onClick={handleEdit}>
                 编辑
               </button>
-              <button className="btn btn-delete btn-small" onClick={handleDelete}>
+              <button className="action-text-btn action-delete-btn" onClick={handleDelete}>
                 删除
               </button>
             </>

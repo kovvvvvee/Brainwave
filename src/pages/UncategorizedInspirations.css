@@ -1,177 +1,160 @@
 .uncategorized-inspirations {
   min-height: 100vh;
   padding: var(--spacing-2xl);
-  max-width: 1200px;
+  max-width: 800px;
   margin: 0 auto;
 }
 
-.page-header {
-  margin-bottom: var(--spacing-2xl);
-}
-
-.back-link {
-  display: inline-block;
-  color: var(--text-secondary);
-  text-decoration: none;
-  margin-bottom: var(--spacing-md);
-  font-size: var(--font-size-sm);
-  transition: color var(--transition-normal);
-}
-
-.back-link:hover {
-  color: var(--text-primary);
-}
-
-.page-header h1 {
-  font-size: var(--font-size-2xl);
-  font-weight: var(--font-weight-medium);
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-xs);
-  letter-spacing: 0.02em;
-}
-
-.page-description {
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-  font-weight: var(--font-weight-regular);
-  letter-spacing: 0.01em;
+.page-title {
+  font-size: 1.1rem;
+  font-weight: 300;
+  color: #888;
+  margin-bottom: 0;
+  letter-spacing: 0.05em;
+  padding-bottom: var(--spacing-lg);
 }
 
 .inspirations-main {
-  margin-top: var(--spacing-xl);
+  margin-top: var(--spacing-lg);
 }
 
 .inspiration-list {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: 14px;
 }
 
 .inspiration-item {
-  background: var(--bg-card);
-  border-radius: var(--radius-card);
-  padding: var(--padding-card);
-  box-shadow: var(--shadow-soft);
-  transition: all var(--transition-normal);
   position: relative;
+  padding: 24px;
+  transition: background-color 0.2s ease;
+  width: 100%;
+  max-width: 100%;
 }
 
 .inspiration-item:hover {
-  box-shadow: var(--shadow-medium);
-  transform: translateY(-2px);
+  background-color: rgba(0, 0, 0, 0.02);
 }
 
 .inspiration-item.inspiration-pinned {
-  border-left: 3px solid var(--accent-brown);
+  padding-left: 4px;
+  border-left: 1px solid #ddd;
 }
 
-.inspiration-header {
+.inspiration-meta {
   display: flex;
-  align-items: flex-start;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-md);
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .pin-indicator {
-  font-size: 1.25rem;
+  font-size: 0.9rem;
   line-height: 1;
 }
 
+.meta-text {
+  font-size: 0.75rem;
+  color: #aaa;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+
 .inspiration-content {
-  flex: 1;
-  color: var(--text-primary);
+  display: block;
+  color: #333;
   text-decoration: none;
-  font-size: var(--font-size-base);
-  line-height: var(--line-height-comfortable);
+  font-size: 16px;
+  line-height: 1.72;
   white-space: pre-wrap;
-  font-weight: var(--font-weight-regular);
+  font-weight: 400;
   letter-spacing: 0.01em;
+  margin-bottom: 10px;
+  text-align: left;
 }
 
 .inspiration-content:hover {
-  color: var(--accent-brown);
-}
-
-.inspiration-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-xs);
-  margin-bottom: var(--spacing-md);
-}
-
-.tag-badge {
-  background: var(--bg-hover);
-  color: var(--text-secondary);
-  padding: 4px 10px;
-  border-radius: var(--radius-small);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-regular);
-  letter-spacing: 0.02em;
+  color: #444;
 }
 
 .inspiration-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: var(--spacing-md);
-  border-top: 1px solid var(--border-soft);
+  padding-top: 0.5rem;
 }
 
 .inspiration-time {
-  font-size: var(--font-size-xs);
-  color: var(--text-muted);
-  font-weight: var(--font-weight-regular);
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.34);
+  font-weight: 400;
+  letter-spacing: 0.01em;
 }
 
 .inspiration-actions {
   display: flex;
-  gap: var(--spacing-xs);
+  gap: 0.5rem;
 }
 
 .inspiration-action-btn {
-  background: rgba(255, 255, 255, 0.6);
+  background: transparent;
   border: none;
-  border-radius: var(--radius-small);
-  padding: 6px 10px;
-  font-size: 1rem;
+  padding: 4px 8px;
+  font-size: 0.9rem;
   cursor: pointer;
-  transition: all var(--transition-normal);
-  opacity: 0.5;
+  transition: opacity 0.2s ease;
+  opacity: 0.3;
 }
 
 .inspiration-action-btn:hover {
-  background: rgba(255, 255, 255, 0.9);
-  opacity: 1;
-  transform: translateY(-1px);
+  opacity: 0.6;
 }
 
 .inspiration-action-btn.delete-btn:hover {
-  background: rgba(220, 38, 38, 0.2);
+  opacity: 0.5;
 }
 
 .inspiration-empty {
-  text-align: center;
-  padding: var(--spacing-3xl);
-  background: var(--bg-hover);
-  border-radius: var(--radius-card);
+  padding: 2rem 0;
 }
 
 .inspiration-empty p {
-  color: var(--text-secondary);
-  font-size: var(--font-size-base);
-  margin-bottom: var(--spacing-md);
-}
-
-.empty-hint {
-  color: var(--text-tertiary);
-  font-size: var(--font-size-sm);
-  font-style: italic;
-  margin-bottom: var(--spacing-lg) !important;
+  color: #bbb;
+  font-size: 0.9rem;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  margin-bottom: 0;
 }
 
 .loading-state {
   text-align: center;
   padding: var(--spacing-3xl);
-  color: var(--text-secondary);
-  font-size: var(--font-size-base);
+  color: #bbb;
+  font-size: 0.9rem;
+  font-weight: 300;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .uncategorized-inspirations {
+    padding: var(--spacing-lg) var(--spacing-md);
+  }
+  
+  .inspiration-item {
+    padding: 20px;
+    border-radius: 12px;
+  }
+  
+  .inspiration-content {
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  
+  .inspiration-time {
+    font-size: 11px;
+  }
+  
+  .meta-text {
+    font-size: 11px;
+  }
 }

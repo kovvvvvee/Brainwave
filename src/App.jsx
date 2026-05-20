@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Navigation from './components/Navigation'
 import Home from './pages/Home'
+import Archive from './pages/Archive'
 import CpList from './pages/CpList'
 import CreateCp from './pages/CreateCp'
 import EditCp from './pages/EditCp'
@@ -22,8 +24,11 @@ function App() {
   return (
     <BrowserRouter>
       <div className="app">
+        <Navigation />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/inspirations" element={<UncategorizedInspirations />} />
+          <Route path="/archive" element={<Archive />} />
           <Route path="/cp-list" element={<CpList />} />
           <Route path="/create-cp" element={<CreateCp />} />
           <Route path="/cp/:id/edit" element={<EditCp />} />

@@ -25,7 +25,6 @@ function CpList() {
   return (
     <div className="cp-list">
       <header className="page-header">
-        <Link to="/" className="back-link">← 返回首页</Link>
         <h1>CP列表</h1>
         <Link to="/create-cp" className="btn btn-primary">创建新CP</Link>
       </header>

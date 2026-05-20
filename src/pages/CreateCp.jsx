@@ -43,7 +43,6 @@ function CreateCp() {
   return (
     <div className="create-cp">
       <header className="page-header">
-        <Link to="/cp-list" className="back-link">← 返回CP列表</Link>
         <h1>创建新CP</h1>
       </header>
 
