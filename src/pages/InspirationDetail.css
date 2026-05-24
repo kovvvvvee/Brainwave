@@ -58,6 +58,7 @@
   transition: color 0.15s ease;
   font-weight: 300;
   letter-spacing: 0.02em;
+  min-height: auto;
 }
 
 .action-text-btn:hover {
@@ -727,9 +728,7 @@
   padding: 0;
   width: 2rem;
   height: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  min-height: auto;
 }
 
 .modal-close:hover {

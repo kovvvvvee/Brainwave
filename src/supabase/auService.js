@@ -9,17 +9,34 @@ export async function createAu(auData) {
     description: auData.description,
     // New AI-friendly AU structure
     core_atmosphere: auData.core_atmosphere,
-    world_rules: auData.world_rules || { social_rules: '', life_rules: '', body_rules: '' },
-    relationship_surface_layer: auData.relationship_surface_layer,
-    relationship_actual_state: auData.relationship_actual_state,
-    relationship_conflict: auData.relationship_conflict,
-    au_amplification: auData.au_amplification,
-    relationship_triggers: auData.relationship_triggers,
-    daily_details: auData.daily_details,
-    ooc_rules: auData.ooc_rules,
+    // World structure
+    social_rules: auData.social_rules || null,
+    life_rules: auData.life_rules || null,
+    body_rules: auData.body_rules || null,
+    world_rules: auData.world_rules || null,
+    // Relationship and desire mechanisms
+    desire_mechanism: auData.desire_mechanism || null,
+    relationship_pressure: auData.relationship_pressure || null,
+    emotional_consequences: auData.emotional_consequences || null,
+    physical_consequences: auData.physical_consequences || null,
+    // AI expansion enhancement
+    au_amplification: auData.au_amplification || null,
+    interaction_logic: auData.interaction_logic || null,
+    intimacy_logic: auData.intimacy_logic || null,
+    emotional_logic: auData.emotional_logic || null,
+    // Advanced settings
+    power_system: auData.power_system || null,
+    taboo_rules: auData.taboo_rules || null,
+    instability_factors: auData.instability_factors || null,
     // Legacy fields for backward compatibility
-    world_notes: auData.worldNotes,
-    relationship_state: auData.relationshipState,
+    relationship_surface_layer: auData.relationship_surface_layer || null,
+    relationship_actual_state: auData.relationship_actual_state || null,
+    relationship_conflict: auData.relationship_conflict || null,
+    relationship_triggers: auData.relationship_triggers || null,
+    daily_details: auData.daily_details || null,
+    ooc_rules: auData.ooc_rules || null,
+    world_notes: auData.worldNotes || null,
+    relationship_state: auData.relationshipState || null,
   }
 
   console.log('AU PAYLOAD:', payload)
@@ -81,17 +98,34 @@ export async function updateAu(id, auData) {
     description: auData.description,
     // New AI-friendly AU structure
     core_atmosphere: auData.core_atmosphere,
-    world_rules: auData.world_rules,
-    relationship_surface_layer: auData.relationship_surface_layer,
-    relationship_actual_state: auData.relationship_actual_state,
-    relationship_conflict: auData.relationship_conflict,
-    au_amplification: auData.au_amplification,
-    relationship_triggers: auData.relationship_triggers,
-    daily_details: auData.daily_details,
-    ooc_rules: auData.ooc_rules,
+    // World structure
+    social_rules: auData.social_rules || null,
+    life_rules: auData.life_rules || null,
+    body_rules: auData.body_rules || null,
+    world_rules: auData.world_rules || null,
+    // Relationship and desire mechanisms
+    desire_mechanism: auData.desire_mechanism || null,
+    relationship_pressure: auData.relationship_pressure || null,
+    emotional_consequences: auData.emotional_consequences || null,
+    physical_consequences: auData.physical_consequences || null,
+    // AI expansion enhancement
+    au_amplification: auData.au_amplification || null,
+    interaction_logic: auData.interaction_logic || null,
+    intimacy_logic: auData.intimacy_logic || null,
+    emotional_logic: auData.emotional_logic || null,
+    // Advanced settings
+    power_system: auData.power_system || null,
+    taboo_rules: auData.taboo_rules || null,
+    instability_factors: auData.instability_factors || null,
     // Legacy fields for backward compatibility
-    world_notes: auData.worldNotes,
-    relationship_state: auData.relationshipState,
+    relationship_surface_layer: auData.relationship_surface_layer || null,
+    relationship_actual_state: auData.relationship_actual_state || null,
+    relationship_conflict: auData.relationship_conflict || null,
+    relationship_triggers: auData.relationship_triggers || null,
+    daily_details: auData.daily_details || null,
+    ooc_rules: auData.ooc_rules || null,
+    world_notes: auData.worldNotes || null,
+    relationship_state: auData.relationshipState || null,
     is_pinned: auData.is_pinned,
     pinned_at: auData.is_pinned ? new Date().toISOString() : null,
   }

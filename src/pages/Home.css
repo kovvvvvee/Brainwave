@@ -408,7 +408,17 @@
 }
 
 .continue-writing-item.item-pinned {
-  border: 1px solid rgba(139, 115, 85, 0.2);
+  position: relative;
+}
+
+.continue-writing-item.item-pinned::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(139, 115, 85, 0.3), rgba(139, 115, 85, 0.1));
+  z-index: -1;
+  pointer-events: none;
 }
 
 .pin-indicator {

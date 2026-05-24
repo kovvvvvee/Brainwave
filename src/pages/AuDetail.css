@@ -236,7 +236,17 @@
 }
 
 .inspiration-pinned {
-  border: 2px solid var(--accent-brown);
+  position: relative;
+}
+
+.inspiration-pinned::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: calc(var(--radius-card) + 3px);
+  background: linear-gradient(135deg, rgba(139, 115, 85, 0.4), rgba(139, 115, 85, 0.15));
+  z-index: -1;
+  pointer-events: none;
 }
 
 .pin-indicator {

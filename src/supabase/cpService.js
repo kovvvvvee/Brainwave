@@ -6,34 +6,15 @@ export async function createCp(cpData) {
     user_id: window.CURRENT_USER_ID,
     name: cpData.name,
     // New AI-friendly structure
-    core_one_liner: cpData.core_one_liner || null,
-    relationship_dynamics: cpData.relationship_dynamics || {
-      emotional_inertia: '',
-      interaction_inertia: '',
-      desire_inertia: ''
-    },
-    character_profiles: cpData.character_profiles || {
-      character_a: {
-        explicit_state: '',
-        true_state: '',
-        language_habits: ''
-      },
-      character_b: {
-        explicit_state: '',
-        true_state: '',
-        language_habits: ''
-      }
-    },
-    sexual_dynamics: cpData.sexual_dynamics || {
-      desire_structure: '',
-      behavioral_inertia: '',
-      basic_positioning: ''
-    },
+    core_dynamic: cpData.core_dynamic || null,
+    relationship_dynamic: cpData.relationship_dynamic || null,
+    character_profiles: cpData.character_profiles || null,
+    sexual_dynamic: cpData.sexual_dynamic || null,
     relationship_atmosphere: cpData.relationship_atmosphere || null,
-    interaction_details: cpData.interaction_details || [],
+    interaction_details: cpData.interaction_details || null,
     source_material: cpData.source_material || null,
     ooc_rules: cpData.ooc_rules || null,
-    power_dynamics: cpData.power_dynamics || null,
+    power_flow: cpData.power_flow || null,
     relationship_boundaries: cpData.relationship_boundaries || null,
     // Legacy fields for backward compatibility
     description: cpData.description || null,
@@ -99,34 +80,15 @@ export async function updateCp(id, cpData) {
     .update({
       name: cpData.name,
       // New AI-friendly structure
-      core_one_liner: cpData.core_one_liner || null,
-      relationship_dynamics: cpData.relationship_dynamics || {
-        emotional_inertia: '',
-        interaction_inertia: '',
-        desire_inertia: ''
-      },
-      character_profiles: cpData.character_profiles || {
-        character_a: {
-          explicit_state: '',
-          true_state: '',
-          language_habits: ''
-        },
-        character_b: {
-          explicit_state: '',
-          true_state: '',
-          language_habits: ''
-        }
-      },
-      sexual_dynamics: cpData.sexual_dynamics || {
-        desire_structure: '',
-        behavioral_inertia: '',
-        basic_positioning: ''
-      },
+      core_dynamic: cpData.core_dynamic || null,
+      relationship_dynamic: cpData.relationship_dynamic || null,
+      character_profiles: cpData.character_profiles || null,
+      sexual_dynamic: cpData.sexual_dynamic || null,
       relationship_atmosphere: cpData.relationship_atmosphere || null,
-      interaction_details: cpData.interaction_details || [],
+      interaction_details: cpData.interaction_details || null,
       source_material: cpData.source_material || null,
       ooc_rules: cpData.ooc_rules || null,
-      power_dynamics: cpData.power_dynamics || null,
+      power_flow: cpData.power_flow || null,
       relationship_boundaries: cpData.relationship_boundaries || null,
       // Legacy fields for backward compatibility
       description: cpData.description || null,

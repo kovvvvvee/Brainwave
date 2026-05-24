@@ -79,3 +79,17 @@
   --z-modal: 1100;
   --z-tooltip: 1200;
 }
+
+/* Unified Button System */
+button,
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  min-height: 44px;
+  font-family: inherit;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
