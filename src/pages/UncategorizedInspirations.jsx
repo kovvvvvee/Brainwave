@@ -2,11 +2,13 @@ import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { getAllInspirations, deleteInspiration, togglePin } from '../supabase/inspirationService'
 import { getCpById } from '../supabase/cpService'
+import { getAuById } from '../supabase/auService'
 import './UncategorizedInspirations.css'
 
 function UncategorizedInspirations() {
   const [inspirations, setInspirations] = useState([])
   const [cpNames, setCpNames] = useState({})
+  const [auNames, setAuNames] = useState({})
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -20,6 +22,7 @@ function UncategorizedInspirations() {
       
       // Fetch CP names for inspirations that have cp_id
       const cpMap = {}
+      const auMap = {}
       for (const inspiration of data) {
         if (inspiration.cp_id && !cpMap[inspiration.cp_id]) {
           try {
@@ -29,8 +32,17 @@ function UncategorizedInspirations() {
             console.error('获取CP名称失败:', error)
           }
         }
+        if (inspiration.au_id && !auMap[inspiration.au_id]) {
+          try {
+            const au = await getAuById(inspiration.au_id)
+            auMap[inspiration.au_id] = au.name
+          } catch (error) {
+            console.error('获取AU名称失败:', error)
+          }
+        }
       }
       setCpNames(cpMap)
+      setAuNames(auMap)
     } catch (error) {
       console.error('获取灵感失败:', error)
     } finally {
@@ -89,6 +101,9 @@ function UncategorizedInspirations() {
                   <span className="meta-text">
                     {inspiration.cp_id ? `来自：${cpNames[inspiration.cp_id] || '未知CP'}` : '未归档'}
                   </span>
+                  {inspiration.au_id && (
+                    <span className="au-tag">{auNames[inspiration.au_id] || '未知AU'}</span>
+                  )}
                 </div>
                 <Link to={`/inspiration/${inspiration.id}`} className="inspiration-content">
                   {inspiration.content}

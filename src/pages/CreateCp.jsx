@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createCp } from '../supabase/cpService'
 import CollapsibleSection from '../components/CollapsibleSection'
@@ -10,6 +10,10 @@ import './CreateCp.css'
 
 function CreateCp() {
   const navigate = useNavigate()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
   const [formData, setFormData] = useState({
     name: '',
     core_one_liner: '',

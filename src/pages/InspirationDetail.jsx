@@ -18,7 +18,7 @@ function InspirationDetail() {
   const [editContent, setEditContent] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showExpansionModal, setShowExpansionModal] = useState(false)
-  const [expansionStyle, setExpansionStyle] = useState('克制')
+  const [expansionStyle, setExpansionStyle] = useState('AO3')
   const [expansionLength, setExpansionLength] = useState('短扩写')
   const [expansionPov, setExpansionPov] = useState('第三人称')
   const [isExpanding, setIsExpanding] = useState(false)
@@ -31,6 +31,7 @@ function InspirationDetail() {
   const [selectedExpansionId, setSelectedExpansionId] = useState(null)
 
   useEffect(() => {
+    window.scrollTo(0, 0)
     fetchInspiration()
     fetchExpansions()
   }, [id])
@@ -151,11 +152,12 @@ function InspirationDetail() {
     e.preventDefault()
     setIsExpanding(true)
     try {
+      const hasAU = !!au
       const expandedContent = await expandInspiration(
         inspiration.content,
         cp,
         au,
-        { style: expansionStyle, length: expansionLength, pov: expansionPov }
+        { style: expansionStyle, length: expansionLength, pov: expansionPov, hasAU }
       )
 
       console.log('CURRENT INSPIRATION:', inspiration)
@@ -460,7 +462,7 @@ function InspirationDetail() {
                             type="text"
                             value={editingVersionName}
                             onChange={(e) => setEditingVersionName(e.target.value)}
-                            placeholder="例如：初版、暧昧版、马尔克斯版"
+                            placeholder="例如：初版、AO3版、Lovecraft版"
                           />
                         </div>
                         <div className="edit-field">
@@ -508,11 +510,10 @@ function InspirationDetail() {
                     onChange={(e) => setExpansionStyle(e.target.value)}
                     disabled={isExpanding}
                   >
-                    <option value="克制">克制</option>
-                    <option value="清冷">清冷</option>
-                    <option value="暧昧">暧昧</option>
-                    <option value="疯感">疯感</option>
-                    <option value="温柔">温柔</option>
+                    <option value="AO3">AO3</option>
+                    <option value="Lovecraft">Lovecraft</option>
+                    <option value="海棠">海棠</option>
+                    <option value="台湾">台湾</option>
                   </select>
                 </div>
                 <div className="form-group">

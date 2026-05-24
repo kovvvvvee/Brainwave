@@ -19,6 +19,7 @@ function EditCp() {
   const [showAdvanced, setShowAdvanced] = useState(false)
 
   useEffect(() => {
+    window.scrollTo(0, 0)
     fetchCp()
   }, [id])
 

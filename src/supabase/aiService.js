@@ -1,4 +1,5 @@
 // AI Service for DeepSeek API integration
+import { composeExpansionPrompt } from './promptLayers'
 
 const DEEPSEEK_API_KEY = import.meta.env.VITE_DEEPSEEK_API_KEY
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions'
@@ -25,30 +26,25 @@ function generateMockExpansion(originalContent, parameters) {
 
   // Mock expansion templates based on style
   const styleTemplates = {
-    '克制': [
+    'AO3': [
       '他看着那个瞬间，{original}。空气里有一种说不清的沉重，像有什么东西压在胸口。',
       '那个念头在脑海里闪过，{original}。他没有说话，只是垂下眼帘，手指无意识地抓紧了衣角。',
       '{original}。这句话在空荡的房间里回响，像是一把钝刀，缓慢地割开那些已经结痂的伤口。',
     ],
-    '清冷': [
-      '月光透过窗棂洒进来，{original}。他站在阴影里，神情淡漠，仿佛这一切都与他无关。',
-      '{original}。风从窗外吹进来，带着一丝凉意，他裹紧了外套，转身离开。',
-      '那个瞬间很安静，{original}。他抬起头，眼神里没有什么波澜，只是静静地看着远方。',
+    'Lovecraft': [
+      '{original}。他感觉到有什么东西在黑暗中蠕动，古老的恐惧从深渊升起。',
+      '那个瞬间，{original}。他听到不可名状的低语，理智在崩塌的边缘颤抖。',
+      '{original}。他凝视着虚空，那里有某种超越人类理解的恐怖正在苏醒。',
     ],
-    '暧昧': [
-      '他们的距离很近，{original}。呼吸交缠在一起，空气里弥漫着一种说不清道不明的张力。',
-      '{original}。他侧过头，目光在对方脸上停留，嘴角勾起一点若有若无的弧度。',
-      '那个瞬间很漫长，{original}。手指不经意地触碰，像是有电流窜过，让人心跳漏了一拍。',
+    '海棠': [
+      '月光如水，{original}。他轻叹一声，眼底是化不开的温柔。',
+      '{original}。那个瞬间很安静，只有心跳声在耳边回响。',
+      '他看着那个瞬间，{original}。时光仿佛在这里停驻，美好得让人不忍触碰。',
     ],
-    '疯感': [
-      '{original}。他笑了起来，笑声在空荡的房间里回荡，带着一种让人毛骨悚然的狂热。',
-      '那个念头在脑子里炸开，{original}。他抓着自己的头发，指甲深深陷入头皮，却感觉不到疼痛。',
-      '{original}。他盯着自己的手，那双手在颤抖，像是有什么东西要从身体里冲出来。',
-    ],
-    '温柔': [
-      '阳光很暖，{original}。他轻轻叹了口气，伸手拂去对方发梢的灰尘，动作很轻，像是在触碰易碎的瓷器。',
-      '{original}。他低下头，声音很轻，像是怕惊扰了什么，眼底却是一片柔软。',
-      '那个瞬间很安静，{original}。他握住对方的手，掌心温热，传递着一种无声的安慰。',
+    '台湾': [
+      '他看着那个瞬间，{original}。这种感觉很熟悉，像是生活里的小确幸。',
+      '{original}。他笑了笑，这种日常的温暖让人觉得很踏实。',
+      '那个瞬间，{original}。他想起小时候的回忆，心里暖暖的。',
     ]
   }
 
@@ -73,7 +69,7 @@ function generateMockExpansion(originalContent, parameters) {
   }
 
   // Select random template for the style
-  const templates = styleTemplates[style] || styleTemplates['克制']
+  const templates = styleTemplates[style] || styleTemplates['AO3']
   const baseTemplate = templates[Math.floor(Math.random() * templates.length)]
 
   // Insert original content
@@ -260,11 +256,11 @@ ${JSON.stringify(auContext, null, 2)}
  * @param {string} inspirationContent - The inspiration content to expand
  * @param {Object} cp - CP data with settings
  * @param {Object} au - AU data with settings (optional)
- * @param {Object} parameters - Expansion parameters (style, length, pov)
+ * @param {Object} parameters - Expansion parameters (style, length, pov, hasAU)
  * @returns {string} Expanded content
  */
 export async function expandInspiration(inspirationContent, cp, au, parameters) {
-  const { style = '克制', length = '中等', pov = '第三人称' } = parameters
+  const { style = 'AO3', length = '中等', pov = '第三人称', hasAU = false } = parameters
 
   // Use mock mode if enabled
   if (USE_MOCK_MODE) {
@@ -288,54 +284,23 @@ export async function expandInspiration(inspirationContent, cp, au, parameters) 
     throw new Error('DeepSeek API key not configured')
   }
 
-  // Build context from CP and AU
-  let contextPrompt = ''
-  if (cp) {
-    contextPrompt += `CP设定：
-- 名称：${cp.name}
-- 描述：${cp.description || '无'}
-- 角色：${cp.characters || '无'}
-- 标签：${cp.keywords || '无'}
-- 情感基调：${cp.emotional_tone || '无'}
-- 关系核心：${cp.relationship_core || '无'}
-- 互动风格：${cp.interaction_style || '无'}
-- 写作风格：${cp.writing_style || '无'}
-`
-  }
-
-  if (au) {
-    contextPrompt += `AU设定：
-- 名称：${au.name}
-- 描述：${au.description || '无'}
-- 世界观设定：${au.world_setting || '无'}
-- 时代背景：${au.era_background || '无'}
-- 职业设定：${au.occupation_setting || '无'}
-- 氛围：${au.atmosphere || '无'}
-- 行为模式：${au.behavior_pattern || '无'}
-- 写作风格：${au.writing_style || '无'}
-`
-  }
-
-  const systemPrompt = `你是一个专业的同人创作助手，负责根据灵感和设定进行扩写创作。
-
-你的任务：
-根据提供的灵感内容和CP/AU设定，进行创意扩写。
-
-扩写要求：
-- 文风：${style}
-- 扩写长度：${length}
-- 叙事视角：${pov}
-
-${contextPrompt}
-
-请直接输出扩写内容，不要包含任何解释性文字或markdown标记。`
+  // Use modular prompt composition system
+  const systemPrompt = composeExpansionPrompt({
+    style,
+    length,
+    pov,
+    cp,
+    au,
+    hasAU,
+    inspirationContent
+  })
 
   try {
     console.log("DeepSeek API Key:", DEEPSEEK_API_KEY)
 
     let content = await callDeepSeek(
       systemPrompt,
-      `请扩写以下灵感：\n\n${inspirationContent}`
+      '请根据以上设定进行扩写。'
     )
 
     // Check if AI returned valid content

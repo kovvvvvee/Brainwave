@@ -56,6 +56,7 @@ function CpDetail() {
   })
 
   useEffect(() => {
+    window.scrollTo(0, 0)
     fetchCp()
     fetchAus()
     fetchUncategorizedInspirations()
