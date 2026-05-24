@@ -21,6 +21,17 @@ CREATE TABLE au (
   cp_id UUID NOT NULL REFERENCES cp(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   description TEXT,
+  -- New AI-friendly AU structure
+  core_atmosphere TEXT,
+  world_rules JSONB DEFAULT '{"social_rules": "", "life_rules": "", "body_rules": ""}',
+  relationship_surface_layer TEXT,
+  relationship_actual_state TEXT,
+  relationship_conflict TEXT,
+  au_amplification TEXT,
+  relationship_triggers TEXT,
+  daily_details TEXT,
+  ooc_rules TEXT,
+  -- Legacy fields for backward compatibility
   world_notes TEXT,
   relationship_state TEXT,
   is_pinned BOOLEAN DEFAULT FALSE,
@@ -57,6 +68,7 @@ CREATE TABLE inspiration_tags (
 );
 
 -- Create expansion_history table for AI expansion records
+-- One inspiration can have multiple expansion versions (1:N relationship)
 CREATE TABLE expansion_history (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID,
@@ -65,6 +77,9 @@ CREATE TABLE expansion_history (
   style TEXT CHECK (style IN ('克制', '清冷', '暧昧', '疯感', '温柔')),
   length TEXT CHECK (length IN ('灵感延伸', '短扩写', '中篇扩写', '长篇扩写')),
   pov TEXT CHECK (pov IN ('第一人称', '第二人称', '第三人称')),
+  version_name TEXT, -- Optional: e.g., "初版", "暧昧版", "马尔克斯版"
+  notes TEXT, -- Optional: notes about this version
+  is_favorite BOOLEAN DEFAULT FALSE, -- For marking favorite versions
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -120,3 +135,4 @@ CREATE INDEX idx_inspiration_tags_inspiration_id ON inspiration_tags(inspiration
 CREATE INDEX idx_inspiration_tags_tag_id ON inspiration_tags(tag_id);
 CREATE INDEX idx_expansion_history_inspiration_id ON expansion_history(inspiration_id);
 CREATE INDEX idx_expansion_history_created_at ON expansion_history(created_at DESC);
+CREATE INDEX idx_expansion_history_is_favorite ON expansion_history(is_favorite);

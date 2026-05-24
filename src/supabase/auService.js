@@ -7,6 +7,17 @@ export async function createAu(auData) {
     cp_id: auData.cp_id,
     name: auData.name,
     description: auData.description,
+    // New AI-friendly AU structure
+    core_atmosphere: auData.core_atmosphere,
+    world_rules: auData.world_rules || { social_rules: '', life_rules: '', body_rules: '' },
+    relationship_surface_layer: auData.relationship_surface_layer,
+    relationship_actual_state: auData.relationship_actual_state,
+    relationship_conflict: auData.relationship_conflict,
+    au_amplification: auData.au_amplification,
+    relationship_triggers: auData.relationship_triggers,
+    daily_details: auData.daily_details,
+    ooc_rules: auData.ooc_rules,
+    // Legacy fields for backward compatibility
     world_notes: auData.worldNotes,
     relationship_state: auData.relationshipState,
   }
@@ -65,16 +76,29 @@ export async function getAuById(id) {
 
 // Update an AU
 export async function updateAu(id, auData) {
+  const payload = {
+    name: auData.name,
+    description: auData.description,
+    // New AI-friendly AU structure
+    core_atmosphere: auData.core_atmosphere,
+    world_rules: auData.world_rules,
+    relationship_surface_layer: auData.relationship_surface_layer,
+    relationship_actual_state: auData.relationship_actual_state,
+    relationship_conflict: auData.relationship_conflict,
+    au_amplification: auData.au_amplification,
+    relationship_triggers: auData.relationship_triggers,
+    daily_details: auData.daily_details,
+    ooc_rules: auData.ooc_rules,
+    // Legacy fields for backward compatibility
+    world_notes: auData.worldNotes,
+    relationship_state: auData.relationshipState,
+    is_pinned: auData.is_pinned,
+    pinned_at: auData.is_pinned ? new Date().toISOString() : null,
+  }
+
   const { data, error } = await supabase
     .from('au')
-    .update({
-      name: auData.name,
-      description: auData.description,
-      world_notes: auData.worldNotes,
-      relationship_state: auData.relationshipState,
-      is_pinned: auData.is_pinned,
-      pinned_at: auData.is_pinned ? new Date().toISOString() : null,
-    })
+    .update(payload)
     .eq('id', id)
     .eq('user_id', window.CURRENT_USER_ID)
     .select()

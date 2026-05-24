@@ -1,16 +1,18 @@
-// AI Service for OpenRouter API integration
+// AI Service for DeepSeek API integration
 
-const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY
-const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
+const DEEPSEEK_API_KEY = import.meta.env.VITE_DEEPSEEK_API_KEY
+const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions'
+
+console.log(
+  'ENV TEST:',
+  import.meta.env.VITE_DEEPSEEK_API_KEY
+)
 
 // Mock mode flag - set to true to use mock AI responses instead of real API calls
-const USE_MOCK_MODE = true
+const USE_MOCK_MODE = false
 
-// Model list with fallback mechanism
-const MODELS = [
-  'google/gemini-flash-1.5',
-  'openai/gpt-4o-mini'
-]
+// DeepSeek model
+const DEEPSEEK_MODEL = 'deepseek-chat'
 
 /**
  * Generate mock expansion content based on parameters
@@ -87,75 +89,60 @@ function generateMockExpansion(originalContent, parameters) {
 }
 
 /**
- * Try to call OpenRouter API with fallback models
+ * Call DeepSeek API
  * @param {string} systemPrompt - System prompt
  * @param {string} userPrompt - User prompt
- * @param {Object} options - Additional options (temperature, max_tokens)
- * @returns {Object} Response data with content and model used
+ * @returns {string} Response content
  */
-async function callOpenRouterWithFallback(systemPrompt, userPrompt, options = {}) {
-  const { temperature = 0.3, max_tokens = 500 } = options
+export async function callDeepSeek(systemPrompt, userPrompt) {
+  try {
+    console.log('DeepSeek API 请求URL:', DEEPSEEK_API_URL)
+    console.log('使用模型:', DEEPSEEK_MODEL)
 
-  for (const model of MODELS) {
-    try {
-      console.log(`尝试使用模型: ${model}`)
-
-      let response
-      try {
-        response = await fetch(OPENROUTER_API_URL, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-            'Content-Type': 'application/json',
+    const response = await fetch(DEEPSEEK_API_URL, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: DEEPSEEK_MODEL,
+        messages: [
+          {
+            role: 'system',
+            content: systemPrompt
           },
-          body: JSON.stringify({
-            model: model,
-            messages: [
-              {
-                role: 'system',
-                content: systemPrompt
-              },
-              {
-                role: 'user',
-                content: userPrompt
-              }
-            ],
-            temperature: temperature,
-            max_tokens: max_tokens,
-          })
-        })
-      } catch (fetchError) {
-        console.error(`模型 ${model} 请求失败:`, fetchError)
-        continue
-      }
+          {
+            role: 'user',
+            content: userPrompt
+          }
+        ],
+        temperature: 0.85,
+        stream: false
+      })
+    })
 
-      console.log(`模型 ${model} 响应状态:`, response.status)
+    console.log('DeepSeek API 响应状态:', response.status)
 
-      if (!response.ok) {
-        const errorText = await response.text()
-        console.error(`模型 ${model} API错误 (${response.status}):`, errorText)
-        continue
-      }
-
-      const data = await response.json()
-
-      if (!data.choices || !data.choices[0] || !data.choices[0].message || !data.choices[0].message.content) {
-        console.error(`模型 ${model} 返回数据格式异常`)
-        continue
-      }
-
-      console.log(`✓ 成功使用模型: ${model}`)
-      return {
-        content: data.choices[0].message.content,
-        model: model
-      }
-    } catch (error) {
-      console.error(`模型 ${model} 调用失败:`, error.message)
-      continue
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('DeepSeek API 错误:', errorText)
+      throw new Error(`DeepSeek API 错误 (${response.status}): ${errorText}`)
     }
-  }
 
-  throw new Error('所有模型均不可用，请检查API配置或网络连接')
+    const data = await response.json()
+
+    if (!data.choices || !data.choices[0] || !data.choices[0].message || !data.choices[0].message.content) {
+      console.error('DeepSeek 返回数据格式异常:', data)
+      throw new Error('DeepSeek 返回数据格式异常')
+    }
+
+    console.log('✓ DeepSeek API 调用成功')
+    return data.choices[0].message.content
+  } catch (error) {
+    console.error('DeepSeek API 调用失败:', error)
+    throw error
+  }
 }
 
 /**
@@ -166,8 +153,8 @@ async function callOpenRouterWithFallback(systemPrompt, userPrompt, options = {}
  * @returns {Object} Classification result with cp_id, au_id, and reason
  */
 export async function classifyInspiration(inspirationContent, cps, aus) {
-  if (!OPENROUTER_API_KEY || OPENROUTER_API_KEY === 'your_openrouter_api_key_here') {
-    throw new Error('OpenRouter API key not configured')
+  if (!DEEPSEEK_API_KEY || DEEPSEEK_API_KEY === 'your_deepseek_api_key_here') {
+    throw new Error('DeepSeek API key not configured')
   }
 
   // Build context from CPs and AUs
@@ -223,16 +210,12 @@ ${JSON.stringify(auContext, null, 2)}
 - 只返回JSON，不要包含任何其他文字或markdown标记`
 
   try {
-    console.log("OpenRouter API Key:", OPENROUTER_API_KEY)
-    console.log('OpenRouter API 请求URL:', OPENROUTER_API_URL)
+    console.log("DeepSeek API Key:", DEEPSEEK_API_KEY)
 
-    const result = await callOpenRouterWithFallback(
+    const content = await callDeepSeek(
       systemPrompt,
-      `请分类以下灵感：\n\n${inspirationContent}`,
-      { temperature: 0.3, max_tokens: 500 }
+      `请分类以下灵感：\n\n${inspirationContent}`
     )
-
-    const content = result.content
 
     // Check if AI returned valid content
     if (!content || content.trim() === '') {
@@ -300,9 +283,9 @@ export async function expandInspiration(inspirationContent, cp, au, parameters) 
     return mockContent
   }
 
-  // Real AI mode (currently disabled)
-  if (!OPENROUTER_API_KEY || OPENROUTER_API_KEY === 'your_openrouter_api_key_here') {
-    throw new Error('OpenRouter API key not configured')
+  // Real AI mode
+  if (!DEEPSEEK_API_KEY || DEEPSEEK_API_KEY === 'your_deepseek_api_key_here') {
+    throw new Error('DeepSeek API key not configured')
   }
 
   // Build context from CP and AU
@@ -348,16 +331,12 @@ ${contextPrompt}
 请直接输出扩写内容，不要包含任何解释性文字或markdown标记。`
 
   try {
-    console.log("OpenRouter API Key:", OPENROUTER_API_KEY)
-    console.log('OpenRouter API 请求URL:', OPENROUTER_API_URL)
+    console.log("DeepSeek API Key:", DEEPSEEK_API_KEY)
 
-    const result = await callOpenRouterWithFallback(
+    let content = await callDeepSeek(
       systemPrompt,
-      `请扩写以下灵感：\n\n${inspirationContent}`,
-      { temperature: 0.7, max_tokens: 2000 }
+      `请扩写以下灵感：\n\n${inspirationContent}`
     )
-
-    let content = result.content
 
     // Check if AI returned valid content
     if (!content || content.trim() === '') {

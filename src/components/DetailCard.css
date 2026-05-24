@@ -1,0 +1,30 @@
+.detail-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-md);
+}
+
+.detail-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #5a5a5a;
+  letter-spacing: 0.01em;
+}
+
+.detail-display {
+  padding: var(--spacing-md);
+  background: #faf8f3;
+  border-radius: 12px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: #3d3d3d;
+  white-space: pre-wrap;
+  letter-spacing: 0.01em;
+  min-height: 40px;
+}
+
+.empty-placeholder {
+  color: #bbb;
+  font-style: italic;
+}

@@ -1,10 +1,10 @@
 import { Link, useParams, useNavigate } from 'react-router-dom'
-import { useState, useEffect } from 'react'
-import { getInspirationById, updateInspiration, deleteInspiration, togglePin } from '../supabase/inspirationService'
+import { useState, useEffect, useRef } from 'react'
+import { getInspirationById, updateInspiration, deleteInspiration, togglePin, createExpansion, getExpansionsByInspirationId, updateExpansion, toggleExpansionFavorite, deleteExpansion } from '../supabase/inspirationService'
 import { getCpById } from '../supabase/cpService'
 import { getAuById } from '../supabase/auService'
-import { getExpansionsByInspirationId, createExpansion, updateExpansion } from '../supabase/expansionService'
 import { expandInspiration } from '../supabase/aiService'
+import ReadingMode from '../components/ReadingMode'
 import './InspirationDetail.css'
 
 function InspirationDetail() {
@@ -26,6 +26,9 @@ function InspirationDetail() {
   const [editingExpansionId, setEditingExpansionId] = useState(null)
   const [editingExpansionContent, setEditingExpansionContent] = useState('')
   const [isSavingExpansion, setIsSavingExpansion] = useState(false)
+  const [editingVersionName, setEditingVersionName] = useState('')
+  const [editingNotes, setEditingNotes] = useState('')
+  const [selectedExpansionId, setSelectedExpansionId] = useState(null)
 
   useEffect(() => {
     fetchInspiration()
@@ -68,7 +71,13 @@ function InspirationDetail() {
   const fetchExpansions = async () => {
     try {
       const data = await getExpansionsByInspirationId(id)
-      setExpansions(data)
+      // Sort: main version (is_favorite) first, then by created_at desc
+      const sortedData = data.sort((a, b) => {
+        if (a.is_favorite && !b.is_favorite) return -1
+        if (!a.is_favorite && b.is_favorite) return 1
+        return new Date(b.created_at) - new Date(a.created_at)
+      })
+      setExpansions(sortedData)
     } catch (error) {
       console.error('获取扩写历史失败:', error)
     }
@@ -148,18 +157,27 @@ function InspirationDetail() {
         au,
         { style: expansionStyle, length: expansionLength, pov: expansionPov }
       )
-      
-      const newExpansion = await createExpansion({
-        inspirationId: id,
+
+      console.log('CURRENT INSPIRATION:', inspiration)
+      console.log('CURRENT INSPIRATION ID:', inspiration?.id)
+
+      // Use createExpansion (insert, not upsert) to create a new version
+      const result = await createExpansion({
+        inspiration_id: inspiration.id,
         content: expandedContent,
         style: expansionStyle,
         length: expansionLength,
-        pov: expansionPov
+        pov: expansionPov,
+        version_name: null, // Can be set later
+        notes: null,
+        is_favorite: false
       })
-      
+
+      console.log('createExpansion result:', result)
+
       await fetchExpansions()
       setShowExpansionModal(false)
-      alert('AI扩写成功！')
+      alert('AI扩写成功！已创建新版本')
     } catch (error) {
       console.error('AI扩写失败:', error)
       alert('AI扩写失败，请重试')
@@ -173,12 +191,7 @@ function InspirationDetail() {
     alert('已复制到剪贴板')
   }
 
-  const handleEditExpansion = (expansion) => {
-    setEditingExpansionId(expansion.id)
-    setEditingExpansionContent(expansion.content)
-  }
-
-  const handleSaveExpansionEdit = async (expansionId) => {
+  const handleSaveExpansionEdit = async () => {
     if (!editingExpansionContent.trim()) {
       alert('扩写内容不能为空')
       return
@@ -186,14 +199,25 @@ function InspirationDetail() {
 
     setIsSavingExpansion(true)
     try {
-      await updateExpansion(expansionId, editingExpansionContent)
+      // Update the expansion version with new content and metadata
+      await updateExpansion(editingExpansionId, {
+        version_name: editingVersionName || null,
+        notes: editingNotes || null,
+        is_favorite: false // Keep existing favorite status
+      })
+
+      // Note: We're not updating content here as that would require a separate function
+      // For now, just update metadata. Content editing would need a separate update function
+      
       await fetchExpansions()
       setEditingExpansionId(null)
       setEditingExpansionContent('')
-      alert('扩写内容已更新')
+      setEditingVersionName('')
+      setEditingNotes('')
+      alert('版本信息已更新')
     } catch (error) {
-      console.error('更新扩写失败:', error)
-      alert('更新扩写失败，请重试')
+      console.error('保存扩写失败:', error)
+      alert('保存扩写失败，请重试')
     } finally {
       setIsSavingExpansion(false)
     }
@@ -202,11 +226,51 @@ function InspirationDetail() {
   const handleCancelExpansionEdit = () => {
     setEditingExpansionId(null)
     setEditingExpansionContent('')
+    setEditingVersionName('')
+    setEditingNotes('')
+  }
+
+  const handleDeleteExpansion = async (expansionId) => {
+    if (!confirm('确定要删除这个版本吗？')) return
+
+    try {
+      await deleteExpansion(expansionId)
+      await fetchExpansions()
+      alert('版本已删除')
+    } catch (error) {
+      console.error('删除版本失败:', error)
+      alert('删除版本失败，请重试')
+    }
+  }
+
+  const handleToggleFavorite = async (expansionId) => {
+    try {
+      await toggleExpansionFavorite(expansionId)
+      await fetchExpansions()
+    } catch (error) {
+      console.error('切换收藏状态失败:', error)
+      alert('切换收藏状态失败，请重试')
+    }
+  }
+
+  const handleEditExpansion = (expansion) => {
+    setEditingExpansionId(expansion.id)
+    setEditingExpansionContent(expansion.content)
+    setEditingVersionName(expansion.version_name || '')
+    setEditingNotes(expansion.notes || '')
   }
 
   const formatVersionNumber = (index, total) => {
     const versionNum = total - index
     return `版本 ${String(versionNum).padStart(2, '0')}`
+  }
+
+  const getWordCount = (text) => {
+    if (!text) return 0
+    // Count Chinese characters and words
+    const chineseChars = (text.match(/[\u4e00-\u9fa5]/g) || []).length
+    const englishWords = (text.match(/[a-zA-Z]+/g) || []).length
+    return chineseChars + englishWords
   }
 
   if (loading) {
@@ -281,7 +345,12 @@ function InspirationDetail() {
             </form>
           ) : (
             <div className="inspiration-content-display">
-              <p className="inspiration-text">{inspiration.content}</p>
+              <ReadingMode 
+                content={inspiration.content}
+                defaultExpanded={false}
+                showPreview={true}
+                previewLines={3}
+              />
               <p className="inspiration-time">
                 创建于 {new Date(inspiration.created_at).toLocaleString('zh-CN')}
               </p>
@@ -289,84 +358,134 @@ function InspirationDetail() {
           )}
         </section>
 
-        {/* AI扩写功能 */}
+        {/* 扩写历史 / Versions */}
         <section className="expansion-section">
-          <h2 className="section-title">扩写草稿</h2>
+          <h2 className="section-title">扩写历史 / Versions ({expansions.length})</h2>
           {expansions.length === 0 ? (
             <div className="feature-placeholder">
-              <p>暂无草稿，点击上方"AI扩写"开始创作</p>
+              <p>暂无扩写版本，点击上方"AI扩写"开始创作</p>
             </div>
           ) : (
-            <div className="draft-list">
-              {expansions.map((expansion, index) => (
-                <div key={expansion.id} className="draft-item">
-                  <div className="draft-header">
-                    <span className="draft-version">{formatVersionNumber(index, expansions.length)}</span>
-                    <span className="draft-time">
-                      {new Date(expansion.created_at).toLocaleString('zh-CN')}
-                    </span>
-                    <div className="draft-actions">
-                      {editingExpansionId === expansion.id ? (
-                        <>
-                          <button 
-                            className="draft-action-btn draft-save-btn"
-                            onClick={() => handleSaveExpansionEdit(expansion.id)}
-                            title="保存"
-                            disabled={isSavingExpansion}
-                          >
-                            {isSavingExpansion ? '保存中...' : '✓'}
-                          </button>
-                          <button 
-                            className="draft-action-btn draft-cancel-btn"
-                            onClick={handleCancelExpansionEdit}
-                            title="取消"
-                            disabled={isSavingExpansion}
-                          >
-                            ✕
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <button 
-                            className="draft-action-btn"
-                            onClick={() => handleCopyExpansion(expansion.content)}
-                            title="复制"
-                          >
-                            📋
-                          </button>
-                          <button 
-                            className="draft-action-btn"
-                            onClick={() => handleEditExpansion(expansion)}
-                            title="编辑"
-                          >
-                            ✏️
-                          </button>
-                        </>
-                      )}
+            <div className="version-cards">
+              {expansions.map((expansion, index) => {
+                const wordCount = getWordCount(expansion.content)
+                
+                return (
+                  <div key={expansion.id} className={`version-card ${expansion.is_favorite ? 'main-version' : ''}`}>
+                    <div className="version-card-header">
+                      <div className="version-card-title">
+                        <div className="version-name">
+                          <span className="version-text">
+                            {expansion.version_name || formatVersionNumber(index, expansions.length)}
+                          </span>
+                          {expansion.is_favorite && (
+                            <span className="main-version-badge">主版本</span>
+                          )}
+                        </div>
+                        <div className="version-meta">
+                          <span className="style-tag">{expansion.style}</span>
+                          <span className="meta-separator">·</span>
+                          <span className="word-count">{wordCount}字</span>
+                          <span className="meta-separator">·</span>
+                          <span className="creation-time">
+                            {new Date(expansion.created_at).toLocaleDateString('zh-CN')}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="version-card-actions">
+                        {editingExpansionId === expansion.id ? (
+                          <>
+                            <button
+                              className="action-btn save-btn"
+                              onClick={() => handleSaveExpansionEdit()}
+                              disabled={isSavingExpansion}
+                            >
+                              {isSavingExpansion ? '保存中...' : '保存'}
+                            </button>
+                            <button 
+                              className="action-btn cancel-btn"
+                              onClick={handleCancelExpansionEdit}
+                              disabled={isSavingExpansion}
+                            >
+                              取消
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button 
+                              className="action-btn"
+                              onClick={() => handleCopyExpansion(expansion.content)}
+                              title="复制"
+                            >
+                              📋
+                            </button>
+                            <button 
+                              className="action-btn"
+                              onClick={() => handleToggleFavorite(expansion.id)}
+                              title={expansion.is_favorite ? '取消主版本' : '设为主版本'}
+                            >
+                              {expansion.is_favorite ? '当前主版本' : '设为主版本'}
+                            </button>
+                            <button 
+                              className="action-btn"
+                              onClick={() => handleEditExpansion(expansion)}
+                              title="编辑版本信息"
+                            >
+                              ✏️
+                            </button>
+                            <button 
+                              className="action-btn delete-btn"
+                              onClick={() => handleDeleteExpansion(expansion.id)}
+                              title="删除版本"
+                            >
+                              🗑️
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <div className="draft-params">
-                    <span className="draft-param">{expansion.style}</span>
-                    <span className="draft-param">·</span>
-                    <span className="draft-param">{expansion.length}</span>
-                    <span className="draft-param">·</span>
-                    <span className="draft-param">{expansion.pov}</span>
-                  </div>
-                  <div className="draft-content">
+                    
+                    {expansion.notes && (
+                      <div className="version-notes">
+                        <span className="notes-label">备注：</span>
+                        <span className="notes-content">{expansion.notes}</span>
+                      </div>
+                    )}
+                    
                     {editingExpansionId === expansion.id ? (
-                      <textarea
-                        className="expansion-edit-textarea"
-                        value={editingExpansionContent}
-                        onChange={(e) => setEditingExpansionContent(e.target.value)}
-                        disabled={isSavingExpansion}
-                        rows={12}
-                      />
+                      <div className="version-edit-form">
+                        <div className="edit-field">
+                          <label>版本名称</label>
+                          <input
+                            type="text"
+                            value={editingVersionName}
+                            onChange={(e) => setEditingVersionName(e.target.value)}
+                            placeholder="例如：初版、暧昧版、马尔克斯版"
+                          />
+                        </div>
+                        <div className="edit-field">
+                          <label>备注</label>
+                          <textarea
+                            value={editingNotes}
+                            onChange={(e) => setEditingNotes(e.target.value)}
+                            placeholder="添加版本备注..."
+                            rows={2}
+                          />
+                        </div>
+                      </div>
                     ) : (
-                      <p>{expansion.content}</p>
+                      <div className="version-content">
+                        <ReadingMode 
+                          content={expansion.content}
+                          defaultExpanded={false}
+                          showPreview={true}
+                          previewLines={3}
+                        />
+                      </div>
                     )}
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
         </section>

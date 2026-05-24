@@ -13,9 +13,8 @@ function Navigation() {
     }
     if (path === '/archive') {
       return location.pathname.startsWith('/archive') || 
-             location.pathname.startsWith('/cp') || 
-             location.pathname.startsWith('/au') ||
-             location.pathname.startsWith('/create-')
+             location.pathname.startsWith('/cp') ||
+             location.pathname.startsWith('/create-cp')
     }
     return location.pathname.startsWith(path)
   }

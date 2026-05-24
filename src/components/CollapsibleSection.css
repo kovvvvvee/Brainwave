@@ -1,0 +1,119 @@
+.collapsible-section {
+  margin-bottom: var(--spacing-xl);
+}
+
+.collapsible-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--spacing-lg);
+  background: #faf8f3;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.collapsible-header:hover {
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+.collapsible-header.expanded {
+  background: #ffffff;
+  border-color: rgba(139, 115, 85, 0.2);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.header-left {
+  flex: 1;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #3d3d3d;
+  margin: 0 0 var(--spacing-xs) 0;
+  letter-spacing: 0.01em;
+}
+
+.section-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: var(--spacing-xs);
+}
+
+.filled-status {
+  font-size: 13px;
+  color: #8b7355;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.content-summary {
+  font-size: 12px;
+  color: #999;
+  font-style: italic;
+  letter-spacing: 0.01em;
+  max-width: 500px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tags-summary {
+  font-size: 12px;
+  color: #6b6b6b;
+  letter-spacing: 0.01em;
+}
+
+.expand-icon {
+  font-size: 12px;
+  color: #999;
+  transition: transform 0.3s ease;
+  display: inline-block;
+  margin-left: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+.expand-icon.expanded {
+  transform: rotate(180deg);
+}
+
+.collapsible-content {
+  background: #ffffff;
+  padding: var(--spacing-xl);
+  border-radius: 0 0 16px 16px;
+  border: 1px solid rgba(139, 115, 85, 0.2);
+  border-top: none;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .collapsible-header {
+    padding: var(--spacing-md);
+  }
+
+  .section-title {
+    font-size: 15px;
+  }
+
+  .collapsible-content {
+    padding: var(--spacing-lg);
+  }
+}

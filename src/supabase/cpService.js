@@ -5,12 +5,40 @@ export async function createCp(cpData) {
   const payload = {
     user_id: window.CURRENT_USER_ID,
     name: cpData.name,
-    description: cpData.description,
-    characters: cpData.characters,
-    ooc_rules: cpData.oocRules,
-    creative_notes: cpData.creativeNotes,
-    source_material: cpData.sourceMaterial,
-    relationship_summary: cpData.relationshipSummary,
+    // New AI-friendly structure
+    core_one_liner: cpData.core_one_liner || null,
+    relationship_dynamics: cpData.relationship_dynamics || {
+      emotional_inertia: '',
+      interaction_inertia: '',
+      desire_inertia: ''
+    },
+    character_profiles: cpData.character_profiles || {
+      character_a: {
+        explicit_state: '',
+        true_state: '',
+        language_habits: ''
+      },
+      character_b: {
+        explicit_state: '',
+        true_state: '',
+        language_habits: ''
+      }
+    },
+    sexual_dynamics: cpData.sexual_dynamics || {
+      desire_structure: '',
+      behavioral_inertia: '',
+      basic_positioning: ''
+    },
+    relationship_atmosphere: cpData.relationship_atmosphere || null,
+    interaction_details: cpData.interaction_details || [],
+    source_material: cpData.source_material || null,
+    ooc_rules: cpData.ooc_rules || null,
+    power_dynamics: cpData.power_dynamics || null,
+    relationship_boundaries: cpData.relationship_boundaries || null,
+    // Legacy fields for backward compatibility
+    description: cpData.description || null,
+    characters: cpData.characters || null,
+    creative_notes: cpData.creative_notes || null,
   }
 
   console.log('CP insert payload:', payload)
@@ -70,12 +98,40 @@ export async function updateCp(id, cpData) {
     .from('cp')
     .update({
       name: cpData.name,
-      description: cpData.description,
-      characters: cpData.characters,
-      ooc_rules: cpData.oocRules,
-      creative_notes: cpData.creativeNotes,
-      source_material: cpData.sourceMaterial,
-      relationship_summary: cpData.relationshipSummary,
+      // New AI-friendly structure
+      core_one_liner: cpData.core_one_liner || null,
+      relationship_dynamics: cpData.relationship_dynamics || {
+        emotional_inertia: '',
+        interaction_inertia: '',
+        desire_inertia: ''
+      },
+      character_profiles: cpData.character_profiles || {
+        character_a: {
+          explicit_state: '',
+          true_state: '',
+          language_habits: ''
+        },
+        character_b: {
+          explicit_state: '',
+          true_state: '',
+          language_habits: ''
+        }
+      },
+      sexual_dynamics: cpData.sexual_dynamics || {
+        desire_structure: '',
+        behavioral_inertia: '',
+        basic_positioning: ''
+      },
+      relationship_atmosphere: cpData.relationship_atmosphere || null,
+      interaction_details: cpData.interaction_details || [],
+      source_material: cpData.source_material || null,
+      ooc_rules: cpData.ooc_rules || null,
+      power_dynamics: cpData.power_dynamics || null,
+      relationship_boundaries: cpData.relationship_boundaries || null,
+      // Legacy fields for backward compatibility
+      description: cpData.description || null,
+      characters: cpData.characters || null,
+      creative_notes: cpData.creative_notes || null,
       is_pinned: cpData.is_pinned,
       pinned_at: cpData.is_pinned ? new Date().toISOString() : null,
     })

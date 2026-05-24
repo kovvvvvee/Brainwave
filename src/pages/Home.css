@@ -29,90 +29,146 @@
   letter-spacing: 0.01em;
 }
 
-.search-container {
-  position: relative;
-  max-width: 600px;
+.home-main {
+  flex: 1;
+  padding: 40px var(--spacing-xl) var(--spacing-2xl);
+  max-width: 800px;
   margin: 0 auto;
+  width: 100%;
+}
+
+.search-section {
+  margin-bottom: 12px;
 }
 
 .search-input {
   width: 100%;
-  padding: 12px 16px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 16px;
-  font-size: var(--font-size-base);
-  background: #faf8f3;
-  transition: border-color var(--transition-normal);
-  color: #3d3d3d;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px dashed rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  font-size: 14px;
+  color: #262626;
+  transition: all 120ms ease;
+  font-family: inherit;
+}
+
+.search-input::placeholder {
+  color: rgba(0, 0, 0, 0.32);
 }
 
 .search-input:focus {
   outline: none;
-  border-color: rgba(139, 115, 85, 0.3);
+  background: rgba(255, 255, 255, 0.55);
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.12);
 }
 
 .search-results {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: #faf8f3;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 16px;
-  margin-top: 4px;
+  margin-top: 12px;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  padding: 16px;
   max-height: 400px;
   overflow-y: auto;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  z-index: var(--z-dropdown);
 }
 
-.search-result-item {
-  padding: 12px 16px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+.search-empty {
+  text-align: center;
+  color: rgba(0, 0, 0, 0.32);
+  font-size: 14px;
+  padding: 24px 0;
 }
 
-.search-result-item:last-child {
-  border-bottom: none;
+.search-category {
+  margin-bottom: 16px;
 }
 
-.search-result-link {
+.search-category:last-child {
+  margin-bottom: 0;
+}
+
+.search-category-title {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.4);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.search-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.search-item {
+  display: block;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background 120ms ease;
+}
+
+.search-item:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.search-item-name {
+  font-size: 14px;
+  color: #262626;
+  font-weight: 400;
+  margin-bottom: 2px;
+}
+
+.search-item-desc {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.4);
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+.search-inspirations {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.search-inspiration-item {
+  display: block;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  border-radius: 8px;
+  padding: 12px;
+  transition: all 120ms ease;
+}
+
+.search-inspiration-item:hover {
+  background: rgba(255, 255, 255, 0.55);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.search-inspiration-content {
+  font-size: 14px;
+  color: #262626;
+  line-height: 1.6;
+  margin-bottom: 8px;
+  font-weight: 300;
+}
+
+.search-inspiration-footer {
   display: flex;
   align-items: center;
-  gap: 12px;
-  text-decoration: none;
-  color: #3d3d3d;
+  justify-content: space-between;
 }
 
-.search-result-link:hover {
-  background: rgba(139, 115, 85, 0.05);
-}
-
-.result-type {
-  font-size: var(--font-size-xs);
-  color: #6b6b6b;
-  background: rgba(139, 115, 85, 0.1);
-  padding: 4px 8px;
-  border-radius: 8px;
-  font-weight: 500;
-}
-
-.result-name {
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  color: #3d3d3d;
-}
-
-.result-content {
-  font-size: var(--font-size-sm);
-  color: #6b6b6b;
-}
-
-.home-main {
-  flex: 1;
-  padding: var(--spacing-2xl) var(--spacing-xl);
-  max-width: 800px;
-  margin: 0 auto;
-  width: 100%;
+.search-inspiration-time {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.32);
+  font-weight: 300;
 }
 
 .inspiration-input-section {
@@ -430,19 +486,57 @@
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .home-main {
-    padding: var(--spacing-lg) var(--spacing-md);
+    padding: 32px var(--spacing-md) var(--spacing-lg);
   }
-  
+
+  .search-input {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+
+  .search-results {
+    padding: 12px;
+    max-height: 350px;
+  }
+
+  .search-category-title {
+    font-size: 11px;
+  }
+
+  .search-item {
+    padding: 6px 10px;
+  }
+
+  .search-item-name {
+    font-size: 13px;
+  }
+
+  .search-item-desc {
+    font-size: 12px;
+  }
+
+  .search-inspiration-item {
+    padding: 10px;
+  }
+
+  .search-inspiration-content {
+    font-size: 13px;
+  }
+
+  .search-inspiration-time {
+    font-size: 11px;
+  }
+
   .continue-writing-item {
     padding: 20px;
     border-radius: 12px;
   }
-  
+
   .continue-writing-content {
     font-size: 15px;
     line-height: 1.7;
   }
-  
+
   .continue-writing-time {
     font-size: 11px;
   }

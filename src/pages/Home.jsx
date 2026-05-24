@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { getCps } from '../supabase/cpService'
 import { getAusByCpId } from '../supabase/auService'
-import { createInspiration, getRecentInspirations } from '../supabase/inspirationService'
+import { createInspiration, getRecentInspirations, getAllInspirations } from '../supabase/inspirationService'
 import { getTagsForInspiration } from '../supabase/tagService'
 import './Home.css'
 
@@ -18,10 +18,14 @@ function Home() {
   const [loading, setLoading] = useState(true)
   const [showCount, setShowCount] = useState(2)
   const [isExpanded, setIsExpanded] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchResults, setSearchResults] = useState({ cps: [], aus: [], inspirations: [] })
+  const [allInspirations, setAllInspirations] = useState([])
 
   useEffect(() => {
     fetchCps()
     fetchRecentInspirations()
+    fetchAllInspirations()
   }, [])
 
   useEffect(() => {
@@ -68,6 +72,57 @@ function Home() {
     } catch (error) {
       console.error('获取最近灵感失败:', error)
     }
+  }
+
+  const fetchAllInspirations = async () => {
+    try {
+      const data = await getAllInspirations()
+      setAllInspirations(data)
+    } catch (error) {
+      console.error('获取所有灵感失败:', error)
+    }
+  }
+
+  // Fuzzy search function
+  const fuzzySearch = (text, query) => {
+    if (!query) return true
+    const lowerText = text.toLowerCase()
+    const lowerQuery = query.toLowerCase()
+    return lowerText.includes(lowerQuery)
+  }
+
+  // Handle search input
+  const handleSearchChange = (e) => {
+    const query = e.target.value
+    setSearchQuery(query)
+
+    if (!query.trim()) {
+      setSearchResults({ cps: [], aus: [], inspirations: [] })
+      return
+    }
+
+    // Search CPs
+    const filteredCps = cps.filter(cp =>
+      fuzzySearch(cp.name, query) ||
+      fuzzySearch(cp.description || '', query)
+    )
+
+    // Search AUs
+    const filteredAus = aus.filter(au =>
+      fuzzySearch(au.name, query) ||
+      fuzzySearch(au.description || '', query)
+    )
+
+    // Search Inspirations
+    const filteredInspirations = allInspirations.filter(inspiration =>
+      fuzzySearch(inspiration.content, query)
+    )
+
+    setSearchResults({
+      cps: filteredCps,
+      aus: filteredAus,
+      inspirations: filteredInspirations
+    })
   }
 
 
@@ -121,6 +176,80 @@ function Home() {
       </header>
 
       <main className="home-main">
+        <section className="search-section">
+          <input
+            type="text"
+            className="search-input"
+            placeholder="搜索灵感、CP、AU…"
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
+          {searchQuery && (
+            <div className="search-results">
+              {searchResults.cps.length === 0 &&
+               searchResults.aus.length === 0 &&
+               searchResults.inspirations.length === 0 ? (
+                <div className="search-empty">
+                  没有找到相关内容
+                </div>
+              ) : (
+                <>
+                  {searchResults.cps.length > 0 && (
+                    <div className="search-category">
+                      <div className="search-category-title">CP档案</div>
+                      <div className="search-list">
+                        {searchResults.cps.map(cp => (
+                          <Link key={cp.id} to={`/cp/${cp.id}`} className="search-item">
+                            <div className="search-item-name">{cp.name}</div>
+                            {cp.description && (
+                              <div className="search-item-desc">{cp.description}</div>
+                            )}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {searchResults.aus.length > 0 && (
+                    <div className="search-category">
+                      <div className="search-category-title">AU</div>
+                      <div className="search-list">
+                        {searchResults.aus.map(au => (
+                          <Link key={au.id} to={`/au/${au.id}`} className="search-item">
+                            <div className="search-item-name">{au.name}</div>
+                            {au.description && (
+                              <div className="search-item-desc">{au.description}</div>
+                            )}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {searchResults.inspirations.length > 0 && (
+                    <div className="search-category">
+                      <div className="search-category-title">灵感</div>
+                      <div className="search-inspirations">
+                        {searchResults.inspirations.map(inspiration => (
+                          <Link key={inspiration.id} to={`/inspiration/${inspiration.id}`} className="search-inspiration-item">
+                            <div className="search-inspiration-content">
+                              {inspiration.content.split('\n').slice(0, 2).join('\n')}
+                              {inspiration.content.split('\n').length > 2 && '…'}
+                            </div>
+                            <div className="search-inspiration-footer">
+                              <span className="search-inspiration-time">
+                                {new Date(inspiration.created_at).toLocaleString('zh-CN')}
+                              </span>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+        </section>
+
         <section className="inspiration-input-section">
           <form className="inspiration-form" onSubmit={handleSubmit}>
             <div className="selector-group">

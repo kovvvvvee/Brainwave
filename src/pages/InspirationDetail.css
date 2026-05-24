@@ -229,6 +229,195 @@
   padding: 0;
 }
 
+.version-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.version-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.version-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.version-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #faf8f3 0%, #f5f2eb 100%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.version-card-title {
+  flex: 1;
+}
+
+.version-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.version-text {
+  font-size: 16px;
+  font-weight: 500;
+  color: #3d3d3d;
+  letter-spacing: 0.01em;
+}
+
+.favorite-badge {
+  font-size: 18px;
+  color: #fbbf24;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.main-version-badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  background: rgba(139, 115, 85, 0.15);
+  color: #8b7355;
+  border-radius: 10px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.version-card.main-version {
+  border-color: rgba(139, 115, 85, 0.2);
+  box-shadow: 0 2px 12px rgba(139, 115, 85, 0.08);
+}
+
+.version-card.main-version:hover {
+  box-shadow: 0 4px 20px rgba(139, 115, 85, 0.12);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.version-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #6b6b6b;
+  letter-spacing: 0.01em;
+}
+
+.style-tag {
+  padding: 4px 10px;
+  background: rgba(139, 115, 85, 0.1);
+  color: #8b7355;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.meta-separator {
+  color: #bbb;
+}
+
+.word-count {
+  font-weight: 500;
+}
+
+.creation-time {
+  color: #999;
+}
+
+.version-card-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.action-btn {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #5a5a5a;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.action-btn:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(139, 115, 85, 0.3);
+  color: #8b7355;
+  transform: translateY(-1px);
+}
+
+.action-btn.save-btn {
+  background: rgba(139, 115, 85, 0.1);
+  border-color: rgba(139, 115, 85, 0.3);
+  color: #8b7355;
+}
+
+.action-btn.save-btn:hover {
+  background: rgba(139, 115, 85, 0.2);
+}
+
+.action-btn.cancel-btn {
+  background: rgba(220, 38, 38, 0.05);
+  border-color: rgba(220, 38, 38, 0.2);
+  color: #dc2626;
+}
+
+.action-btn.cancel-btn:hover {
+  background: rgba(220, 38, 38, 0.1);
+}
+
+.action-btn.delete-btn:hover {
+  background: rgba(220, 38, 38, 0.1);
+  border-color: rgba(220, 38, 38, 0.3);
+  color: #b91c1c;
+}
+
+.version-notes {
+  padding: 12px 24px;
+  background: rgba(139, 115, 85, 0.03);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.version-notes .notes-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #8b7355;
+  letter-spacing: 0.01em;
+}
+
+.version-notes .notes-content {
+  font-size: 13px;
+  color: #6b6b6b;
+  letter-spacing: 0.01em;
+  font-style: italic;
+}
+
+.version-content {
+  padding: 24px;
+}
+
+/* Legacy styles for backward compatibility */
 .draft-list {
   display: flex;
   flex-direction: column;
@@ -261,11 +450,32 @@
   border-bottom: 1px solid var(--border-soft);
 }
 
+.draft-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
 .draft-version {
   font-size: 14px;
   font-weight: 500;
   color: var(--text-primary);
   letter-spacing: 0.01em;
+}
+
+.favorite-indicator {
+  font-size: 16px;
+  color: #fbbf24;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
 
 .draft-time {
@@ -315,6 +525,15 @@
   background: rgba(220, 38, 38, 0.2);
 }
 
+.draft-delete-btn {
+  color: #dc2626;
+}
+
+.draft-delete-btn:hover {
+  background: rgba(220, 38, 38, 0.2);
+  color: #b91c1c;
+}
+
 .draft-params {
   display: flex;
   gap: var(--spacing-xs);
@@ -327,6 +546,90 @@
   color: rgba(0, 0, 0, 0.34);
   font-weight: 400;
   letter-spacing: 0.01em;
+}
+
+.draft-notes {
+  display: flex;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-sm);
+  background: rgba(139, 115, 85, 0.05);
+  border-radius: var(--radius-small);
+  border-left: 3px solid rgba(139, 115, 85, 0.3);
+}
+
+.notes-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--accent-brown);
+  letter-spacing: 0.01em;
+  flex-shrink: 0;
+}
+
+.notes-content {
+  font-size: 12px;
+  color: var(--text-secondary);
+  letter-spacing: 0.01em;
+  font-style: italic;
+}
+
+.draft-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: var(--radius-small);
+  border: 1px solid var(--border-soft);
+}
+
+.edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.edit-field label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0.01em;
+}
+
+.edit-field input {
+  padding: var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-small);
+  font-size: 14px;
+  font-family: inherit;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  letter-spacing: 0.01em;
+}
+
+.edit-field input:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.1);
+}
+
+.edit-field textarea {
+  padding: var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-small);
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  letter-spacing: 0.01em;
+}
+
+.edit-field textarea:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.1);
 }
 
 .draft-content {

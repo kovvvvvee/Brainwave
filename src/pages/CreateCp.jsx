@@ -2,26 +2,76 @@ import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createCp } from '../supabase/cpService'
+import CollapsibleSection from '../components/CollapsibleSection'
+import CreativeTextarea from '../components/CreativeTextarea'
+import DetailCard from '../components/DetailCard'
+import InteractionDetailsCard from '../components/InteractionDetailsCard'
 import './CreateCp.css'
 
 function CreateCp() {
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
     name: '',
-    relationshipSummary: '',
-    characters: '',
-    creativeNotes: '',
-    sourceMaterial: '',
-    oocRules: '',
+    core_one_liner: '',
+    relationship_dynamics: {
+      emotional_inertia: '',
+      interaction_inertia: '',
+      desire_inertia: ''
+    },
+    character_profiles: {
+      character_a: {
+        explicit_state: '',
+        true_state: '',
+        language_habits: ''
+      },
+      character_b: {
+        explicit_state: '',
+        true_state: '',
+        language_habits: ''
+      }
+    },
+    sexual_dynamics: {
+      desire_structure: '',
+      behavioral_inertia: '',
+      basic_positioning: ''
+    },
+    relationship_atmosphere: '',
+    interaction_details: [],
+    source_material: '',
+    ooc_rules: '',
+    power_dynamics: '',
+    relationship_boundaries: ''
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [showAdvanced, setShowAdvanced] = useState(false)
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    })
+  const handleChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  const handleNestedChange = (section, subsection, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [subsection]: value
+      }
+    }))
+  }
+
+  const handleCharacterProfileChange = (character, field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      character_profiles: {
+        ...prev.character_profiles,
+        [character]: {
+          ...prev.character_profiles[character],
+          [field]: value
+        }
+      }
+    }))
   }
 
   const handleSubmit = async (e) => {
@@ -43,98 +93,279 @@ function CreateCp() {
   return (
     <div className="create-cp">
       <header className="page-header">
-        <h1>创建新CP</h1>
+        <h1>开始建立关系数据库</h1>
+        <p className="page-subtitle">为 AI 准备的关系行为档案</p>
       </header>
 
       <main className="create-cp-main">
         <form onSubmit={handleSubmit} className="cp-form">
-          <div className="form-group">
-            <label htmlFor="name">CP名称 *</label>
+          {/* CP名称 */}
+          <div className="field-group">
+            <label className="field-label">CP名称</label>
             <input
               type="text"
-              id="name"
-              name="name"
               value={formData.name}
-              onChange={handleChange}
+              onChange={(e) => handleChange('name', e.target.value)}
               required
-              placeholder="输入CP名称"
+              placeholder="例如：A × B"
+              className="creative-input"
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="relationshipSummary">他们之间，最像什么？</label>
-            <textarea
-              id="relationshipSummary"
-              name="relationshipSummary"
-              value={formData.relationshipSummary}
-              onChange={handleChange}
-              placeholder="他们像两把互相磨损的刀。&#10;谁都没有回头，但谁都在等。"
-              rows={3}
-            />
-          </div>
+          {/* CP核心一句话 - 默认展开 */}
+          <CollapsibleSection
+            title="CP核心一句话"
+            defaultExpanded={true}
+            summary="这是关系核心引擎。不是简介。而是'他们为什么互相上瘾'。"
+            filledCount={formData.core_one_liner ? 1 : 0}
+            totalFields={1}
+          >
+            <div className="field-group">
+              <label className="field-label">这是关系核心引擎。不是简介。而是"他们为什么互相上瘾"。</label>
+              <CreativeTextarea
+                value={formData.core_one_liner}
+                onChange={(value) => handleChange('core_one_liner', value)}
+                placeholder="例如：越克制越失控 / 一个不断试探，一个不断纵容 / 用控制感维持关系，却总被欲望破坏"
+              />
+            </div>
+          </CollapsibleSection>
 
-          <div className="form-group">
-            <label htmlFor="characters">关联角色</label>
-            <input
-              type="text"
-              id="characters"
-              name="characters"
-              value={formData.characters}
-              onChange={handleChange}
-              placeholder="输入角色名称，用逗号分隔"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="creativeNotes">创作备注</label>
-            <textarea
-              id="creativeNotes"
-              name="creativeNotes"
-              value={formData.creativeNotes}
-              onChange={handleChange}
-              placeholder="记录相处习惯、情绪状态、关系细节、对话习惯、潜台词、关系氛围、小动作等"
-              rows={6}
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="sourceMaterial">原作内容</label>
-            <textarea
-              id="sourceMaterial"
-              name="sourceMaterial"
-              value={formData.sourceMaterial}
-              onChange={handleChange}
-              placeholder="记录原作世界观、原作剧情、原作人物关系、原作设定、原作性格基调等"
-              rows={6}
-            />
-          </div>
-
-          <div className="advanced-section">
-            <button
-              type="button"
-              className="advanced-toggle"
-              onClick={() => setShowAdvanced(!showAdvanced)}
-            >
-              {showAdvanced ? '▼ 高级设定' : '▶ 高级设定'}
-            </button>
-            {showAdvanced && (
-              <div className="form-group">
-                <label htmlFor="oocRules">OOC规则</label>
-                <textarea
-                  id="oocRules"
-                  name="oocRules"
-                  value={formData.oocRules}
-                  onChange={handleChange}
-                  placeholder="描述角色OOC的界定规则"
-                  rows={3}
+          {/* 关系动态 - 默认展开 */}
+          <CollapsibleSection
+            title="关系动态"
+            defaultExpanded={true}
+            summary="不要写剧情。写长期重复出现的关系惯性。"
+            filledCount={Object.values(formData.relationship_dynamics).filter(Boolean).length}
+            totalFields={3}
+            tags={['情绪惯性', '相处惯性', '欲望惯性']}
+          >
+            <div className="field-group">
+              <label className="field-label">不要写剧情。写长期重复出现的关系惯性。</label>
+              <div className="nested-fields">
+                <DetailCard
+                  label="【情绪惯性】"
+                  value={formData.relationship_dynamics.emotional_inertia}
+                  onChange={(value) => handleNestedChange('relationship_dynamics', 'emotional_inertia', value)}
+                  placeholder="例如：越冷淡越想靠近 / 一方沉默时另一方会变烦人"
+                  isEditing={true}
+                />
+                <DetailCard
+                  label="【相处惯性】"
+                  value={formData.relationship_dynamics.interaction_inertia}
+                  onChange={(value) => handleNestedChange('relationship_dynamics', 'interaction_inertia', value)}
+                  placeholder="例如：吵架后反而更黏 / 喜欢用调侃代替示弱"
+                  isEditing={true}
+                />
+                <DetailCard
+                  label="【欲望惯性】"
+                  value={formData.relationship_dynamics.desire_inertia}
+                  onChange={(value) => handleNestedChange('relationship_dynamics', 'desire_inertia', value)}
+                  placeholder="例如：越压抑越容易失控 / 喜欢观察对方反应"
+                  isEditing={true}
                 />
               </div>
-            )}
-          </div>
+            </div>
+          </CollapsibleSection>
+
+          {/* 角色单独档案 - 默认折叠 */}
+          <CollapsibleSection
+            title="角色单独档案"
+            defaultExpanded={false}
+            summary="只写会影响互动的部分。不要写百科。"
+            filledCount={Object.values(formData.character_profiles.character_a).filter(Boolean).length + Object.values(formData.character_profiles.character_b).filter(Boolean).length}
+            totalFields={6}
+            tags={['外显状态', '真实状态', '语言习惯']}
+          >
+            <div className="field-group">
+              <label className="field-label">只写会影响互动的部分。不要写百科。</label>
+              <div className="character-profiles">
+                <div className="character-profile">
+                  <h4 className="character-name">角色 A</h4>
+                  <div className="nested-fields">
+                    <DetailCard
+                      label="【外显状态】"
+                      value={formData.character_profiles.character_a.explicit_state}
+                      onChange={(value) => handleCharacterProfileChange('character_a', 'explicit_state', value)}
+                      placeholder="例如：嘴硬 / 控制欲强"
+                      isEditing={true}
+                    />
+                    <DetailCard
+                      label="【真实状态】"
+                      value={formData.character_profiles.character_a.true_state}
+                      onChange={(value) => handleCharacterProfileChange('character_a', 'true_state', value)}
+                      placeholder="例如：实际很容易上瘾 / 会偷偷观察对方反应"
+                      isEditing={true}
+                    />
+                    <DetailCard
+                      label="【语言习惯】"
+                      value={formData.character_profiles.character_a.language_habits}
+                      onChange={(value) => handleCharacterProfileChange('character_a', 'language_habits', value)}
+                      placeholder="例如：情绪越重越简短 / 很少说完整情话"
+                      isEditing={true}
+                    />
+                  </div>
+                </div>
+                <div className="character-profile">
+                  <h4 className="character-name">角色 B</h4>
+                  <div className="nested-fields">
+                    <DetailCard
+                      label="【外显状态】"
+                      value={formData.character_profiles.character_b.explicit_state}
+                      onChange={(value) => handleCharacterProfileChange('character_b', 'explicit_state', value)}
+                      placeholder="例如：嘴硬 / 控制欲强"
+                      isEditing={true}
+                    />
+                    <DetailCard
+                      label="【真实状态】"
+                      value={formData.character_profiles.character_b.true_state}
+                      onChange={(value) => handleCharacterProfileChange('character_b', 'true_state', value)}
+                      placeholder="例如：实际很容易上瘾 / 会偷偷观察对方反应"
+                      isEditing={true}
+                    />
+                    <DetailCard
+                      label="【语言习惯】"
+                      value={formData.character_profiles.character_b.language_habits}
+                      onChange={(value) => handleCharacterProfileChange('character_b', 'language_habits', value)}
+                      placeholder="例如：情绪越重越简短 / 很少说完整情话"
+                      isEditing={true}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CollapsibleSection>
+
+          {/* 性关系动态 - 默认折叠 */}
+          <CollapsibleSection
+            title="性关系动态"
+            defaultExpanded={false}
+            summary="重点是欲望结构和行为惯性。不是简单写谁1谁0。"
+            filledCount={Object.values(formData.sexual_dynamics).filter(Boolean).length}
+            totalFields={3}
+            tags={['欲望结构', '行为惯性', '基础定位']}
+          >
+            <div className="field-group">
+              <label className="field-label">重点是欲望结构和行为惯性。不是简单写谁1谁0。</label>
+              <div className="nested-fields">
+                <DetailCard
+                  label="【欲望结构】"
+                  value={formData.sexual_dynamics.desire_structure}
+                  onChange={(value) => handleNestedChange('sexual_dynamics', 'desire_structure', value)}
+                  placeholder="例如：越压抑越容易失控 / 喜欢观察对方忍耐"
+                  isEditing={true}
+                />
+                <DetailCard
+                  label="【行为惯性】"
+                  value={formData.sexual_dynamics.behavioral_inertia}
+                  onChange={(value) => handleNestedChange('sexual_dynamics', 'behavioral_inertia', value)}
+                  placeholder="例如：会故意拖长临界状态 / 越沉默越危险"
+                  isEditing={true}
+                />
+                <DetailCard
+                  label="【基础定位】"
+                  value={formData.sexual_dynamics.basic_positioning}
+                  onChange={(value) => handleNestedChange('sexual_dynamics', 'basic_positioning', value)}
+                  placeholder="例如：通常由A主导进入 / 但控制权经常交换"
+                  isEditing={true}
+                />
+              </div>
+            </div>
+          </CollapsibleSection>
+
+          {/* 关系氛围 - 默认折叠 */}
+          <CollapsibleSection
+            title="关系氛围"
+            defaultExpanded={false}
+            summary={formData.relationship_atmosphere ? formData.relationship_atmosphere.substring(0, 50) + '...' : null}
+            filledCount={formData.relationship_atmosphere ? 1 : 0}
+            totalFields={1}
+          >
+            <div className="field-group">
+              <CreativeTextarea
+                value={formData.relationship_atmosphere}
+                onChange={(value) => handleChange('relationship_atmosphere', value)}
+                placeholder="例如：压抑感 / 黏腻 / 危险亲密 / 情欲渗透生活"
+              />
+            </div>
+          </CollapsibleSection>
+
+          {/* 互动细节库 - 默认折叠 */}
+          <CollapsibleSection
+            title="互动细节库"
+            defaultExpanded={false}
+            summary={formData.interaction_details?.length > 0 ? `已添加${formData.interaction_details.length}条细节` : null}
+            filledCount={formData.interaction_details?.length || 0}
+            totalFields={0}
+          >
+            <div className="field-group">
+              <InteractionDetailsCard
+                details={formData.interaction_details}
+                onChange={(value) => handleChange('interaction_details', value)}
+                isEditing={true}
+              />
+            </div>
+          </CollapsibleSection>
+
+          {/* 原作信息 - 默认折叠 */}
+          <CollapsibleSection
+            title="原作信息"
+            defaultExpanded={false}
+            summary="只保留：世界观关键规则、重大经历、影响关系的重要事件"
+            filledCount={formData.source_material ? 1 : 0}
+            totalFields={1}
+          >
+            <div className="field-group">
+              <label className="field-label">只保留：世界观关键规则、重大经历、影响关系的重要事件</label>
+              <CreativeTextarea
+                value={formData.source_material}
+                onChange={(value) => handleChange('source_material', value)}
+                placeholder="描述原作中影响关系的关键信息..."
+              />
+            </div>
+          </CollapsibleSection>
+
+          {/* 高级设定 - 默认折叠 */}
+          <CollapsibleSection
+            title="高级设定"
+            defaultExpanded={false}
+            filledCount={[formData.ooc_rules, formData.power_dynamics, formData.relationship_boundaries].filter(Boolean).length}
+            totalFields={3}
+            tags={['禁止OOC规则', '权力流动', '关系禁区']}
+          >
+            <div className="field-group">
+              <label className="field-label">
+                禁止OOC规则
+                <span className="field-description">描述角色绝对不会做的事情或行为模式</span>
+              </label>
+              <CreativeTextarea
+                value={formData.ooc_rules}
+                onChange={(value) => handleChange('ooc_rules', value)}
+                placeholder="例如：更倾向于... / 很少主动... / 即使失控也会... / 不会轻易..."
+              />
+            </div>
+
+            <div className="field-group">
+              <label className="field-label">权力流动</label>
+              <CreativeTextarea
+                value={formData.power_dynamics}
+                onChange={(value) => handleChange('power_dynamics', value)}
+                placeholder="描述关系中权力的流动和变化..."
+              />
+            </div>
+
+            <div className="field-group">
+              <label className="field-label">关系禁区</label>
+              <CreativeTextarea
+                value={formData.relationship_boundaries}
+                onChange={(value) => handleChange('relationship_boundaries', value)}
+                placeholder="描述关系中的禁区或不可触碰的话题..."
+              />
+            </div>
+          </CollapsibleSection>
 
           <div className="form-actions">
             <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-              {isSubmitting ? '保存中...' : '保存这段关系'}
+              {isSubmitting ? '保存中...' : '建立关系数据库'}
             </button>
             <Link to="/cp-list" className="btn btn-secondary">取消</Link>
           </div>

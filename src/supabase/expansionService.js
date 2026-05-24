@@ -1,26 +1,38 @@
 import { supabase } from './client'
 
-// Create a new expansion record
-export async function createExpansion(expansionData) {
+// Upsert expansion using inspiration_id as conflict target
+export const upsertExpansion = async (payload) => {
+  console.log('=== upsertExpansion START ===')
+
+  const cleanPayload = {
+    user_id: payload.user_id,
+    inspiration_id: payload.inspiration_id,
+    content: payload.content,
+    style: payload.style,
+    length: payload.length,
+    pov: payload.pov,
+    created_at: new Date().toISOString()
+  }
+
+  console.log('UPSERT PAYLOAD:', cleanPayload)
+
   const { data, error } = await supabase
     .from('expansion_history')
-    .insert([
-      {
-        user_id: window.CURRENT_USER_ID,
-        inspiration_id: expansionData.inspirationId,
-        content: expansionData.content,
-        style: expansionData.style,
-        length: expansionData.length,
-        pov: expansionData.pov,
-      }
-    ])
+    .upsert(cleanPayload, {
+      onConflict: 'inspiration_id'
+    })
     .select()
-    .single()
+    .maybeSingle()
+
+  console.log('Supabase upsert result - data:', data)
+  console.log('Supabase upsert result - error:', error)
 
   if (error) {
-    console.error('Error creating expansion:', error)
+    console.error('Error upserting expansion:', error)
     throw error
   }
+
+  console.log('=== upsertExpansion END ===')
 
   return data
 }
@@ -42,29 +54,12 @@ export async function getExpansionsByInspirationId(inspirationId) {
   return data
 }
 
-// Get a single expansion by ID
-export async function getExpansionById(id) {
-  const { data, error } = await supabase
-    .from('expansion_history')
-    .select('*')
-    .eq('id', id)
-    .eq('user_id', window.CURRENT_USER_ID)
-    .single()
-
-  if (error) {
-    console.error('Error fetching expansion:', error)
-    throw error
-  }
-
-  return data
-}
-
-// Delete an expansion
-export async function deleteExpansion(id) {
+// Delete an expansion by inspiration_id
+export async function deleteExpansion(inspirationId) {
   const { error } = await supabase
     .from('expansion_history')
     .delete()
-    .eq('id', id)
+    .eq('inspiration_id', inspirationId)
     .eq('user_id', window.CURRENT_USER_ID)
 
   if (error) {
@@ -73,22 +68,4 @@ export async function deleteExpansion(id) {
   }
 
   return true
-}
-
-// Update an expansion's content
-export async function updateExpansion(id, content) {
-  const { data, error } = await supabase
-    .from('expansion_history')
-    .update({ content })
-    .eq('id', id)
-    .eq('user_id', window.CURRENT_USER_ID)
-    .select()
-    .single()
-
-  if (error) {
-    console.error('Error updating expansion:', error)
-    throw error
-  }
-
-  return data
 }

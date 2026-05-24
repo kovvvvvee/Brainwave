@@ -1,0 +1,225 @@
+.reading-mode {
+  width: 100%;
+}
+
+.reading-mode.empty {
+  color: #bbb;
+  font-style: italic;
+  font-size: 14px;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Short content - simple display without any UI elements */
+.reading-mode.short {
+  padding: 0;
+}
+
+.reading-text-simple {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #3d3d3d;
+  letter-spacing: 0.01em;
+  margin: 0;
+  white-space: pre-wrap;
+  font-weight: 400;
+}
+
+/* Medium content - lightweight display */
+.reading-mode.medium {
+  padding: 0;
+}
+
+.reading-text-medium {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #3d3d3d;
+  letter-spacing: 0.01em;
+  margin: 0;
+  white-space: pre-wrap;
+  font-weight: 400;
+}
+
+/* Long content - full reading mode */
+.reading-mode.long {
+  padding: 0;
+}
+
+.reading-content {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.reading-content.collapsed {
+  position: relative;
+}
+
+/* Only add gradient mask for long content */
+.reading-mode.long .reading-content.collapsed::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.9));
+  pointer-events: none;
+}
+
+.reading-text-full {
+  font-size: 17px;
+  line-height: 2;
+  color: #2d2d2d;
+  letter-spacing: 0.02em;
+  margin: 0;
+  white-space: pre-wrap;
+  text-align: justify;
+  font-weight: 400;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.reading-text-full::selection {
+  background: rgba(139, 115, 85, 0.2);
+}
+
+/* Toggle buttons */
+.reading-toggle {
+  display: block;
+  margin-top: 12px;
+  padding: 6px 12px;
+  background: transparent;
+  border: none;
+  color: #8b7355;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.reading-toggle:hover {
+  color: #6b5344;
+  text-decoration: underline;
+}
+
+/* Top toggle button positioning */
+.reading-toggle.toggle-top {
+  margin-top: 12px;
+}
+
+/* Simple toggle for medium content */
+.reading-toggle.toggle-simple {
+  font-size: 13px;
+  color: #999;
+  padding: 0;
+  margin-top: 8px;
+}
+
+.reading-toggle.toggle-simple:hover {
+  color: #666;
+}
+
+/* Full toggle for long content */
+.reading-toggle.toggle-full {
+  display: block;
+  margin-top: 16px;
+  padding: 8px 16px;
+  background: rgba(139, 115, 85, 0.05);
+  border: 1px solid rgba(139, 115, 85, 0.2);
+  border-radius: 8px;
+  color: #8b7355;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.reading-toggle.toggle-full:hover {
+  background: rgba(139, 115, 85, 0.1);
+  border-color: rgba(139, 115, 85, 0.3);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+/* Bottom collapse button - weak styling */
+.reading-toggle.toggle-bottom {
+  margin-top: 20px;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: #bbb;
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.reading-toggle.toggle-bottom:hover {
+  color: #999;
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+  transform: none;
+}
+
+.reading-toggle.toggle-simple-bottom {
+  font-size: 12px;
+  color: #bbb;
+  padding: 4px 8px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+.reading-toggle.toggle-simple-bottom:hover {
+  color: #999;
+  text-decoration: underline;
+  background: transparent;
+  transform: none;
+}
+
+.reading-toggle.toggle-full-bottom {
+  font-size: 12px;
+  color: #bbb;
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+.reading-toggle.toggle-full-bottom:hover {
+  color: #999;
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+  transform: none;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .reading-text-simple,
+  .reading-text-medium {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  .reading-text-full {
+    font-size: 16px;
+    line-height: 1.8;
+    max-width: 100%;
+  }
+  
+  .reading-toggle.toggle-full {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+}

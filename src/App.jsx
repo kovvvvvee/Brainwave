@@ -11,6 +11,7 @@ import EditAu from './pages/EditAu'
 import AuDetail from './pages/AuDetail'
 import InspirationDetail from './pages/InspirationDetail'
 import UncategorizedInspirations from './pages/UncategorizedInspirations'
+import PromptLab from './pages/PromptLab'
 
 // Generate and store user_id for data isolation
 let userId = localStorage.getItem('user_id')
@@ -38,6 +39,7 @@ function App() {
           <Route path="/au/:id" element={<AuDetail />} />
           <Route path="/inspiration/:id" element={<InspirationDetail />} />
           <Route path="/uncategorized" element={<UncategorizedInspirations />} />
+          <Route path="/prompt-lab" element={<PromptLab />} />
         </Routes>
       </div>
     </BrowserRouter>
