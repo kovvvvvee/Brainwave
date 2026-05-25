@@ -130,8 +130,9 @@ function CreateCp() {
   return (
     <div className="create-cp">
       <header className="page-header">
-        <h1>开始建立关系数据库</h1>
-        <p className="page-subtitle">为 AI 准备的关系行为档案</p>
+        <ArchiveSymbol symbol="✦" position="top-right" size="small" variant="key" />
+        <h1>建立新的关系档案</h1>
+        <p className="page-subtitle">ARCHIVE INITIALIZATION</p>
       </header>
 
       <main className="create-cp-main">
@@ -139,6 +140,7 @@ function CreateCp() {
           {/* CP名称 */}
           <div className="field-group">
             <label className="field-label">CP名称</label>
+            <span className="field-archive-symbol">ARCHIVE_00</span>
             <input
               type="text"
               value={formData.name}
@@ -158,6 +160,7 @@ function CreateCp() {
             totalFields={1}
           >
             <div className="field-group">
+              <span className="field-archive-symbol">✦ CORE</span>
               <label className="field-label">这是关系核心引擎。不是简介。而是"他们为什么互相上瘾"。</label>
               <CreativeTextarea
                 value={formData.core_one_liner}
@@ -177,6 +180,7 @@ function CreateCp() {
             tags={['情绪惯性', '相处惯性', '欲望惯性']}
           >
             <div className="field-group">
+              <span className="field-archive-symbol">☾ DYNAMIC</span>
               <label className="field-label">不要写剧情。写长期重复出现的关系惯性。</label>
               <div className="nested-fields">
                 <DetailCard
@@ -214,34 +218,17 @@ function CreateCp() {
             tags={['外显状态', '真实状态', '语言习惯']}
           >
             <div className="field-group">
-              {/* Character name inputs */}
-              <div className="character-names">
-                <div className="field-group">
-                  <label className="field-label">角色A名称</label>
+              <span className="field-archive-symbol">✦ PROFILE</span>
+              <label className="field-label">只写会影响互动的部分。不要写百科。</label>
+              <div className="character-profiles">
+                <div className="character-profile">
                   <input
                     type="text"
                     value={formData.character_profiles.character_a_name}
                     onChange={(e) => handleCharacterNameChange('character_a_name', e.target.value)}
-                    placeholder="例如：方绪"
-                    className="creative-input"
+                    placeholder="角色A名称"
+                    className="character-name-input"
                   />
-                </div>
-                <div className="field-group">
-                  <label className="field-label">角色B名称</label>
-                  <input
-                    type="text"
-                    value={formData.character_profiles.character_b_name}
-                    onChange={(e) => handleCharacterNameChange('character_b_name', e.target.value)}
-                    placeholder="例如：白川"
-                    className="creative-input"
-                  />
-                </div>
-              </div>
-
-              <label className="field-label">只写会影响互动的部分。不要写百科。</label>
-              <div className="character-profiles">
-                <div className="character-profile">
-                  <h4 className="character-name">{formData.character_profiles.character_a_name?.trim() || '角色A'}</h4>
                   <div className="nested-fields">
                     <DetailCard
                       label="【外显状态】"
@@ -267,7 +254,13 @@ function CreateCp() {
                   </div>
                 </div>
                 <div className="character-profile">
-                  <h4 className="character-name">{formData.character_profiles.character_b_name?.trim() || '角色B'}</h4>
+                  <input
+                    type="text"
+                    value={formData.character_profiles.character_b_name}
+                    onChange={(e) => handleCharacterNameChange('character_b_name', e.target.value)}
+                    placeholder="角色B名称"
+                    className="character-name-input"
+                  />
                   <div className="nested-fields">
                     <DetailCard
                       label="【外显状态】"
@@ -306,6 +299,7 @@ function CreateCp() {
             tags={['欲望结构', '行为惯性', '基础定位']}
           >
             <div className="field-group">
+              <span className="field-archive-symbol">⋆ SEXUAL</span>
               <label className="field-label">重点是欲望结构和行为惯性。不是简单写谁1谁0。</label>
               <div className="nested-fields">
                 <DetailCard
@@ -342,6 +336,7 @@ function CreateCp() {
             totalFields={1}
           >
             <div className="field-group">
+              <span className="field-archive-symbol">☾ ATMOSPHERE</span>
               <CreativeTextarea
                 value={formData.relationship_atmosphere}
                 onChange={(value) => handleChange('relationship_atmosphere', value)}
@@ -359,6 +354,7 @@ function CreateCp() {
             totalFields={0}
           >
             <div className="field-group">
+              <span className="field-archive-symbol">✦ DETAILS</span>
               <InteractionDetailsCard
                 details={formData.interaction_details}
                 onChange={(value) => handleChange('interaction_details', value)}
@@ -376,6 +372,7 @@ function CreateCp() {
             totalFields={1}
           >
             <div className="field-group">
+              <span className="field-archive-symbol">SCAN_01</span>
               <label className="field-label">只保留：世界观关键规则、重大经历、影响关系的重要事件</label>
               <CreativeTextarea
                 value={formData.source_material}
@@ -394,6 +391,7 @@ function CreateCp() {
             tags={['OOC规则', '权力流动', '关系边界']}
           >
             <div className="field-group">
+              <span className="field-archive-symbol">⋆ ADVANCED</span>
               <label className="field-label">OOC规则</label>
               <CreativeTextarea
                 value={formData.ooc_rules}
@@ -422,10 +420,10 @@ function CreateCp() {
           </CollapsibleSection>
 
           <div className="form-actions">
-            <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-              {isSubmitting ? '保存中...' : '建立关系数据库'}
+            <button type="submit" className="archive-action-btn" disabled={isSubmitting}>
+              {isSubmitting ? '保存中...' : '保存档案'}
             </button>
-            <Link to="/cp-list" className="btn btn-secondary">取消</Link>
+            <Link to="/cp-list" className="archive-cancel-btn">取消</Link>
           </div>
         </form>
       </main>
