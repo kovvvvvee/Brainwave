@@ -1,71 +1,46 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import './ReadingMode.css'
 
 function ReadingMode({ 
   content, 
   defaultExpanded = false,
-  showPreview = true,
-  previewLines = 3,
-  maxHeight = null,
-  shortThreshold = 120, // characters
-  longThreshold = 500 // characters
+  showPreview = true
 }) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)
+  const [needsTruncation, setNeedsTruncation] = useState(false)
   const containerRef = useRef(null)
-  const scrollPositionRef = useRef(0)
 
   if (!content) {
     return <div className="reading-mode empty">无内容</div>
   }
 
-  const contentLength = content.length
-  const isShort = contentLength <= shortThreshold
-  const isLong = contentLength >= longThreshold
-
-  // Short content: display fully without any UI elements
-  if (isShort) {
-    return (
-      <div className="reading-mode short">
-        <p className="reading-text reading-text-simple">{content}</p>
-      </div>
-    )
-  }
-
-  // Medium/Long content: show preview with expand toggle
-  const lines = content.split('\n')
-  const previewContent = lines.slice(0, previewLines).join('\n')
-  const hasMoreContent = lines.length > previewLines || contentLength > shortThreshold
+  // Check if content needs truncation (more than 2 lines)
+  useEffect(() => {
+    if (containerRef.current) {
+      const lineHeight = parseFloat(getComputedStyle(containerRef.current).lineHeight) || 24
+      const twoLineHeight = lineHeight * 2
+      setNeedsTruncation(containerRef.current.scrollHeight > twoLineHeight)
+    }
+  }, [content])
 
   const handleToggle = () => {
-    const wasExpanded = isExpanded
     setIsExpanded(!isExpanded)
-    
-    // After collapsing, scroll to card top
-    setTimeout(() => {
-      if (wasExpanded && containerRef.current) {
-        containerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }
-    }, 0)
   }
 
   return (
-    <div className={`reading-mode ${isLong ? 'long' : 'medium'}`} ref={containerRef}>
-      <div 
-        className={`reading-content ${isExpanded ? 'expanded' : 'collapsed'}`}
-        style={maxHeight && !isExpanded ? { maxHeight: `${maxHeight}px`, overflow: 'hidden' } : {}}
-      >
-        <p className={`reading-text ${isLong ? 'reading-text-full' : 'reading-text-medium'}`}>
-          {isExpanded || !showPreview ? content : previewContent}
-          {!isExpanded && showPreview && hasMoreContent && '...'}
+    <div className="reading-mode" ref={containerRef}>
+      <div className={`reading-content ${isExpanded ? 'expanded' : 'collapsed'}`}>
+        <p className="reading-text">
+          {content}
         </p>
       </div>
       
-      {showPreview && hasMoreContent && (
+      {showPreview && needsTruncation && (
         <button 
-          className={`reading-toggle ${isLong ? 'toggle-full' : 'toggle-simple'}`}
+          className="reading-toggle"
           onClick={handleToggle}
         >
-          {isExpanded ? '收起' : '显示更多'}
+          {isExpanded ? '收起' : '展开'}
         </button>
       )}
     </div>

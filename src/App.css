@@ -4,4 +4,179 @@
   min-height: 100vh;
   background-color: var(--bg-primary);
   font-family: var(--font-family);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Paper texture overlay */
+.app::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: var(--paper-grain);
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Scan texture overlay */
+.app::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.01) 0%,
+    rgba(0, 0, 0, 0.02) 50%,
+    rgba(0, 0, 0, 0.01) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Global content wrapper */
+.content-wrapper {
+  position: relative;
+  z-index: 2;
+}
+
+/* Global typography */
+* {
+  transition: all var(--transition-normal) ease;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* Selection styling */
+::selection {
+  background: var(--accent-brown);
+  color: white;
+}
+
+/* Focus states */
+*:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* Link styling */
+a {
+  color: var(--accent-brown);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Paper card base class */
+.paper-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-soft);
+  padding: var(--padding-card);
+  position: relative;
+  transition: all var(--transition-normal) ease;
+}
+
+.paper-card:hover {
+  box-shadow: var(--shadow-medium);
+  border-color: var(--border-medium);
+}
+
+/* Archive label styling */
+.archive-label {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--spacing-sm);
+}
+
+/* Metadata styling */
+.metadata {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  line-height: var(--line-height-normal);
+}
+
+/* Thermal paper receipt styling */
+.thermal-paper {
+  background: #faf9f7;
+  border: 1px dashed var(--border-color);
+  border-radius: 2px;
+  padding: 20px;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  position: relative;
+}
+
+.thermal-paper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--border-color),
+    transparent
+  );
+}
+
+/* Archive clip decoration */
+.archive-clip {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 12px;
+  background: linear-gradient(
+    to bottom,
+    var(--border-color),
+    var(--border-soft)
+  );
+  border-radius: 2px;
+  opacity: 0.6;
+}
+
+/* Dust particle decoration */
+.dust-particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: var(--text-tertiary);
+  border-radius: 50%;
+  opacity: 0.3;
+  pointer-events: none;
 }

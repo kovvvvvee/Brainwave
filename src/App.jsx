@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Navigation from './components/Navigation'
+import ArchiveDecoration from './components/ArchiveDecoration'
+import FloatingDebris from './components/FloatingDebris'
 import Home from './pages/Home'
 import Archive from './pages/Archive'
 import CpList from './pages/CpList'
@@ -25,6 +27,8 @@ function App() {
   return (
     <BrowserRouter>
       <div className="app">
+        <ArchiveDecoration />
+        <FloatingDebris />
         <Navigation />
         <Routes>
           <Route path="/" element={<Home />} />

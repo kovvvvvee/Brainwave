@@ -9,6 +9,8 @@ import CreativeTextarea from '../components/CreativeTextarea'
 import DetailCard from '../components/DetailCard'
 import InteractionDetailsCard from '../components/InteractionDetailsCard'
 import ReadingMode from '../components/ReadingMode'
+import FloatingActionBar from '../components/FloatingActionBar'
+import ArchiveSymbol from '../components/ArchiveSymbol'
 import './CpDetail.css'
 
 function CpDetail() {
@@ -21,16 +23,81 @@ function CpDetail() {
   const [loading, setLoading] = useState(true)
   const [isEditing, setIsEditing] = useState(false)
   const [saving, setSaving] = useState(false)
+
+  // Helper function to check if a string value is filled
+  const isStringFilled = (value) => {
+    if (value == null) return false
+    if (typeof value !== 'string') return false
+    return value.trim().length > 0
+  }
+
+  // Helper function to check if an array is filled (has items)
+  const isArrayFilled = (value) => {
+    if (value == null) return false
+    // Handle JSON string arrays
+    const parsed = typeof value === 'string' ? (() => {
+      try {
+        return JSON.parse(value)
+      } catch {
+        return null
+      }
+    })() : value
+    return Array.isArray(parsed) && parsed.length > 0
+  }
+
+  // Helper function to normalize interaction_details to clean array
+  const normalizeInteractionDetails = (value) => {
+    if (value == null) return []
+    let parsed = value
+    // Handle JSON string
+    if (typeof value === 'string') {
+      try {
+        parsed = JSON.parse(value)
+      } catch {
+        // If not valid JSON, treat as single string
+        parsed = value
+      }
+    }
+    // Ensure it's an array
+    if (!Array.isArray(parsed)) {
+      return []
+    }
+    // Filter out empty strings
+    return parsed.filter(item => typeof item === 'string' && item.trim() !== '')
+  }
+
+  // Helper function to parse JSON fields from database
+  const parseJsonField = (value, defaultValue) => {
+    if (value == null) return defaultValue
+    if (typeof value === 'object') return value
+    if (typeof value === 'string') {
+      try {
+        const parsed = JSON.parse(value)
+        return parsed || defaultValue
+      } catch {
+        return defaultValue
+      }
+    }
+    return defaultValue
+  }
+
+  // Helper function to count filled fields in a nested object
+  const countFilledNestedFields = (obj) => {
+    if (!obj || typeof obj !== 'object') return 0
+    return Object.values(obj).filter(value => isStringFilled(value)).length
+  }
   
   // Form state
   const [formData, setFormData] = useState({
-    core_one_liner: '',
-    relationship_dynamics: {
+    core_dynamic: '',
+    relationship_dynamic: {
       emotional_inertia: '',
       interaction_inertia: '',
       desire_inertia: ''
     },
     character_profiles: {
+      character_a_name: '',
+      character_b_name: '',
       character_a: {
         explicit_state: '',
         true_state: '',
@@ -42,7 +109,7 @@ function CpDetail() {
         language_habits: ''
       }
     },
-    sexual_dynamics: {
+    sexual_dynamic: {
       desire_structure: '',
       behavioral_inertia: '',
       basic_positioning: ''
@@ -51,7 +118,7 @@ function CpDetail() {
     interaction_details: [],
     source_material: '',
     ooc_rules: '',
-    power_dynamics: '',
+    power_flow: '',
     relationship_boundaries: ''
   })
 
@@ -65,40 +132,61 @@ function CpDetail() {
   const fetchCp = async () => {
     try {
       const data = await getCpById(id)
+      console.log('FETCHED CP:', data)
+      console.log('FETCHED CP.character_profiles:', data?.character_profiles)
+      console.log('FETCHED CP.character_profiles type:', typeof data?.character_profiles)
       setCp(data)
-      
-      // Initialize form data with existing values
+      console.log('fetchCp - setCp 已调用')
+
+      // Parse character_profiles from database - MUST parse before any spread operations
+      const parsedProfiles = typeof data?.character_profiles === 'string'
+        ? JSON.parse(data.character_profiles)
+        : data?.character_profiles || {}
+
+      console.log('PARSED character_profiles:', parsedProfiles)
+      console.log('PARSED character_profiles type:', typeof parsedProfiles)
+      console.log('PARSED character_a_name:', parsedProfiles.character_a_name)
+      console.log('PARSED character_b_name:', parsedProfiles.character_b_name)
+
+      // Verify it's an object, not a string or character-indexed object
+      if (parsedProfiles['0'] !== undefined) {
+        console.error('ERROR: character_profiles was spread as string, got character-indexed object:', parsedProfiles)
+      }
+
       setFormData({
-        core_one_liner: data.core_one_liner || '',
-        relationship_dynamics: data.relationship_dynamics || {
+        core_dynamic: data?.core_dynamic || '',
+        relationship_dynamic: parseJsonField(data?.relationship_dynamic, {
           emotional_inertia: '',
           interaction_inertia: '',
           desire_inertia: ''
-        },
-        character_profiles: data.character_profiles || {
+        }),
+        character_profiles: {
+          character_a_name: parsedProfiles.character_a_name || '',
+          character_b_name: parsedProfiles.character_b_name || '',
           character_a: {
-            explicit_state: '',
-            true_state: '',
-            language_habits: ''
+            explicit_state: parsedProfiles.character_a?.explicit_state || '',
+            true_state: parsedProfiles.character_a?.true_state || '',
+            language_habits: parsedProfiles.character_a?.language_habits || ''
           },
           character_b: {
-            explicit_state: '',
-            true_state: '',
-            language_habits: ''
+            explicit_state: parsedProfiles.character_b?.explicit_state || '',
+            true_state: parsedProfiles.character_b?.true_state || '',
+            language_habits: parsedProfiles.character_b?.language_habits || ''
           }
         },
-        sexual_dynamics: data.sexual_dynamics || {
+        sexual_dynamic: parseJsonField(data?.sexual_dynamic, {
           desire_structure: '',
           behavioral_inertia: '',
           basic_positioning: ''
-        },
-        relationship_atmosphere: data.relationship_atmosphere || '',
-        interaction_details: data.interaction_details || [],
-        source_material: data.source_material || '',
-        ooc_rules: data.ooc_rules || '',
-        power_dynamics: data.power_dynamics || '',
-        relationship_boundaries: data.relationship_boundaries || ''
+        }),
+        relationship_atmosphere: data?.relationship_atmosphere || '',
+        interaction_details: normalizeInteractionDetails(data?.interaction_details),
+        source_material: data?.source_material || '',
+        ooc_rules: data?.ooc_rules || '',
+        power_flow: data?.power_flow || '',
+        relationship_boundaries: data?.relationship_boundaries || ''
       })
+      console.log('fetchCp - setFormData 已调用')
     } catch (error) {
       console.error('获取CP详情失败:', error)
     }
@@ -159,8 +247,53 @@ function CpDetail() {
   const handleSave = async () => {
     setSaving(true)
     try {
-      await updateCp(id, formData)
+      console.log('SAVE - formData.character_profiles:', formData.character_profiles)
+      console.log('SAVE - formData.character_profiles.character_a_name:', formData.character_profiles.character_a_name)
+      console.log('SAVE - formData.character_profiles.character_b_name:', formData.character_profiles.character_b_name)
+      
+      // Explicitly reconstruct character_profiles to ensure names are included
+      const reconstructedCharacterProfiles = {
+        character_a_name: formData.character_profiles?.character_a_name || "",
+        character_b_name: formData.character_profiles?.character_b_name || "",
+        character_a: {
+          explicit_state: formData.character_profiles?.character_a?.explicit_state || "",
+          true_state: formData.character_profiles?.character_a?.true_state || "",
+          language_habits: formData.character_profiles?.character_a?.language_habits || ""
+        },
+        character_b: {
+          explicit_state: formData.character_profiles?.character_b?.explicit_state || "",
+          true_state: formData.character_profiles?.character_b?.true_state || "",
+          language_habits: formData.character_profiles?.character_b?.language_habits || ""
+        }
+      }
+      
+      console.log('RECONSTRUCTED CHARACTER PROFILES:', reconstructedCharacterProfiles)
+      
+      // Prepare payload with JSON stringified nested fields
+      const savePayload = {
+        name: formData.name,
+        core_dynamic: formData.core_dynamic || null,
+        relationship_dynamic: JSON.stringify(formData.relationship_dynamic),
+        character_profiles: JSON.stringify(reconstructedCharacterProfiles),
+        sexual_dynamic: JSON.stringify(formData.sexual_dynamic),
+        relationship_atmosphere: formData.relationship_atmosphere || null,
+        interaction_details: JSON.stringify(formData.interaction_details),
+        source_material: formData.source_material || null,
+        ooc_rules: formData.ooc_rules || null,
+        power_flow: formData.power_flow || null,
+        relationship_boundaries: formData.relationship_boundaries || null
+      }
+      
+      console.log('FINAL CHARACTER PROFILES', reconstructedCharacterProfiles)
+      console.log('保存 payload from formData:', formData)
+      console.log('保存 payload to Supabase:', savePayload)
+      
+      const updatedData = await updateCp(id, savePayload)
+      console.log('updateCp 返回值:', updatedData)
+      
       await fetchCp()
+      console.log('fetchCp 后的 cp 状态:', cp)
+      
       setIsEditing(false)
     } catch (error) {
       console.error('保存失败:', error)
@@ -193,23 +326,43 @@ function CpDetail() {
   }
 
   const handleCharacterProfileChange = (character, field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      character_profiles: {
-        ...prev.character_profiles,
-        [character]: {
-          ...prev.character_profiles[character],
-          [field]: value
+    setFormData(prev => {
+      const newFormData = {
+        ...prev,
+        character_profiles: {
+          ...prev.character_profiles,
+          [character]: {
+            ...prev.character_profiles[character],
+            [field]: value
+          }
         }
       }
-    }))
+      console.log('handleCharacterProfileChange - character:', character, 'field:', field, 'value:', value)
+      console.log('handleCharacterProfileChange - new character_profiles:', newFormData.character_profiles)
+      return newFormData
+    })
+  }
+
+  const handleCharacterNameChange = (character, value) => {
+    setFormData(prev => {
+      const newFormData = {
+        ...prev,
+        character_profiles: {
+          ...prev.character_profiles,
+          [character]: value
+        }
+      }
+      console.log('handleCharacterNameChange - character:', character, 'value:', value)
+      console.log('handleCharacterNameChange - new character_profiles:', newFormData.character_profiles)
+      return newFormData
+    })
   }
 
   if (loading) {
     return (
       <div className="cp-detail">
-        <div className="loading-state">
-          <p>加载中...</p>
+        <div className="archive-loading">
+          <p className="archive-loading-text">Reading Relationship File...</p>
         </div>
       </div>
     )
@@ -218,32 +371,52 @@ function CpDetail() {
   if (!cp) {
     return (
       <div className="cp-detail">
-        <div className="empty-state">
-          <p>未找到该CP</p>
-          <Link to="/cp-list" className="btn btn-primary">返回CP列表</Link>
+        <div className="archive-empty">
+          <p>档案未找到</p>
+          <Link to="/cp-list" className="archive-btn">返回档案列表</Link>
         </div>
       </div>
     )
   }
 
+  // Parse JSON fields for display mode - MUST parse before using
+  const parsedProfiles = typeof cp.character_profiles === 'string'
+    ? JSON.parse(cp.character_profiles)
+    : cp.character_profiles || {}
+
+  const parsedRelationshipDynamic = typeof cp.relationship_dynamic === 'string'
+    ? JSON.parse(cp.relationship_dynamic)
+    : cp.relationship_dynamic || {}
+
+  const parsedSexualDynamic = typeof cp.sexual_dynamic === 'string'
+    ? JSON.parse(cp.sexual_dynamic)
+    : cp.sexual_dynamic || {}
+
+  // Extract character names for display
+  const characterAName = parsedProfiles.character_a_name?.trim() || '角色A'
+  const characterBName = parsedProfiles.character_b_name?.trim() || '角色B'
+
+  console.log('RENDER - parsedProfiles:', parsedProfiles)
+  console.log('RENDER - characterAName:', characterAName)
+  console.log('RENDER - characterBName:', characterBName)
+
   return (
     <div className="cp-detail">
+      {console.log('CpDetail render - cp state:', cp)}
+      <button 
+        className="back-to-archive-button"
+        onClick={() => navigate('/archive')}
+      >
+        ← 返回档案列表
+      </button>
+      
       <header className="page-header">
         <h1>{cp?.name || 'CP详情'}</h1>
         <div className="header-actions">
-          {!isEditing ? (
+          {!isEditing && (
             <button className="btn btn-primary" onClick={() => setIsEditing(true)}>
               编辑档案
             </button>
-          ) : (
-            <>
-              <button className="btn btn-secondary" onClick={handleCancel} disabled={saving}>
-                取消
-              </button>
-              <button className="btn btn-primary" onClick={handleSave} disabled={saving}>
-                {saving ? '保存中...' : '保存'}
-              </button>
-            </>
           )}
           <button className="btn btn-danger-low" onClick={handleDeleteCp}>
             删除
@@ -256,63 +429,54 @@ function CpDetail() {
         <section className="cp-section">
           <div className="section-header">
             <h2 className="section-title">基础设定</h2>
+            <span className="section-archive-code">✦ ARCHIVE</span>
           </div>
 
           <div className="section-content">
-            {/* 1. CP核心一句话 - 默认展开 */}
+            {/* 1. CP核心一句话 */}
             <CollapsibleSection
               title="CP核心一句话"
-              defaultExpanded={true}
-              summary={cp?.core_one_liner ? cp.core_one_liner.substring(0, 50) + '...' : null}
-              filledCount={cp?.core_one_liner ? 1 : 0}
-              totalFields={1}
+              defaultExpanded={false}
             >
               <div className="field-group">
-                <label className="field-label">
-                  这是关系核心引擎。不是简介。而是"他们为什么互相上瘾"。
-                </label>
+                <span className="field-archive-symbol">✦ ARCHIVE_01</span>
                 {isEditing ? (
                   <CreativeTextarea
-                    value={formData.core_one_liner}
-                    onChange={(value) => handleInputChange('core_one_liner', value)}
+                    value={formData.core_dynamic}
+                    onChange={(value) => handleInputChange('core_dynamic', value)}
                     placeholder="例如：越克制越失控 / 一个不断试探，一个不断纵容 / 用控制感维持关系，却总被欲望破坏"
                   />
                 ) : (
-                  <div className="field-display">{cp?.core_one_liner || <span className="empty-placeholder">未填写</span>}</div>
+                  <div className="field-display">{cp?.core_dynamic?.trim() ? cp.core_dynamic : <span className="empty-placeholder">未填写</span>}</div>
                 )}
               </div>
             </CollapsibleSection>
 
-            {/* 2. 关系动态 - 默认展开 */}
+            {/* 2. 关系动态 */}
             <CollapsibleSection
               title="关系动态"
-              defaultExpanded={true}
-              summary="不要写剧情。写长期重复出现的关系惯性。"
-              filledCount={Object.values(cp?.relationship_dynamics || {}).filter(Boolean).length}
-              totalFields={3}
-              tags={['情绪惯性', '相处惯性', '欲望惯性']}
+              defaultExpanded={false}
             >
               <div className="field-group">
-                <label className="field-label">不要写剧情。写长期重复出现的关系惯性。</label>
                 <div className="nested-fields">
                   <DetailCard
                     label="【情绪惯性】"
-                    value={formData.relationship_dynamics.emotional_inertia}
-                    onChange={(value) => handleNestedChange('relationship_dynamics', 'emotional_inertia', value)}
+                    value={isEditing ? formData.relationship_dynamic?.emotional_inertia || '' : parsedRelationshipDynamic?.emotional_inertia || ''}
+                    onChange={(value) => handleNestedChange('relationship_dynamic', 'emotional_inertia', value)}
                     placeholder="例如：越冷淡越想靠近 / 一方沉默时另一方会变烦人"
                     isEditing={isEditing}
                   />
                   <DetailCard
                     label="【相处惯性】"
-                    value={formData.relationship_dynamics.interaction_inertia}
-                    onChange={(value) => handleNestedChange('relationship_dynamics', 'interaction_inertia', value)}
+                    value={isEditing ? formData.relationship_dynamic?.interaction_inertia || '' : parsedRelationshipDynamic?.interaction_inertia || ''}
+                    onChange={(value) => handleNestedChange('relationship_dynamic', 'interaction_inertia', value)}
                     placeholder="例如：吵架后反而更黏 / 喜欢用调侃代替示弱"
                     isEditing={isEditing}
                   />
                   <DetailCard
                     label="【欲望惯性】"
-                    value={formData.relationship_dynamics.desire_inertia}
-                    onChange={(value) => handleNestedChange('relationship_dynamics', 'desire_inertia', value)}
+                    value={isEditing ? formData.relationship_dynamic?.desire_inertia || '' : parsedRelationshipDynamic?.desire_inertia || ''}
+                    onChange={(value) => handleNestedChange('relationship_dynamic', 'desire_inertia', value)}
                     placeholder="例如：越压抑越容易失控 / 喜欢观察对方反应"
                     isEditing={isEditing}
                   />
@@ -320,104 +484,120 @@ function CpDetail() {
               </div>
             </CollapsibleSection>
 
-            {/* 3. 角色单独档案 - 默认折叠 */}
+            {/* 3. 角色单独档案 */}
             <CollapsibleSection
               title="角色单独档案"
               defaultExpanded={false}
-              summary="只写会影响互动的部分。不要写百科。"
-              filledCount={Object.values(cp?.character_profiles?.character_a || {}).filter(Boolean).length + Object.values(cp?.character_profiles?.character_b || {}).filter(Boolean).length}
-              totalFields={6}
-              tags={['外显状态', '真实状态', '语言习惯']}
             >
-              <div className="field-group">
-                <label className="field-label">只写会影响互动的部分。不要写百科。</label>
-                <div className="character-profiles">
-                  <div className="character-profile">
-                    <h4 className="character-name">角色 A</h4>
-                    <div className="nested-fields">
-                      <DetailCard
-                        label="【外显状态】"
-                        value={formData.character_profiles.character_a.explicit_state}
-                        onChange={(value) => handleCharacterProfileChange('character_a', 'explicit_state', value)}
-                        placeholder="例如：嘴硬 / 控制欲强"
-                        isEditing={isEditing}
+              <div className="character-profiles">
+                <div className="character-profile">
+                  <div className="character-header">
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        className="character-name-input"
+                        value={formData.character_profiles?.character_a_name || ''}
+                        onChange={(e) => handleCharacterNameChange('character_a_name', e.target.value)}
+                        placeholder="角色A名称"
                       />
-                      <DetailCard
-                        label="【真实状态】"
-                        value={formData.character_profiles.character_a.true_state}
-                        onChange={(value) => handleCharacterProfileChange('character_a', 'true_state', value)}
-                        placeholder="例如：实际很容易上瘾 / 会偷偷观察对方反应"
-                        isEditing={isEditing}
-                      />
-                      <DetailCard
-                        label="【语言习惯】"
-                        value={formData.character_profiles.character_a.language_habits}
-                        onChange={(value) => handleCharacterProfileChange('character_a', 'language_habits', value)}
-                        placeholder="例如：情绪越重越简短 / 很少说完整情话"
-                        isEditing={isEditing}
-                      />
-                    </div>
+                    ) : (
+                      <h4 className="character-name">{characterAName}</h4>
+                    )}
                   </div>
-                  <div className="character-profile">
-                    <h4 className="character-name">角色 B</h4>
+                  <div className="character-content">
                     <div className="nested-fields">
-                      <DetailCard
-                        label="【外显状态】"
-                        value={formData.character_profiles.character_b.explicit_state}
-                        onChange={(value) => handleCharacterProfileChange('character_b', 'explicit_state', value)}
-                        placeholder="例如：嘴硬 / 控制欲强"
-                        isEditing={isEditing}
+                    <DetailCard
+                      label="【外显状态】"
+                      value={isEditing ? formData.character_profiles?.character_a?.explicit_state || '' : parsedProfiles.character_a?.explicit_state || ''}
+                      onChange={(value) => handleCharacterProfileChange('character_a', 'explicit_state', value)}
+                      placeholder="例如：嘴硬 / 控制欲强"
+                      isEditing={isEditing}
+                    />
+                    <DetailCard
+                      label="【真实状态】"
+                      value={isEditing ? formData.character_profiles?.character_a?.true_state || '' : parsedProfiles.character_a?.true_state || ''}
+                      onChange={(value) => handleCharacterProfileChange('character_a', 'true_state', value)}
+                      placeholder="例如：实际很容易上瘾 / 会偷偷观察对方反应"
+                      isEditing={isEditing}
+                    />
+                    <DetailCard
+                      label="【语言习惯】"
+                      value={isEditing ? formData.character_profiles?.character_a?.language_habits || '' : parsedProfiles.character_a?.language_habits || ''}
+                      onChange={(value) => handleCharacterProfileChange('character_a', 'language_habits', value)}
+                      placeholder="例如：情绪越重越简短 / 很少说完整情话"
+                      isEditing={isEditing}
+                    />
+                  </div>
+                  </div>
+                </div>
+                <div className="character-profile">
+                  <div className="character-header">
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        className="character-name-input"
+                        value={formData.character_profiles?.character_b_name || ''}
+                        onChange={(e) => handleCharacterNameChange('character_b_name', e.target.value)}
+                        placeholder="角色B名称"
                       />
-                      <DetailCard
-                        label="【真实状态】"
-                        value={formData.character_profiles.character_b.true_state}
-                        onChange={(value) => handleCharacterProfileChange('character_b', 'true_state', value)}
-                        placeholder="例如：实际很容易上瘾 / 会偷偷观察对方反应"
-                        isEditing={isEditing}
-                      />
-                      <DetailCard
-                        label="【语言习惯】"
-                        value={formData.character_profiles.character_b.language_habits}
-                        onChange={(value) => handleCharacterProfileChange('character_b', 'language_habits', value)}
-                        placeholder="例如：情绪越重越简短 / 很少说完整情话"
-                        isEditing={isEditing}
-                      />
-                    </div>
+                    ) : (
+                      <h4 className="character-name">{characterBName}</h4>
+                    )}
+                  </div>
+                  <div className="character-content">
+                    <div className="nested-fields">
+                    <DetailCard
+                      label="【外显状态】"
+                      value={isEditing ? formData.character_profiles?.character_b?.explicit_state || '' : parsedProfiles.character_b?.explicit_state || ''}
+                      onChange={(value) => handleCharacterProfileChange('character_b', 'explicit_state', value)}
+                      placeholder="例如：嘴硬 / 控制欲强"
+                      isEditing={isEditing}
+                    />
+                    <DetailCard
+                      label="【真实状态】"
+                      value={isEditing ? formData.character_profiles?.character_b?.true_state || '' : parsedProfiles.character_b?.true_state || ''}
+                      onChange={(value) => handleCharacterProfileChange('character_b', 'true_state', value)}
+                      placeholder="例如：实际很容易上瘾 / 会偷偷观察对方反应"
+                      isEditing={isEditing}
+                    />
+                    <DetailCard
+                      label="【语言习惯】"
+                      value={isEditing ? formData.character_profiles?.character_b?.language_habits || '' : parsedProfiles.character_b?.language_habits || ''}
+                      onChange={(value) => handleCharacterProfileChange('character_b', 'language_habits', value)}
+                      placeholder="例如：情绪越重越简短 / 很少说完整情话"
+                      isEditing={isEditing}
+                    />
+                  </div>
                   </div>
                 </div>
               </div>
             </CollapsibleSection>
 
-            {/* 4. 性关系动态 - 默认折叠 */}
+            {/* 4. 性关系动态 */}
             <CollapsibleSection
               title="性关系动态"
               defaultExpanded={false}
-              summary="重点是欲望结构和行为惯性。不是简单写谁1谁0。"
-              filledCount={Object.values(cp?.sexual_dynamics || {}).filter(Boolean).length}
-              totalFields={3}
-              tags={['欲望结构', '行为惯性', '基础定位']}
             >
               <div className="field-group">
-                <label className="field-label">重点是欲望结构和行为惯性。不是简单写谁1谁0。</label>
                 <div className="nested-fields">
                   <DetailCard
                     label="【欲望结构】"
-                    value={formData.sexual_dynamics.desire_structure}
-                    onChange={(value) => handleNestedChange('sexual_dynamics', 'desire_structure', value)}
+                    value={isEditing ? formData.sexual_dynamic?.desire_structure || '' : parsedSexualDynamic?.desire_structure || ''}
+                    onChange={(value) => handleNestedChange('sexual_dynamic', 'desire_structure', value)}
                     placeholder="例如：越压抑越容易失控 / 喜欢观察对方忍耐"
                     isEditing={isEditing}
                   />
                   <DetailCard
                     label="【行为惯性】"
-                    value={formData.sexual_dynamics.behavioral_inertia}
-                    onChange={(value) => handleNestedChange('sexual_dynamics', 'behavioral_inertia', value)}
+                    value={isEditing ? formData.sexual_dynamic?.behavioral_inertia || '' : parsedSexualDynamic?.behavioral_inertia || ''}
+                    onChange={(value) => handleNestedChange('sexual_dynamic', 'behavioral_inertia', value)}
                     placeholder="例如：会故意拖长临界状态 / 越沉默越危险"
                     isEditing={isEditing}
                   />
                   <DetailCard
                     label="【基础定位】"
-                    value={formData.sexual_dynamics.basic_positioning}
-                    onChange={(value) => handleNestedChange('sexual_dynamics', 'basic_positioning', value)}
+                    value={isEditing ? formData.sexual_dynamic?.basic_positioning || '' : parsedSexualDynamic?.basic_positioning || ''}
+                    onChange={(value) => handleNestedChange('sexual_dynamic', 'basic_positioning', value)}
                     placeholder="例如：通常由A主导进入 / 但控制权经常交换"
                     isEditing={isEditing}
                   />
@@ -425,13 +605,10 @@ function CpDetail() {
               </div>
             </CollapsibleSection>
 
-            {/* 5. 关系氛围 - 默认折叠 */}
+            {/* 5. 关系氛围 */}
             <CollapsibleSection
               title="关系氛围"
               defaultExpanded={false}
-              summary={cp?.relationship_atmosphere ? cp.relationship_atmosphere.substring(0, 50) + '...' : null}
-              filledCount={cp?.relationship_atmosphere ? 1 : 0}
-              totalFields={1}
             >
               <div className="field-group">
                 {isEditing ? (
@@ -443,11 +620,10 @@ function CpDetail() {
                 ) : (
                   <div className="field-display">
                     {cp?.relationship_atmosphere ? (
-                      <ReadingMode 
-                        content={cp.relationship_atmosphere}
+                      <ReadingMode
+                        content={cp?.relationship_atmosphere}
                         defaultExpanded={false}
                         showPreview={true}
-                        previewLines={2}
                       />
                     ) : (
                       <span className="empty-placeholder">未填写</span>
@@ -457,33 +633,26 @@ function CpDetail() {
               </div>
             </CollapsibleSection>
 
-            {/* 6. 互动细节库 - 默认折叠 */}
+            {/* 6. 互动细节库 */}
             <CollapsibleSection
               title="互动细节库"
               defaultExpanded={false}
-              summary={cp?.interaction_details?.length > 0 ? `已添加${cp.interaction_details.length}条细节` : null}
-              filledCount={cp?.interaction_details?.length || 0}
-              totalFields={0}
             >
               <div className="field-group">
                 <InteractionDetailsCard
-                  details={formData.interaction_details}
+                  details={formData.interaction_details || []}
                   onChange={(value) => handleInputChange('interaction_details', value)}
                   isEditing={isEditing}
                 />
               </div>
             </CollapsibleSection>
 
-            {/* 7. 原作信息 - 默认折叠 */}
+            {/* 7. 原作信息 */}
             <CollapsibleSection
               title="原作信息"
               defaultExpanded={false}
-              summary="只保留：世界观关键规则、重大经历、影响关系的重要事件"
-              filledCount={cp?.source_material ? 1 : 0}
-              totalFields={1}
             >
               <div className="field-group">
-                <label className="field-label">只保留：世界观关键规则、重大经历、影响关系的重要事件</label>
                 {isEditing ? (
                   <CreativeTextarea
                     value={formData.source_material}
@@ -493,11 +662,10 @@ function CpDetail() {
                 ) : (
                   <div className="field-display">
                     {cp?.source_material ? (
-                      <ReadingMode 
-                        content={cp.source_material}
+                      <ReadingMode
+                        content={cp?.source_material}
                         defaultExpanded={false}
                         showPreview={true}
-                        previewLines={2}
                       />
                     ) : (
                       <span className="empty-placeholder">未填写</span>
@@ -509,61 +677,29 @@ function CpDetail() {
           </div>
         </section>
 
-        {/* 高级设定 - 默认折叠 */}
+        {/* 高级设定 */}
         <section className="cp-section advanced-section">
           <CollapsibleSection
             title="高级设定"
             defaultExpanded={false}
-            filledCount={[cp?.ooc_rules, cp?.power_dynamics, cp?.relationship_boundaries].filter(Boolean).length}
-            totalFields={3}
-            tags={['禁止OOC规则', '权力流动', '关系禁区']}
           >
             <div className="section-content">
-              {/* 1. 禁止OOC规则 */}
-              <div className="field-group">
-                <label className="field-label">
-                  禁止OOC规则
-                  <span className="field-description">描述角色绝对不会做的事情或行为模式</span>
-                </label>
-                {isEditing ? (
-                  <CreativeTextarea
-                    value={formData.ooc_rules}
-                    onChange={(value) => handleInputChange('ooc_rules', value)}
-                    placeholder="例如：更倾向于... / 很少主动... / 即使失控也会... / 不会轻易..."
-                  />
-                ) : (
-                  <div className="field-display">
-                    {cp?.ooc_rules ? (
-                      <ReadingMode 
-                        content={cp.ooc_rules}
-                        defaultExpanded={false}
-                        showPreview={true}
-                        previewLines={2}
-                      />
-                    ) : (
-                      <span className="empty-placeholder">未填写</span>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {/* 2. 权力流动 */}
+              {/* 1. 权力流动 */}
               <div className="field-group">
                 <label className="field-label">权力流动</label>
                 {isEditing ? (
                   <CreativeTextarea
-                    value={formData.power_dynamics}
-                    onChange={(value) => handleInputChange('power_dynamics', value)}
+                    value={formData.power_flow}
+                    onChange={(value) => handleInputChange('power_flow', value)}
                     placeholder="描述关系中权力的流动和变化..."
                   />
                 ) : (
                   <div className="field-display">
-                    {cp?.power_dynamics ? (
-                      <ReadingMode 
-                        content={cp.power_dynamics}
+                    {cp?.power_flow ? (
+                      <ReadingMode
+                        content={cp?.power_flow}
                         defaultExpanded={false}
                         showPreview={true}
-                        previewLines={2}
                       />
                     ) : (
                       <span className="empty-placeholder">未填写</span>
@@ -572,9 +708,9 @@ function CpDetail() {
                 )}
               </div>
 
-              {/* 3. 关系禁区 */}
+              {/* 2. 关系边界 */}
               <div className="field-group">
-                <label className="field-label">关系禁区</label>
+                <label className="field-label">关系边界</label>
                 {isEditing ? (
                   <CreativeTextarea
                     value={formData.relationship_boundaries}
@@ -584,11 +720,34 @@ function CpDetail() {
                 ) : (
                   <div className="field-display">
                     {cp?.relationship_boundaries ? (
-                      <ReadingMode 
-                        content={cp.relationship_boundaries}
+                      <ReadingMode
+                        content={cp?.relationship_boundaries}
                         defaultExpanded={false}
                         showPreview={true}
-                        previewLines={2}
+                      />
+                    ) : (
+                      <span className="empty-placeholder">未填写</span>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* 3. OOC规则 */}
+              <div className="field-group">
+                <label className="field-label">OOC规则</label>
+                {isEditing ? (
+                  <CreativeTextarea
+                    value={formData.ooc_rules}
+                    onChange={(value) => handleInputChange('ooc_rules', value)}
+                    placeholder="例如：更倾向于... / 很少主动... / 即使失控也会... / 不会轻易..."
+                  />
+                ) : (
+                  <div className="field-display">
+                    {cp?.ooc_rules ? (
+                      <ReadingMode
+                        content={cp?.ooc_rules}
+                        defaultExpanded={false}
+                        showPreview={true}
                       />
                     ) : (
                       <span className="empty-placeholder">未填写</span>
@@ -604,6 +763,7 @@ function CpDetail() {
         <section className="au-list-section">
           <div className="section-header-inline">
             <h2 className="section-title">AU列表</h2>
+            <span className="section-archive-code">☾ FILE_02</span>
             <Link to={`/cp/${id}/create-au`} className="btn btn-secondary btn-small">创建AU</Link>
           </div>
           {aus.length === 0 ? (
@@ -614,7 +774,12 @@ function CpDetail() {
             <div className="au-list-inline">
               {aus.map(au => (
                 <div key={au.id} className="au-item-light">
-                  <span className="au-name-inline">{au.name}</span>
+                  <div className="au-main-inline">
+                    <span className="au-name-inline">{au.name}</span>
+                    {au.core_atmosphere && (
+                      <p className="au-subtitle-inline">{au.core_atmosphere}</p>
+                    )}
+                  </div>
                   <Link to={`/au/${au.id}`} className="btn btn-secondary btn-small">查看详情</Link>
                 </div>
               ))}
@@ -662,6 +827,14 @@ function CpDetail() {
           </div>
         </section>
       </main>
+      
+      {isEditing && (
+        <FloatingActionBar 
+          onCancel={handleCancel}
+          onSave={handleSave}
+          saving={saving}
+        />
+      )}
     </div>
   )
 }

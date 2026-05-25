@@ -10,16 +10,44 @@ function InteractionDetailsCard({
   const [newDetail, setNewDetail] = useState('')
   const [isAdding, setIsAdding] = useState(false)
 
+  // Normalize details to handle both array and JSON string from Supabase
+  console.log('InteractionDetailsCard - details:', details)
+  console.log('InteractionDetailsCard - details type:', typeof details)
+  console.log('InteractionDetailsCard - Array.isArray(details):', Array.isArray(details))
+  const normalizedDetails = (() => {
+    if (details == null) return []
+    let parsed = details
+    // Handle JSON string
+    if (typeof details === 'string') {
+      try {
+        parsed = JSON.parse(details)
+      } catch {
+        // If not valid JSON, treat as single string
+        parsed = details
+      }
+    }
+    // Ensure it's an array
+    if (!Array.isArray(parsed)) {
+      return []
+    }
+    // Filter out empty strings
+    return parsed.filter(item => typeof item === 'string' && item.trim() !== '')
+  })()
+  console.log('InteractionDetailsCard - normalizedDetails:', normalizedDetails)
+
   const handleAddDetail = () => {
     if (newDetail.trim()) {
-      onChange([...details, newDetail.trim()])
+      const updated = [...normalizedDetails, newDetail.trim()]
+      onChange(updated)
       setNewDetail('')
       setIsAdding(false)
     }
   }
 
   const handleRemoveDetail = (index) => {
-    onChange(details.filter((_, i) => i !== index))
+    const filtered = normalizedDetails.filter((_, i) => i !== index)
+    // Ensure we don't save [""] when array becomes empty
+    onChange(filtered.length === 0 ? [] : filtered)
   }
 
   const handleKeyPress = (e) => {
@@ -32,12 +60,12 @@ function InteractionDetailsCard({
   return (
     <div className="interaction-details-card">
       <div className="details-list">
-        {details.length === 0 ? (
+        {normalizedDetails.length === 0 ? (
           <div className="empty-state">
             <span className="empty-text">暂无互动细节</span>
           </div>
         ) : (
-          details.map((detail, index) => (
+          normalizedDetails.map((detail, index) => (
             <div key={index} className="detail-item">
               <span className="detail-content">{detail}</span>
               {isEditing && !disabled && (

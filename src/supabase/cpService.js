@@ -75,11 +75,13 @@ export async function getCpById(id) {
 
 // Update a CP
 export async function updateCp(id, cpData) {
+  console.log('updateCp - SAVE PAYLOAD:', cpData)
+
   const { data, error } = await supabase
     .from('cp')
     .update({
       name: cpData.name,
-      // New AI-friendly structure
+      // New AI-friendly structure - matching database field names
       core_dynamic: cpData.core_dynamic || null,
       relationship_dynamic: cpData.relationship_dynamic || null,
       character_profiles: cpData.character_profiles || null,
@@ -101,6 +103,9 @@ export async function updateCp(id, cpData) {
     .eq('user_id', window.CURRENT_USER_ID)
     .select()
     .single()
+
+  console.log('updateCp - Supabase return data:', data)
+  console.log('updateCp - Supabase return error:', error)
 
   if (error) {
     console.error('Error updating CP:', error)

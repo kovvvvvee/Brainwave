@@ -16,13 +16,15 @@ function CreateCp() {
   }, [])
   const [formData, setFormData] = useState({
     name: '',
-    core_one_liner: '',
-    relationship_dynamics: {
+    core_dynamic: '',
+    relationship_dynamic: {
       emotional_inertia: '',
       interaction_inertia: '',
       desire_inertia: ''
     },
     character_profiles: {
+      character_a_name: '',
+      character_b_name: '',
       character_a: {
         explicit_state: '',
         true_state: '',
@@ -34,7 +36,7 @@ function CreateCp() {
         language_habits: ''
       }
     },
-    sexual_dynamics: {
+    sexual_dynamic: {
       desire_structure: '',
       behavioral_inertia: '',
       basic_positioning: ''
@@ -43,7 +45,7 @@ function CreateCp() {
     interaction_details: [],
     source_material: '',
     ooc_rules: '',
-    power_dynamics: '',
+    power_flow: '',
     relationship_boundaries: ''
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -78,12 +80,43 @@ function CreateCp() {
     }))
   }
 
+  const handleCharacterNameChange = (character, value) => {
+    setFormData(prev => ({
+      ...prev,
+      character_profiles: {
+        ...prev.character_profiles,
+        [character]: value
+      }
+    }))
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsSubmitting(true)
 
     try {
-      await createCp(formData)
+      console.log('SUBMIT - formData.character_profiles:', formData.character_profiles)
+      console.log('SUBMIT - formData.character_profiles.character_a_name:', formData.character_profiles.character_a_name)
+      console.log('SUBMIT - formData.character_profiles.character_b_name:', formData.character_profiles.character_b_name)
+      
+      // Prepare payload with JSON stringified nested fields
+      const savePayload = {
+        name: formData.name,
+        core_dynamic: formData.core_dynamic || null,
+        relationship_dynamic: JSON.stringify(formData.relationship_dynamic),
+        character_profiles: JSON.stringify(formData.character_profiles),
+        sexual_dynamic: JSON.stringify(formData.sexual_dynamic),
+        relationship_atmosphere: formData.relationship_atmosphere || null,
+        interaction_details: JSON.stringify(formData.interaction_details),
+        source_material: formData.source_material || null,
+        ooc_rules: formData.ooc_rules || null,
+        power_flow: formData.power_flow || null,
+        relationship_boundaries: formData.relationship_boundaries || null
+      }
+
+      console.log('SUBMIT - savePayload.character_profiles:', savePayload.character_profiles)
+
+      await createCp(savePayload)
       alert('CP创建成功')
       navigate('/cp-list')
     } catch (error) {
@@ -139,7 +172,7 @@ function CreateCp() {
             title="关系动态"
             defaultExpanded={true}
             summary="不要写剧情。写长期重复出现的关系惯性。"
-            filledCount={Object.values(formData.relationship_dynamics).filter(Boolean).length}
+            filledCount={Object.values(formData.relationship_dynamic).filter(Boolean).length}
             totalFields={3}
             tags={['情绪惯性', '相处惯性', '欲望惯性']}
           >
@@ -148,22 +181,22 @@ function CreateCp() {
               <div className="nested-fields">
                 <DetailCard
                   label="【情绪惯性】"
-                  value={formData.relationship_dynamics.emotional_inertia}
-                  onChange={(value) => handleNestedChange('relationship_dynamics', 'emotional_inertia', value)}
+                  value={formData.relationship_dynamic.emotional_inertia}
+                  onChange={(value) => handleNestedChange('relationship_dynamic', 'emotional_inertia', value)}
                   placeholder="例如：越冷淡越想靠近 / 一方沉默时另一方会变烦人"
                   isEditing={true}
                 />
                 <DetailCard
                   label="【相处惯性】"
-                  value={formData.relationship_dynamics.interaction_inertia}
-                  onChange={(value) => handleNestedChange('relationship_dynamics', 'interaction_inertia', value)}
+                  value={formData.relationship_dynamic.interaction_inertia}
+                  onChange={(value) => handleNestedChange('relationship_dynamic', 'interaction_inertia', value)}
                   placeholder="例如：吵架后反而更黏 / 喜欢用调侃代替示弱"
                   isEditing={true}
                 />
                 <DetailCard
                   label="【欲望惯性】"
-                  value={formData.relationship_dynamics.desire_inertia}
-                  onChange={(value) => handleNestedChange('relationship_dynamics', 'desire_inertia', value)}
+                  value={formData.relationship_dynamic.desire_inertia}
+                  onChange={(value) => handleNestedChange('relationship_dynamic', 'desire_inertia', value)}
                   placeholder="例如：越压抑越容易失控 / 喜欢观察对方反应"
                   isEditing={true}
                 />
@@ -181,10 +214,34 @@ function CreateCp() {
             tags={['外显状态', '真实状态', '语言习惯']}
           >
             <div className="field-group">
+              {/* Character name inputs */}
+              <div className="character-names">
+                <div className="field-group">
+                  <label className="field-label">角色A名称</label>
+                  <input
+                    type="text"
+                    value={formData.character_profiles.character_a_name}
+                    onChange={(e) => handleCharacterNameChange('character_a_name', e.target.value)}
+                    placeholder="例如：方绪"
+                    className="creative-input"
+                  />
+                </div>
+                <div className="field-group">
+                  <label className="field-label">角色B名称</label>
+                  <input
+                    type="text"
+                    value={formData.character_profiles.character_b_name}
+                    onChange={(e) => handleCharacterNameChange('character_b_name', e.target.value)}
+                    placeholder="例如：白川"
+                    className="creative-input"
+                  />
+                </div>
+              </div>
+
               <label className="field-label">只写会影响互动的部分。不要写百科。</label>
               <div className="character-profiles">
                 <div className="character-profile">
-                  <h4 className="character-name">角色 A</h4>
+                  <h4 className="character-name">{formData.character_profiles.character_a_name?.trim() || '角色A'}</h4>
                   <div className="nested-fields">
                     <DetailCard
                       label="【外显状态】"
@@ -210,7 +267,7 @@ function CreateCp() {
                   </div>
                 </div>
                 <div className="character-profile">
-                  <h4 className="character-name">角色 B</h4>
+                  <h4 className="character-name">{formData.character_profiles.character_b_name?.trim() || '角色B'}</h4>
                   <div className="nested-fields">
                     <DetailCard
                       label="【外显状态】"
@@ -244,7 +301,7 @@ function CreateCp() {
             title="性关系动态"
             defaultExpanded={false}
             summary="重点是欲望结构和行为惯性。不是简单写谁1谁0。"
-            filledCount={Object.values(formData.sexual_dynamics).filter(Boolean).length}
+            filledCount={Object.values(formData.sexual_dynamic).filter(Boolean).length}
             totalFields={3}
             tags={['欲望结构', '行为惯性', '基础定位']}
           >
@@ -253,22 +310,22 @@ function CreateCp() {
               <div className="nested-fields">
                 <DetailCard
                   label="【欲望结构】"
-                  value={formData.sexual_dynamics.desire_structure}
-                  onChange={(value) => handleNestedChange('sexual_dynamics', 'desire_structure', value)}
+                  value={formData.sexual_dynamic.desire_structure}
+                  onChange={(value) => handleNestedChange('sexual_dynamic', 'desire_structure', value)}
                   placeholder="例如：越压抑越容易失控 / 喜欢观察对方忍耐"
                   isEditing={true}
                 />
                 <DetailCard
                   label="【行为惯性】"
-                  value={formData.sexual_dynamics.behavioral_inertia}
-                  onChange={(value) => handleNestedChange('sexual_dynamics', 'behavioral_inertia', value)}
+                  value={formData.sexual_dynamic.behavioral_inertia}
+                  onChange={(value) => handleNestedChange('sexual_dynamic', 'behavioral_inertia', value)}
                   placeholder="例如：会故意拖长临界状态 / 越沉默越危险"
                   isEditing={true}
                 />
                 <DetailCard
                   label="【基础定位】"
-                  value={formData.sexual_dynamics.basic_positioning}
-                  onChange={(value) => handleNestedChange('sexual_dynamics', 'basic_positioning', value)}
+                  value={formData.sexual_dynamic.basic_positioning}
+                  onChange={(value) => handleNestedChange('sexual_dynamic', 'basic_positioning', value)}
                   placeholder="例如：通常由A主导进入 / 但控制权经常交换"
                   isEditing={true}
                 />
@@ -332,15 +389,12 @@ function CreateCp() {
           <CollapsibleSection
             title="高级设定"
             defaultExpanded={false}
-            filledCount={[formData.ooc_rules, formData.power_dynamics, formData.relationship_boundaries].filter(Boolean).length}
+            filledCount={[formData.ooc_rules, formData.power_flow, formData.relationship_boundaries].filter(Boolean).length}
             totalFields={3}
-            tags={['禁止OOC规则', '权力流动', '关系禁区']}
+            tags={['OOC规则', '权力流动', '关系边界']}
           >
             <div className="field-group">
-              <label className="field-label">
-                禁止OOC规则
-                <span className="field-description">描述角色绝对不会做的事情或行为模式</span>
-              </label>
+              <label className="field-label">OOC规则</label>
               <CreativeTextarea
                 value={formData.ooc_rules}
                 onChange={(value) => handleChange('ooc_rules', value)}
@@ -351,14 +405,14 @@ function CreateCp() {
             <div className="field-group">
               <label className="field-label">权力流动</label>
               <CreativeTextarea
-                value={formData.power_dynamics}
-                onChange={(value) => handleChange('power_dynamics', value)}
+                value={formData.power_flow}
+                onChange={(value) => handleChange('power_flow', value)}
                 placeholder="描述关系中权力的流动和变化..."
               />
             </div>
 
             <div className="field-group">
-              <label className="field-label">关系禁区</label>
+              <label className="field-label">关系边界</label>
               <CreativeTextarea
                 value={formData.relationship_boundaries}
                 onChange={(value) => handleChange('relationship_boundaries', value)}

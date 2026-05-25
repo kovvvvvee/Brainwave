@@ -22,6 +22,19 @@
   white-space: pre-wrap;
   letter-spacing: 0.01em;
   min-height: 40px;
+  position: relative;
+}
+
+.detail-display::after {
+  content: '✦';
+  position: absolute;
+  bottom: 6px;
+  right: 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 8px;
+  color: #7c746c;
+  opacity: 0.08;
+  letter-spacing: 0.05em;
 }
 
 .empty-placeholder {

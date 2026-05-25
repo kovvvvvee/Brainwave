@@ -6,14 +6,13 @@ export async function createAu(auData) {
     user_id: window.CURRENT_USER_ID,
     cp_id: auData.cp_id,
     name: auData.name,
-    description: auData.description,
-    // New AI-friendly AU structure
-    core_atmosphere: auData.core_atmosphere,
-    // World structure
+    description: auData.description || null,
+    // Core AU fields
+    core_atmosphere: auData.core_atmosphere || null,
+    // World rules (as individual TEXT fields)
     social_rules: auData.social_rules || null,
     life_rules: auData.life_rules || null,
     body_rules: auData.body_rules || null,
-    world_rules: auData.world_rules || null,
     // Relationship and desire mechanisms
     desire_mechanism: auData.desire_mechanism || null,
     relationship_pressure: auData.relationship_pressure || null,
@@ -28,18 +27,19 @@ export async function createAu(auData) {
     power_system: auData.power_system || null,
     taboo_rules: auData.taboo_rules || null,
     instability_factors: auData.instability_factors || null,
-    // Legacy fields for backward compatibility
+    // Relationship state fields
     relationship_surface_layer: auData.relationship_surface_layer || null,
     relationship_actual_state: auData.relationship_actual_state || null,
     relationship_conflict: auData.relationship_conflict || null,
     relationship_triggers: auData.relationship_triggers || null,
-    daily_details: auData.daily_details || null,
     ooc_rules: auData.ooc_rules || null,
-    world_notes: auData.worldNotes || null,
-    relationship_state: auData.relationshipState || null,
+    // Legacy fields
+    world_notes: auData.world_notes || null,
+    relationship_state: auData.relationship_state || null,
   }
 
   console.log('AU PAYLOAD:', payload)
+  console.log('AU CREATE PAYLOAD KEYS:', Object.keys(payload))
 
   const { data, error } = await supabase
     .from('au')
@@ -48,11 +48,12 @@ export async function createAu(auData) {
     .single()
 
   if (error) {
-    console.error('FULL AU ERROR:', error)
+    console.error('AU CREATE ERROR:', error)
     console.error('AU ERROR DETAILS:', JSON.stringify(error, null, 2))
     throw error
   }
 
+  console.log('AU CREATE RESPONSE:', data)
   return data
 }
 
@@ -95,14 +96,13 @@ export async function getAuById(id) {
 export async function updateAu(id, auData) {
   const payload = {
     name: auData.name,
-    description: auData.description,
-    // New AI-friendly AU structure
-    core_atmosphere: auData.core_atmosphere,
-    // World structure
+    description: auData.description || null,
+    // Core AU fields
+    core_atmosphere: auData.core_atmosphere || null,
+    // World rules (as individual TEXT fields)
     social_rules: auData.social_rules || null,
     life_rules: auData.life_rules || null,
     body_rules: auData.body_rules || null,
-    world_rules: auData.world_rules || null,
     // Relationship and desire mechanisms
     desire_mechanism: auData.desire_mechanism || null,
     relationship_pressure: auData.relationship_pressure || null,
@@ -117,18 +117,22 @@ export async function updateAu(id, auData) {
     power_system: auData.power_system || null,
     taboo_rules: auData.taboo_rules || null,
     instability_factors: auData.instability_factors || null,
-    // Legacy fields for backward compatibility
+    // Relationship state fields
     relationship_surface_layer: auData.relationship_surface_layer || null,
     relationship_actual_state: auData.relationship_actual_state || null,
     relationship_conflict: auData.relationship_conflict || null,
     relationship_triggers: auData.relationship_triggers || null,
-    daily_details: auData.daily_details || null,
     ooc_rules: auData.ooc_rules || null,
-    world_notes: auData.worldNotes || null,
-    relationship_state: auData.relationshipState || null,
+    // Legacy fields
+    world_notes: auData.world_notes || null,
+    relationship_state: auData.relationship_state || null,
+    // Metadata
     is_pinned: auData.is_pinned,
     pinned_at: auData.is_pinned ? new Date().toISOString() : null,
   }
+
+  console.log('AU PAYLOAD:', payload)
+  console.log('AU UPDATE PAYLOAD KEYS:', Object.keys(payload))
 
   const { data, error } = await supabase
     .from('au')
@@ -139,10 +143,12 @@ export async function updateAu(id, auData) {
     .single()
 
   if (error) {
-    console.error('Error updating AU:', error)
+    console.error('AU UPDATE ERROR:', error)
+    console.error('AU UPDATE ERROR DETAILS:', JSON.stringify(error, null, 2))
     throw error
   }
 
+  console.log('AU UPDATE RESPONSE:', data)
   return data
 }
 

@@ -1,0 +1,89 @@
+.floating-action-bar {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  background: rgba(247, 246, 244, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  animation: fadeIn 0.4s ease;
+  z-index: 1000;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.floating-action-bar .btn {
+  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.6);
+  color: #5a5a5a;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.floating-action-bar .btn:hover {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #3d3d3d;
+}
+
+.floating-action-bar .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.floating-action-bar .btn-primary {
+  background: rgba(139, 115, 85, 0.08);
+  border-color: rgba(139, 115, 85, 0.15);
+  color: #8b7355;
+}
+
+.floating-action-bar .btn-primary:hover {
+  background: rgba(139, 115, 85, 0.12);
+  border-color: rgba(139, 115, 85, 0.25);
+  color: #6b5a45;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .floating-action-bar {
+    position: sticky;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    padding: 16px;
+    justify-content: center;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04);
+    animation: fadeIn 0.4s ease;
+  }
+
+  .floating-action-bar .btn {
+    flex: 1;
+    max-width: 120px;
+    padding: 10px 20px;
+  }
+}

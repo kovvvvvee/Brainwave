@@ -4,9 +4,11 @@ import { getCps } from '../supabase/cpService'
 import { getAusByCpId } from '../supabase/auService'
 import { createInspiration, getRecentInspirations, getAllInspirations } from '../supabase/inspirationService'
 import { getTagsForInspiration } from '../supabase/tagService'
+import ArchiveSymbol from '../components/ArchiveSymbol'
 import './Home.css'
 
 function Home() {
+  console.log('Home component render')
   const [content, setContent] = useState('')
   const [selectedCp, setSelectedCp] = useState('')
   const [selectedAu, setSelectedAu] = useState('')
@@ -36,6 +38,10 @@ function Home() {
       setSelectedAu('')
     }
   }, [selectedCp])
+
+  useEffect(() => {
+    console.log('recentInspirations changed:', recentInspirations)
+  }, [recentInspirations])
 
   const fetchCps = async () => {
     try {
@@ -152,8 +158,26 @@ function Home() {
       console.log('保存灵感 - insert payload:', payload)
 
       // Save inspiration (CP/AU selection is optional)
-      await createInspiration(payload)
+      const newInspiration = await createInspiration(payload)
+      console.log('created inspiration:', newInspiration)
+      console.log('newInspiration type:', typeof newInspiration)
+      console.log('newInspiration keys:', newInspiration ? Object.keys(newInspiration) : 'null')
 
+      // Update state immediately to show new inspiration at top
+      setRecentInspirations(prev => {
+        const updated = [newInspiration, ...prev]
+        console.log('Updated recentInspirations:', updated)
+        console.log('Updated recentInspirations length:', updated.length)
+        return updated
+      })
+      setAllInspirations(prev => {
+        const updated = [newInspiration, ...prev]
+        console.log('Updated allInspirations:', updated)
+        console.log('Updated allInspirations length:', updated.length)
+        return updated
+      })
+
+      // Clear form
       setContent('')
       setSelectedCp('')
       setSelectedAu('')
@@ -170,188 +194,209 @@ function Home() {
 
   return (
     <div className="home">
-      <header className="home-header">
-        <h1>Brainwave</h1>
-        <p className="subtitle">私人创作空间</p>
-      </header>
+      <div className="content-wrapper">
+        <header className="archive-header">
+          <ArchiveSymbol symbol="✦" position="top-right" size="small" variant="key" />
+          <div className="archive-title">
+            <h1>Brainwave Archive</h1>
+            <p className="archive-subtitle">私人关系记录系统</p>
+          </div>
+        </header>
 
-      <main className="home-main">
-        <section className="search-section">
-          <input
-            type="text"
-            className="search-input"
-            placeholder="搜索灵感、CP、AU…"
-            value={searchQuery}
-            onChange={handleSearchChange}
-          />
-          {searchQuery && (
-            <div className="search-results">
-              {searchResults.cps.length === 0 &&
-               searchResults.aus.length === 0 &&
-               searchResults.inspirations.length === 0 ? (
-                <div className="search-empty">
-                  没有找到相关内容
+        <main className="archive-main">
+          <section className="archive-search">
+            <input
+              type="text"
+              className="archive-search-input"
+              placeholder="搜索档案…"
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+            {searchQuery && (
+              <div className="archive-search-results">
+                {searchResults.cps.length === 0 &&
+                 searchResults.aus.length === 0 &&
+                 searchResults.inspirations.length === 0 ? (
+                  <div className="search-empty">
+                    未找到相关档案
+                  </div>
+                ) : (
+                  <>
+                    {searchResults.cps.length > 0 && (
+                      <div className="archive-search-category">
+                        <div className="archive-label">CP档案</div>
+                        <div className="archive-search-list">
+                          {searchResults.cps.map(cp => (
+                            <Link key={cp.id} to={`/cp/${cp.id}`} className="archive-search-item">
+                              <div className="archive-item-name">{cp.name}</div>
+                              {cp.description && (
+                                <div className="archive-item-desc">{cp.description}</div>
+                              )}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {searchResults.aus.length > 0 && (
+                      <div className="archive-search-category">
+                        <div className="archive-label">AU档案</div>
+                        <div className="archive-search-list">
+                          {searchResults.aus.map(au => (
+                            <Link key={au.id} to={`/au/${au.id}`} className="archive-search-item">
+                              <div className="archive-item-name">{au.name}</div>
+                              {au.description && (
+                                <div className="archive-item-desc">{au.description}</div>
+                              )}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {searchResults.inspirations.length > 0 && (
+                      <div className="archive-search-category">
+                        <div className="archive-label">灵感记录</div>
+                        <div className="archive-search-list">
+                          {searchResults.inspirations.map(inspiration => (
+                            <Link key={inspiration.id} to={`/inspiration/${inspiration.id}`} className="archive-search-item">
+                              <div className="archive-item-content">
+                                {inspiration.content.split('\n').slice(0, 2).join('\n')}
+                                {inspiration.content.split('\n').length > 2 && '…'}
+                              </div>
+                              <div className="archive-item-meta">
+                                <span className="metadata">
+                                  {new Date(inspiration.created_at).toLocaleString('zh-CN')}
+                                </span>
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+          </section>
+
+          <section className="archive-input">
+            <form className="memo-form" onSubmit={handleSubmit}>
+              <div className="memo-selectors">
+                <select
+                  className="memo-selector"
+                  value={selectedCp}
+                  onChange={(e) => setSelectedCp(e.target.value)}
+                  disabled={loading}
+                >
+                  <option value="">CP档案（可选）</option>
+                  {cps.map((cp) => (
+                    <option key={cp.id} value={cp.id}>
+                      {cp.name}
+                    </option>
+                  ))}
+                </select>
+
+                <select
+                  className="memo-selector"
+                  value={selectedAu}
+                  onChange={(e) => setSelectedAu(e.target.value)}
+                  disabled={!selectedCp || aus.length === 0}
+                >
+                  <option value="">AU档案（可选）</option>
+                  {aus.map((au) => (
+                    <option key={au.id} value={au.id}>
+                      {au.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <textarea
+                className="memo-input"
+                placeholder="记录灵感碎片…"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                rows={6}
+              />
+
+              <button
+                type="submit"
+                className="memo-submit-btn"
+                disabled={isSubmitting || !content.trim()}
+              >
+                {isSubmitting ? '保存中…' : '保存记录'}
+              </button>
+            </form>
+          </section>
+
+          <section className="archive-stream">
+            <div className="archive-section-header">
+              <ArchiveSymbol symbol="☾" position="top-right" size="tiny" variant="faint" />
+              <div className="archive-label">Recent Emotional Records</div>
+            </div>
+            <div className="archive-records">
+              {(() => {
+                console.log('当前 render 列表:', recentInspirations.slice(0, showCount))
+                console.log('recentInspirations length:', recentInspirations.length)
+                console.log('showCount:', showCount)
+                return null
+              })()}
+              {recentInspirations.length === 0 ? (
+                <div className="archive-empty">
+                  <p>暂无记录</p>
                 </div>
               ) : (
                 <>
-                  {searchResults.cps.length > 0 && (
-                    <div className="search-category">
-                      <div className="search-category-title">CP档案</div>
-                      <div className="search-list">
-                        {searchResults.cps.map(cp => (
-                          <Link key={cp.id} to={`/cp/${cp.id}`} className="search-item">
-                            <div className="search-item-name">{cp.name}</div>
-                            {cp.description && (
-                              <div className="search-item-desc">{cp.description}</div>
-                            )}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {searchResults.aus.length > 0 && (
-                    <div className="search-category">
-                      <div className="search-category-title">AU</div>
-                      <div className="search-list">
-                        {searchResults.aus.map(au => (
-                          <Link key={au.id} to={`/au/${au.id}`} className="search-item">
-                            <div className="search-item-name">{au.name}</div>
-                            {au.description && (
-                              <div className="search-item-desc">{au.description}</div>
-                            )}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {searchResults.inspirations.length > 0 && (
-                    <div className="search-category">
-                      <div className="search-category-title">灵感</div>
-                      <div className="search-inspirations">
-                        {searchResults.inspirations.map(inspiration => (
-                          <Link key={inspiration.id} to={`/inspiration/${inspiration.id}`} className="search-inspiration-item">
-                            <div className="search-inspiration-content">
-                              {inspiration.content.split('\n').slice(0, 2).join('\n')}
-                              {inspiration.content.split('\n').length > 2 && '…'}
-                            </div>
-                            <div className="search-inspiration-footer">
-                              <span className="search-inspiration-time">
-                                {new Date(inspiration.created_at).toLocaleString('zh-CN')}
+                  {recentInspirations.slice(0, showCount).map((inspiration, index) => (
+                    <div key={inspiration.id} className={`archive-record ${inspiration.is_pinned ? 'record-pinned' : ''}`}>
+                      {inspiration.is_pinned && <span className="pin-mark">◆</span>}
+                      <div className="record-meta">
+                        <span className="metadata">
+                          {new Date(inspiration.created_at).toLocaleString('zh-CN')}
+                        </span>
+                        {(index + 1) % 3 === 0 && (
+                          <span className="archive-inline-symbol">✦</span>
+                        )}
+                        {inspirationTags[inspiration.id] && inspirationTags[inspiration.id].length > 0 && (
+                          <div className="record-tags">
+                            {inspirationTags[inspiration.id].map(tag => (
+                              <span key={tag.id} className="record-tag">
+                                {tag.name}
                               </span>
-                            </div>
-                          </Link>
-                        ))}
+                            ))}
+                          </div>
+                        )}
                       </div>
+                      <Link to={`/inspiration/${inspiration.id}`} className="record-content">
+                        {inspiration.content.split('\n').slice(0, 2).join('\n')}
+                        {inspiration.content.split('\n').length > 2 && '…'}
+                      </Link>
+                      {(index + 1) % 3 === 0 && (
+                        <div className="archive-edge-symbol">SCAN_04</div>
+                      )}
                     </div>
+                  ))}
+                  {recentInspirations.length > 2 && (
+                    <button 
+                      className="archive-expand-btn"
+                      onClick={() => {
+                        if (isExpanded) {
+                          setShowCount(2)
+                          setIsExpanded(false)
+                        } else {
+                          setShowCount(recentInspirations.length)
+                          setIsExpanded(true)
+                        }
+                      }}
+                    >
+                      {isExpanded ? '收起' : '展开更多'}
+                    </button>
                   )}
                 </>
               )}
             </div>
-          )}
-        </section>
-
-        <section className="inspiration-input-section">
-          <form className="inspiration-form" onSubmit={handleSubmit}>
-            <div className="selector-group">
-              <select
-                className="selector"
-                value={selectedCp}
-                onChange={(e) => setSelectedCp(e.target.value)}
-                disabled={loading}
-              >
-                <option value="">选择CP（可选）</option>
-                {cps.map((cp) => (
-                  <option key={cp.id} value={cp.id}>
-                    {cp.name}
-                  </option>
-                ))}
-              </select>
-
-              <select
-                className="selector"
-                value={selectedAu}
-                onChange={(e) => setSelectedAu(e.target.value)}
-                disabled={!selectedCp || aus.length === 0}
-              >
-                <option value="">选择AU（可选）</option>
-                {aus.map((au) => (
-                  <option key={au.id} value={au.id}>
-                    {au.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <textarea
-              className="inspiration-input"
-              placeholder="记录你的灵感..."
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              rows={8}
-            />
-
-            <button
-              type="submit"
-              className="btn btn-primary btn-large"
-              disabled={isSubmitting || !content.trim()}
-            >
-              {isSubmitting ? '保存中...' : '保存灵感'}
-            </button>
-          </form>
-        </section>
-
-        <section className="continue-writing-section">
-          <h2 className="section-title">继续写</h2>
-          <div className="continue-writing-list">
-            {recentInspirations.length === 0 ? (
-              <div className="continue-writing-placeholder">
-                <p>开始记录你的第一条灵感</p>
-              </div>
-            ) : (
-              <>
-                {recentInspirations.slice(0, showCount).map((inspiration) => (
-                  <div key={inspiration.id} className={`continue-writing-item ${inspiration.is_pinned ? 'item-pinned' : ''}`}>
-                    {inspiration.is_pinned && <span className="pin-indicator">📌</span>}
-                    <Link to={`/inspiration/${inspiration.id}`} className="continue-writing-content">
-                      {inspiration.content}
-                    </Link>
-                    {inspirationTags[inspiration.id] && inspirationTags[inspiration.id].length > 0 && (
-                      <div className="inspiration-tags">
-                        {inspirationTags[inspiration.id].map(tag => (
-                          <span key={tag.id} className="tag-badge">
-                            {tag.name}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                    <div className="continue-writing-footer">
-                      <p className="continue-writing-time">
-                        {new Date(inspiration.created_at).toLocaleString('zh-CN')}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-                {recentInspirations.length > 2 && (
-                  <button 
-                    className="expand-more-btn"
-                    onClick={() => {
-                      if (isExpanded) {
-                        setShowCount(2)
-                        setIsExpanded(false)
-                      } else {
-                        setShowCount(recentInspirations.length)
-                        setIsExpanded(true)
-                      }
-                    }}
-                  >
-                    {isExpanded ? '收起' : '展开更多'}
-                  </button>
-                )}
-              </>
-            )}
-          </div>
-        </section>
-      </main>
+          </section>
+        </main>
+      </div>
     </div>
   )
 }

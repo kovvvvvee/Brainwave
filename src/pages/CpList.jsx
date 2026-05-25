@@ -43,7 +43,9 @@ function CpList() {
             {cps.map(cp => (
               <div key={cp.id} className="cp-card">
                 <h3 className="cp-name">{cp.name}</h3>
-                <p className="cp-description">{cp.description}</p>
+                {cp.core_one_liner && (
+                  <p className="cp-subtitle">{cp.core_one_liner}</p>
+                )}
                 <div className="cp-actions">
                   <Link to={`/cp/${cp.id}`} className="btn btn-small">查看详情</Link>
                 </div>

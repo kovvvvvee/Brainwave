@@ -27,7 +27,6 @@ function DetailCard({
               content={value}
               defaultExpanded={false}
               showPreview={true}
-              previewLines={2}
             />
           ) : (
             <span className="empty-placeholder">未填写</span>

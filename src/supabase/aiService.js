@@ -1,5 +1,5 @@
 // AI Service for DeepSeek API integration
-import { composeExpansionPrompt } from './promptLayers'
+import { composeExpansionPrompt, lengthConfig } from './promptLayers'
 
 const DEEPSEEK_API_KEY = import.meta.env.VITE_DEEPSEEK_API_KEY
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions'
@@ -14,6 +14,15 @@ const USE_MOCK_MODE = false
 
 // DeepSeek model
 const DEEPSEEK_MODEL = 'deepseek-chat'
+
+/**
+ * Count Chinese characters in text
+ * @param {string} text - Text to count
+ * @returns {number} Character count (excluding whitespace)
+ */
+function getChineseCharCount(text) {
+  return text.replace(/\s/g, '').length
+}
 
 /**
  * Generate mock expansion content based on parameters
@@ -260,7 +269,7 @@ ${JSON.stringify(auContext, null, 2)}
  * @returns {string} Expanded content
  */
 export async function expandInspiration(inspirationContent, cp, au, parameters) {
-  const { style = 'AO3', length = '中等', pov = '第三人称', hasAU = false } = parameters
+  const { style = 'AO3', length = '1000-3000', pov = '第三人称', hasAU = false } = parameters
 
   // Use mock mode if enabled
   if (USE_MOCK_MODE) {
@@ -312,6 +321,51 @@ export async function expandInspiration(inspirationContent, cp, au, parameters) 
     // Remove markdown code blocks if present
     if (content.startsWith('```')) {
       content = content.replace(/^```\w*\n/, '').replace(/\n```$/, '')
+    }
+
+    // Check length and auto-continue if too short
+    const currentLengthConfig = lengthConfig[length] || lengthConfig['1000-3000']
+    const generatedLength = getChineseCharCount(content)
+
+    console.log(`生成字数: ${generatedLength}, 最低要求: ${currentLengthConfig.min}`)
+
+    if (generatedLength < currentLengthConfig.min * 0.7) {
+      console.log('字数不足，自动续写中...')
+      const continuationPrompt = `继续扩展当前正文。
+不要重新开场。
+不要重复前文。
+不要总结。
+不要结束关系。
+
+保持：
+- 同一气压
+- 同一文风
+- 同一互动状态
+
+继续自然推进正文。
+
+优先继续：
+动作、
+对话、
+停顿、
+情绪惯性、
+关系拉扯、
+身体反应、
+空间互动。`
+
+      const continuation = await callDeepSeek(
+        continuationPrompt,
+        content
+      )
+
+      // Remove markdown code blocks from continuation if present
+      let cleanContinuation = continuation
+      if (cleanContinuation.startsWith('```')) {
+        cleanContinuation = cleanContinuation.replace(/^```\w*\n/, '').replace(/\n```$/, '')
+      }
+
+      content += '\n\n' + cleanContinuation
+      console.log(`续写后总字数: ${getChineseCharCount(content)}`)
     }
 
     return content

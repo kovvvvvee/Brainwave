@@ -108,6 +108,108 @@
   font-size: 0.875rem;
 }
 
+/* Receipt paper styling */
+.receipt-paper {
+  background: #faf9f7;
+  border: 1px dashed var(--border-color);
+  border-radius: 2px;
+  padding: 20px;
+  position: relative;
+  transform: rotate(-0.5deg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.receipt-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px dashed rgba(124, 116, 108, 0.15);
+}
+
+.receipt-archive-code {
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  color: #7c746c;
+  opacity: 0.14;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.receipt-scan-code {
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  color: #7c746c;
+  opacity: 0.12;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.receipt-perforation-left {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 4px,
+    rgba(124, 116, 108, 0.08) 4px,
+    rgba(124, 116, 108, 0.08) 5px
+  );
+}
+
+.receipt-perforation-right {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 4px,
+    rgba(124, 116, 108, 0.08) 4px,
+    rgba(124, 116, 108, 0.08) 5px
+  );
+}
+
+.receipt-paper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(124, 116, 108, 0.2),
+    transparent
+  );
+}
+
+.receipt-footer {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-sm);
+}
+
+.receipt-dashed-line {
+  border-top: 1px dashed rgba(124, 116, 108, 0.2);
+  margin-bottom: var(--spacing-sm);
+}
+
+.print-timestamp {
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  color: #7c746c;
+  letter-spacing: 0.05em;
+  opacity: 0.5;
+  text-align: center;
+}
+
 .btn {
   padding: 0.625rem 1.25rem;
   border: none;

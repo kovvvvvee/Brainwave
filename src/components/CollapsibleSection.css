@@ -5,19 +5,19 @@
 .collapsible-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  padding: var(--spacing-lg);
+  align-items: center;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  min-height: 56px;
   background: #faf8f3;
-  border-radius: 16px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.32s ease;
   border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .collapsible-header:hover {
   background: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-  transform: translateY(-2px);
+  border-color: rgba(139, 115, 85, 0.15);
 }
 
 .collapsible-header.expanded {
@@ -32,70 +32,55 @@
 }
 
 .section-title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
   color: #3d3d3d;
-  margin: 0 0 var(--spacing-xs) 0;
-  letter-spacing: 0.01em;
-}
-
-.section-summary {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-top: var(--spacing-xs);
-}
-
-.filled-status {
-  font-size: 13px;
-  color: #8b7355;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-}
-
-.content-summary {
-  font-size: 12px;
-  color: #999;
-  font-style: italic;
-  letter-spacing: 0.01em;
-  max-width: 500px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.tags-summary {
-  font-size: 12px;
-  color: #6b6b6b;
-  letter-spacing: 0.01em;
+  margin: 0;
+  letter-spacing: 0.02em;
 }
 
 .expand-icon {
-  font-size: 12px;
-  color: #999;
-  transition: transform 0.3s ease;
+  font-size: 14px;
+  color: #8b7355;
+  transition: transform 0.32s ease;
   display: inline-block;
-  margin-left: var(--spacing-sm);
+  margin-left: var(--spacing-md);
   flex-shrink: 0;
+  opacity: 0.6;
 }
 
 .expand-icon.expanded {
   transform: rotate(180deg);
+  opacity: 1;
 }
 
 .collapsible-content {
   background: #ffffff;
   padding: var(--spacing-xl);
-  border-radius: 0 0 16px 16px;
+  border-radius: 0 0 8px 8px;
   border: 1px solid rgba(139, 115, 85, 0.2);
   border-top: none;
-  animation: slideDown 0.3s ease;
+  animation: slideDown 0.32s ease;
+  position: relative;
+}
+
+.collapsible-content::after {
+  content: 'ARCHIVE';
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 7px;
+  color: #7c746c;
+  opacity: 0.08;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 @keyframes slideDown {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-2px);
   }
   to {
     opacity: 1;
@@ -106,11 +91,12 @@
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .collapsible-header {
-    padding: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-lg);
+    min-height: 52px;
   }
 
   .section-title {
-    font-size: 15px;
+    font-size: 14px;
   }
 
   .collapsible-content {

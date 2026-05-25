@@ -58,8 +58,8 @@ function Archive() {
               <div key={cp.id} className="cp-item">
                 <div className="cp-main">
                   <h3 className="cp-name">{cp.name}</h3>
-                  {cp.relationship_summary && (
-                    <p className="cp-description">{cp.relationship_summary}</p>
+                  {cp.core_one_liner && (
+                    <p className="cp-subtitle">{cp.core_one_liner}</p>
                   )}
                   <p className="cp-date">
                     更新于 {new Date(cp.updated_at).toLocaleDateString('zh-CN')}

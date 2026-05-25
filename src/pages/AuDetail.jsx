@@ -7,6 +7,8 @@ import ReadingMode from '../components/ReadingMode'
 import CollapsibleSection from '../components/CollapsibleSection'
 import CreativeTextarea from '../components/CreativeTextarea'
 import DetailCard from '../components/DetailCard'
+import FloatingActionBar from '../components/FloatingActionBar'
+import ArchiveSymbol from '../components/ArchiveSymbol'
 import './AuDetail.css'
 
 function AuDetail() {
@@ -24,17 +26,27 @@ function AuDetail() {
     name: '',
     description: '',
     core_atmosphere: '',
-    world_rules: { social_rules: '', life_rules: '', body_rules: '' },
+    social_rules: '',
+    life_rules: '',
+    body_rules: '',
+    desire_mechanism: '',
+    relationship_pressure: '',
+    emotional_consequences: '',
+    physical_consequences: '',
+    au_amplification: '',
+    interaction_logic: '',
+    intimacy_logic: '',
+    emotional_logic: '',
+    power_system: '',
+    taboo_rules: '',
+    instability_factors: '',
     relationship_surface_layer: '',
     relationship_actual_state: '',
     relationship_conflict: '',
-    au_amplification: '',
     relationship_triggers: '',
-    daily_details: '',
     ooc_rules: '',
-    // Legacy fields for backward compatibility
-    worldNotes: '',
-    relationshipState: '',
+    world_notes: '',
+    relationship_state: '',
   })
 
   useEffect(() => {
@@ -46,21 +58,33 @@ function AuDetail() {
   const fetchAu = async () => {
     try {
       const data = await getAuById(id)
+      console.log('FETCHED AU DATA:', data)
       setAu(data)
       setFormData({
         name: data.name || '',
         description: data.description || '',
         core_atmosphere: data.core_atmosphere || '',
-        world_rules: data.world_rules || { social_rules: '', life_rules: '', body_rules: '' },
+        social_rules: data.social_rules || '',
+        life_rules: data.life_rules || '',
+        body_rules: data.body_rules || '',
+        desire_mechanism: data.desire_mechanism || '',
+        relationship_pressure: data.relationship_pressure || '',
+        emotional_consequences: data.emotional_consequences || '',
+        physical_consequences: data.physical_consequences || '',
+        au_amplification: data.au_amplification || '',
+        interaction_logic: data.interaction_logic || '',
+        intimacy_logic: data.intimacy_logic || '',
+        emotional_logic: data.emotional_logic || '',
+        power_system: data.power_system || '',
+        taboo_rules: data.taboo_rules || '',
+        instability_factors: data.instability_factors || '',
         relationship_surface_layer: data.relationship_surface_layer || '',
         relationship_actual_state: data.relationship_actual_state || '',
         relationship_conflict: data.relationship_conflict || '',
-        au_amplification: data.au_amplification || '',
         relationship_triggers: data.relationship_triggers || '',
-        daily_details: data.daily_details || '',
         ooc_rules: data.ooc_rules || '',
-        worldNotes: data.world_notes || '',
-        relationshipState: data.relationship_state || '',
+        world_notes: data.world_notes || '',
+        relationship_state: data.relationship_state || '',
       })
     } catch (error) {
       console.error('获取AU详情失败:', error)
@@ -116,6 +140,7 @@ function AuDetail() {
 
     setIsSubmitting(true)
     try {
+      console.log('SAVING AU FORM DATA:', formData)
       await updateAu(id, formData)
       await fetchAu()
       setIsEditing(false)
@@ -138,10 +163,7 @@ function AuDetail() {
   const handleWorldRulesChange = (ruleType, value) => {
     setFormData(prev => ({
       ...prev,
-      world_rules: {
-        ...prev.world_rules,
-        [ruleType]: value
-      }
+      [ruleType]: value
     }))
   }
 
@@ -180,28 +202,24 @@ function AuDetail() {
 
   return (
     <div className="au-detail">
+      <button 
+        className="back-to-cp-button"
+        onClick={() => navigate(`/cp/${au.cp_id}`)}
+      >
+        ← 返回 CP档案
+      </button>
+      
       <header className="page-header">
         <h1>{au.name}</h1>
         <div className="header-actions">
-          {!isEditing ? (
-            <>
-              <button className="btn btn-primary" onClick={handleEdit}>
-                编辑设定
-              </button>
-              <button className="btn btn-danger-low" onClick={handleDeleteAu}>
-                删除
-              </button>
-            </>
-          ) : (
-            <>
-              <button className="btn btn-secondary" onClick={handleCancelEdit} disabled={isSubmitting}>
-                取消
-              </button>
-              <button className="btn btn-primary" onClick={handleSaveEdit} disabled={isSubmitting}>
-                {isSubmitting ? '保存中...' : '保存'}
-              </button>
-            </>
+          {!isEditing && (
+            <button className="btn btn-primary" onClick={handleEdit}>
+              编辑设定
+            </button>
           )}
+          <button className="btn btn-danger-low" onClick={handleDeleteAu}>
+            删除
+          </button>
         </div>
       </header>
 
@@ -209,19 +227,14 @@ function AuDetail() {
         <section className="au-content-section">
           {isEditing ? (
             <form className="au-edit-form" onSubmit={handleSaveEdit}>
-              {/* AU核心气味 - 最高优先级，默认展开 */}
+              {/* AU核心气味 */}
               <CollapsibleSection
                 title="AU核心气味"
-                defaultExpanded={true}
-                summary={formData.core_atmosphere ? formData.core_atmosphere.substring(0, 50) + '...' : null}
-                filledCount={formData.core_atmosphere ? 1 : 0}
-                totalFields={1}
+                defaultExpanded={false}
               >
+                <ArchiveSymbol symbol="☾" position="top-right" size="small" variant="key" />
                 <div className="field-group">
-                  <label className="field-label">
-                    这个世界给人的整体感觉
-                    <span className="field-description">不是介绍世界，而是这个世界给人的整体感觉。它决定AI写出来有没有"AU味"。</span>
-                  </label>
+                  <label className="field-label">介绍这个世界给人的整体感觉</label>
                   <CreativeTextarea
                     value={formData.core_atmosphere}
                     onChange={(value) => handleInputChange('core_atmosphere', value)}
@@ -230,98 +243,178 @@ function AuDetail() {
                 </div>
               </CollapsibleSection>
 
-              {/* 世界规则 - 关系运行的核心机制，默认收起 */}
+              {/* 世界规则 */}
               <CollapsibleSection
                 title="世界规则"
                 defaultExpanded={false}
-                filledCount={
-                  (formData.world_rules?.social_rules ? 1 : 0) +
-                  (formData.world_rules?.life_rules ? 1 : 0) +
-                  (formData.world_rules?.body_rules ? 1 : 0)
-                }
-                totalFields={3}
               >
-                <div className="section-description">
-                  这些规则会直接影响人物互动。AI扩写时会读取这些机制来决定人物如何反应。
-                </div>
+                <div className="section-separator">┈┈┈┈</div>
                 {/* 社会规则 */}
-                <CollapsibleSection
-                  title="社会规则"
-                  defaultExpanded={false}
-                  summary={formData.world_rules?.social_rules ? formData.world_rules.social_rules.substring(0, 50) + '...' : null}
-                  filledCount={formData.world_rules?.social_rules ? 1 : 0}
-                  totalFields={1}
-                >
-                  <div className="field-group">
-                    <label className="field-label">
-                      社会规则
-                      <span className="field-description">影响关系合法性和社会压力的规则</span>
-                    </label>
-                    <CreativeTextarea
-                      value={formData.world_rules?.social_rules || ''}
-                      onChange={(value) => handleWorldRulesChange('social_rules', value)}
-                      placeholder="哨兵向导需要精神结合才能稳定 / ABO存在信息素压制，弱势方无法反抗 / 仿生人无法合法拥有情感模块 / 公司禁止办公室恋爱，违者降职 / 魔法需要通过身体接触才能稳定"
-                    />
-                  </div>
-                </CollapsibleSection>
+                <div className="field-group">
+                  <label className="field-label">
+                    社会规则
+                    <span className="field-description">影响关系合法性和社会压力的规则</span>
+                  </label>
+                  <CreativeTextarea
+                    value={formData.social_rules}
+                    onChange={(value) => handleWorldRulesChange('social_rules', value)}
+                    placeholder="哨兵向导需要精神结合才能稳定 / ABO存在信息素压制，弱势方无法反抗 / 仿生人无法合法拥有情感模块 / 公司禁止办公室恋爱，违者降职 / 魔法需要通过身体接触才能稳定"
+                  />
+                </div>
 
                 {/* 生活规则 */}
-                <CollapsibleSection
-                  title="生活规则"
-                  defaultExpanded={false}
-                  summary={formData.world_rules?.life_rules ? formData.world_rules.life_rules.substring(0, 50) + '...' : null}
-                  filledCount={formData.world_rules?.life_rules ? 1 : 0}
-                  totalFields={1}
-                >
-                  <div className="field-group">
-                    <label className="field-label">
-                      生活规则
-                      <span className="field-description">影响日常相处和情绪状态的规则</span>
-                    </label>
-                    <CreativeTextarea
-                      value={formData.world_rules?.life_rules || ''}
-                      onChange={(value) => handleWorldRulesChange('life_rules', value)}
-                      placeholder="夜班制导致长期睡眠紊乱，情绪控制力下降 / 长期任务会影响精神状态，需要定期强制休息 / 高层监控私人通讯，无法真正私密 / 这个世界默认亲密关系短暂，没有人期待长久"
-                    />
-                  </div>
-                </CollapsibleSection>
+                <div className="field-group">
+                  <label className="field-label">
+                    生活规则
+                    <span className="field-description">影响日常相处和情绪状态的规则</span>
+                  </label>
+                  <CreativeTextarea
+                    value={formData.life_rules}
+                    onChange={(value) => handleWorldRulesChange('life_rules', value)}
+                    placeholder="夜班制导致长期睡眠紊乱，情绪控制力下降 / 长期任务会影响精神状态，需要定期强制休息 / 高层监控私人通讯，无法真正私密 / 这个世界默认亲密关系短暂，没有人期待长久"
+                  />
+                </div>
 
                 {/* 身体规则 - 最高优先级 */}
-                <CollapsibleSection
-                  title="身体规则（高优先级）"
-                  defaultExpanded={false}
-                  summary={formData.world_rules?.body_rules ? formData.world_rules.body_rules.substring(0, 50) + '...' : null}
-                  filledCount={formData.world_rules?.body_rules ? 1 : 0}
-                  totalFields={1}
-                >
-                  <div className="field-group">
-                    <label className="field-label">
-                      身体规则
-                      <span className="field-description">直接影响欲望、控制和失控的生理机制（最重要）</span>
-                    </label>
-                    <CreativeTextarea
-                      value={formData.world_rules?.body_rules || ''}
-                      onChange={(value) => handleWorldRulesChange('body_rules', value)}
-                      placeholder="精神污染会放大欲望，越污染越渴望接触 / 发情期会影响控制能力，理智下降 / 过载会导致情绪失衡，需要物理降温 / 共感会同步快感/疼痛，无法屏蔽对方感受 / 精神链接会残留情绪，长期接触会互相渗透 / 长期压抑会诱发失控，爆发时更危险"
-                    />
-                  </div>
-                </CollapsibleSection>
+                <div className="field-group">
+                  <label className="field-label">
+                    身体规则（高优先级）
+                    <span className="field-description">直接影响欲望、控制和失控的生理机制（最重要）</span>
+                  </label>
+                  <CreativeTextarea
+                    value={formData.body_rules}
+                    onChange={(value) => handleWorldRulesChange('body_rules', value)}
+                    placeholder="精神污染会放大欲望，越污染越渴望接触 / 发情期会影响控制能力，理智下降 / 过载会导致情绪失衡，需要物理降温 / 共感会同步快感/疼痛，无法屏蔽对方感受 / 精神链接会残留情绪，长期接触会互相渗透 / 长期压抑会诱发失控，爆发时更危险"
+                  />
+                </div>
               </CollapsibleSection>
 
-              {/* 他们在这个世界里的状态 - 3部分，默认收起 */}
+              {/* 关系和欲望机制 */}
               <CollapsibleSection
-                title="他们在这个世界里的状态"
+                title="关系和欲望机制"
                 defaultExpanded={false}
-                filledCount={
-                  (formData.relationship_surface_layer ? 1 : 0) +
-                  (formData.relationship_actual_state ? 1 : 0) +
-                  (formData.relationship_conflict ? 1 : 0)
-                }
-                totalFields={3}
               >
-                {/* 关系表层 */}
+                <div className="section-separator">┈┈┈┈</div>
                 <div className="field-group">
-                  <label className="field-label">关系表层</label>
+                  <label className="field-label">欲望机制</label>
+                  <CreativeTextarea
+                    value={formData.desire_mechanism}
+                    onChange={(value) => handleInputChange('desire_mechanism', value)}
+                    placeholder="描述这个AU如何放大或改变角色的欲望结构..."
+                  />
+                </div>
+
+                <div className="field-group">
+                  <label className="field-label">关系压力</label>
+                  <CreativeTextarea
+                    value={formData.relationship_pressure}
+                    onChange={(value) => handleInputChange('relationship_pressure', value)}
+                    placeholder="描述这个AU如何施加关系压力..."
+                  />
+                </div>
+
+                <div className="field-group">
+                  <label className="field-label">情绪后果</label>
+                  <CreativeTextarea
+                    value={formData.emotional_consequences}
+                    onChange={(value) => handleInputChange('emotional_consequences', value)}
+                    placeholder="描述情绪失控的后果..."
+                  />
+                </div>
+
+                <div className="field-group">
+                  <label className="field-label">肉体后果</label>
+                  <CreativeTextarea
+                    value={formData.physical_consequences}
+                    onChange={(value) => handleInputChange('physical_consequences', value)}
+                    placeholder="描述身体失控的后果..."
+                  />
+                </div>
+              </CollapsibleSection>
+
+              {/* AI扩写增强 */}
+              <CollapsibleSection
+                title="AI扩写增强"
+                defaultExpanded={false}
+              >
+                <div className="section-separator">┈┈┈┈</div>
+                <div className="field-group">
+                  <label className="field-label">AU放大机制</label>
+                  <CreativeTextarea
+                    value={formData.au_amplification}
+                    onChange={(value) => handleInputChange('au_amplification', value)}
+                    placeholder="这个AU会放大角色的什么特质..."
+                  />
+                </div>
+
+                <div className="field-group">
+                  <label className="field-label">互动逻辑</label>
+                  <CreativeTextarea
+                    value={formData.interaction_logic}
+                    onChange={(value) => handleInputChange('interaction_logic', value)}
+                    placeholder="描述角色互动的特殊逻辑..."
+                  />
+                </div>
+
+                <div className="field-group">
+                  <label className="field-label">亲密逻辑</label>
+                  <CreativeTextarea
+                    value={formData.intimacy_logic}
+                    onChange={(value) => handleInputChange('intimacy_logic', value)}
+                    placeholder="描述亲密关系的特殊逻辑..."
+                  />
+                </div>
+
+                <div className="field-group">
+                  <label className="field-label">情绪逻辑</label>
+                  <CreativeTextarea
+                    value={formData.emotional_logic}
+                    onChange={(value) => handleInputChange('emotional_logic', value)}
+                    placeholder="描述情绪变化的特殊逻辑..."
+                  />
+                </div>
+              </CollapsibleSection>
+
+              {/* 高级设定 */}
+              <CollapsibleSection
+                title="高级设定"
+                defaultExpanded={false}
+              >
+                <div className="field-group">
+                  <label className="field-label">权力系统</label>
+                  <CreativeTextarea
+                    value={formData.power_system}
+                    onChange={(value) => handleInputChange('power_system', value)}
+                    placeholder="描述AU中的权力结构..."
+                  />
+                </div>
+
+                <div className="field-group">
+                  <label className="field-label">禁忌规则</label>
+                  <CreativeTextarea
+                    value={formData.taboo_rules}
+                    onChange={(value) => handleInputChange('taboo_rules', value)}
+                    placeholder="描述AU中的禁忌..."
+                  />
+                </div>
+
+                <div className="field-group">
+                  <label className="field-label">不稳定因素</label>
+                  <CreativeTextarea
+                    value={formData.instability_factors}
+                    onChange={(value) => handleInputChange('instability_factors', value)}
+                    placeholder="描述导致关系不稳定的因素..."
+                  />
+                </div>
+              </CollapsibleSection>
+
+              {/* 关系状态 */}
+              <CollapsibleSection
+                title="关系状态"
+                defaultExpanded={false}
+              >
+                <div className="field-group">
+                  <label className="field-label">关系表象</label>
                   <CreativeTextarea
                     value={formData.relationship_surface_layer}
                     onChange={(value) => handleInputChange('relationship_surface_layer', value)}
@@ -329,7 +422,6 @@ function AuDetail() {
                   />
                 </div>
 
-                {/* 关系实际状态 */}
                 <div className="field-group">
                   <label className="field-label">关系实际状态</label>
                   <CreativeTextarea
@@ -339,7 +431,6 @@ function AuDetail() {
                   />
                 </div>
 
-                {/* 关系矛盾 */}
                 <div className="field-group">
                   <label className="field-label">关系矛盾</label>
                   <CreativeTextarea
@@ -348,42 +439,9 @@ function AuDetail() {
                     placeholder="例如：明明离不开却拒绝确认关系 / 一方需要亲密，一方害怕失控 / 越危险越沉迷"
                   />
                 </div>
-              </CollapsibleSection>
 
-              {/* 这个AU会放大他们什么 - 新增重点模块 */}
-              <CollapsibleSection
-                title="这个AU会放大他们什么"
-                defaultExpanded={false}
-                summary={formData.au_amplification ? formData.au_amplification.substring(0, 50) + '...' : null}
-                filledCount={formData.au_amplification ? 1 : 0}
-                totalFields={1}
-              >
                 <div className="field-group">
-                  <label className="field-label">
-                    AU核心机制
-                    <span className="field-description">AU不是换皮，而是放大角色某部分。</span>
-                  </label>
-                  <CreativeTextarea
-                    value={formData.au_amplification}
-                    onChange={(value) => handleInputChange('au_amplification', value)}
-                    placeholder="赛博朋克AU：情绪压抑、身体依赖、欲望商品化 / 哨向AU：精神依赖、共感、控制与失控 / 同居AU：身体习惯、日常亲密、情欲渗透生活"
-                  />
-                </div>
-              </CollapsibleSection>
-
-              {/* 关系触发器 */}
-              <CollapsibleSection
-                title="关系触发器"
-                defaultExpanded={false}
-                summary={formData.relationship_triggers ? formData.relationship_triggers.substring(0, 50) + '...' : null}
-                filledCount={formData.relationship_triggers ? 1 : 0}
-                totalFields={1}
-              >
-                <div className="field-group">
-                  <label className="field-label">
-                    最容易推动剧情失控的东西
-                    <span className="field-description">这些是最容易推动剧情失控的东西。</span>
-                  </label>
+                  <label className="field-label">关系触发器</label>
                   <CreativeTextarea
                     value={formData.relationship_triggers}
                     onChange={(value) => handleInputChange('relationship_triggers', value)}
@@ -392,34 +450,10 @@ function AuDetail() {
                 </div>
               </CollapsibleSection>
 
-              {/* 日常细节库 */}
-              <CollapsibleSection
-                title="日常细节库"
-                defaultExpanded={false}
-                summary={formData.daily_details ? formData.daily_details.substring(0, 50) + '...' : null}
-                filledCount={formData.daily_details ? 1 : 0}
-                totalFields={1}
-              >
-                <div className="field-group">
-                  <label className="field-label">
-                    无意义但属于人物的细节
-                    <span className="field-description">允许真正"无意义但属于人物"的细节，不要自动提纯。</span>
-                  </label>
-                  <CreativeTextarea
-                    value={formData.daily_details}
-                    onChange={(value) => handleInputChange('daily_details', value)}
-                    placeholder="例如：Cypher会帮Omen摘掉义体接口 / Omen睡不着时会去找Cypher / 任务结束后会检查对方有没有受伤"
-                  />
-                </div>
-              </CollapsibleSection>
-
-              {/* 高级设定 - 默认折叠 */}
+              {/* 高级设定 */}
               <CollapsibleSection
                 title="高级设定"
                 defaultExpanded={false}
-                summary={formData.ooc_rules ? formData.ooc_rules.substring(0, 50) + '...' : null}
-                filledCount={formData.ooc_rules ? 1 : 0}
-                totalFields={1}
               >
                 <div className="field-group">
                   <label className="field-label">
@@ -432,28 +466,41 @@ function AuDetail() {
                     placeholder="例如：更倾向于…… / 很少主动…… / 即使亲密也…… / 很难直接表达……"
                   />
                 </div>
+
+                <div className="field-group">
+                  <label className="field-label">世界观备注</label>
+                  <CreativeTextarea
+                    value={formData.world_notes}
+                    onChange={(value) => handleInputChange('world_notes', value)}
+                    placeholder="世界观补充说明..."
+                  />
+                </div>
+
+                <div className="field-group">
+                  <label className="field-label">关系状态备注</label>
+                  <CreativeTextarea
+                    value={formData.relationship_state}
+                    onChange={(value) => handleInputChange('relationship_state', value)}
+                    placeholder="关系状态补充说明..."
+                  />
+                </div>
               </CollapsibleSection>
             </form>
           ) : (
             <div className="au-display">
-              {/* AU核心气味 - 最高优先级，默认展开 */}
+              {/* AU核心气味 */}
               <CollapsibleSection
                 title="AU核心气味"
-                defaultExpanded={true}
-                summary={au.core_atmosphere ? au.core_atmosphere.substring(0, 50) + '...' : null}
-                filledCount={au.core_atmosphere ? 1 : 0}
-                totalFields={1}
+                defaultExpanded={false}
               >
-                <div className="field-group">
-                  <label className="field-label">
-                    这个世界给人的整体感觉
-                    <span className="field-description">不是介绍世界，而是这个世界给人的整体感觉。它决定AI写出来有没有"AU味"。</span>
-                  </label>
+                <div className="field-group au-core-field">
+                  <span className="au-core-symbol">☾</span>
+                  <label className="field-label">介绍这个世界给人的整体感觉</label>
                   <div className="field-display">
                     {au.core_atmosphere ? (
-                      <ReadingMode 
+                      <ReadingMode
                         content={au.core_atmosphere}
-                        defaultExpanded={true}
+                        defaultExpanded={false}
                         showPreview={false}
                       />
                     ) : (
@@ -463,282 +510,179 @@ function AuDetail() {
                 </div>
               </CollapsibleSection>
 
-              {/* 世界规则 - 关系运行的核心机制，默认收起 */}
+              {/* 世界规则 */}
               <CollapsibleSection
                 title="世界规则"
                 defaultExpanded={false}
-                filledCount={
-                  (au.world_rules?.social_rules ? 1 : 0) +
-                  (au.world_rules?.life_rules ? 1 : 0) +
-                  (au.world_rules?.body_rules ? 1 : 0)
-                }
-                totalFields={3}
               >
-                <div className="section-description">
-                  这些规则会直接影响人物互动。AI扩写时会读取这些机制来决定人物如何反应。
-                </div>
-                {/* 社会规则 */}
-                <CollapsibleSection
-                  title="社会规则"
-                  defaultExpanded={false}
-                  summary={au.world_rules?.social_rules ? au.world_rules.social_rules.substring(0, 50) + '...' : null}
-                  filledCount={au.world_rules?.social_rules ? 1 : 0}
-                  totalFields={1}
-                >
-                  <div className="field-group">
-                    <label className="field-label">
-                      社会规则
-                      <span className="field-description">影响关系合法性和社会压力的规则</span>
-                    </label>
-                    <div className="field-display">
-                      {au.world_rules?.social_rules ? (
-                        <ReadingMode 
-                          content={au.world_rules.social_rules}
-                          defaultExpanded={false}
-                          showPreview={true}
-                          previewLines={2}
-                        />
-                      ) : (
-                        <span className="empty-placeholder">未填写</span>
-                      )}
-                    </div>
-                  </div>
-                </CollapsibleSection>
-
-                {/* 生活规则 */}
-                <CollapsibleSection
-                  title="生活规则"
-                  defaultExpanded={false}
-                  summary={au.world_rules?.life_rules ? au.world_rules.life_rules.substring(0, 50) + '...' : null}
-                  filledCount={au.world_rules?.life_rules ? 1 : 0}
-                  totalFields={1}
-                >
-                  <div className="field-group">
-                    <label className="field-label">
-                      生活规则
-                      <span className="field-description">影响日常相处和情绪状态的规则</span>
-                    </label>
-                    <div className="field-display">
-                      {au.world_rules?.life_rules ? (
-                        <ReadingMode 
-                          content={au.world_rules.life_rules}
-                          defaultExpanded={false}
-                          showPreview={true}
-                          previewLines={2}
-                        />
-                      ) : (
-                        <span className="empty-placeholder">未填写</span>
-                      )}
-                    </div>
-                  </div>
-                </CollapsibleSection>
-
-                {/* 身体规则 - 最高优先级 */}
-                <CollapsibleSection
-                  title="身体规则（高优先级）"
-                  defaultExpanded={false}
-                  summary={au.world_rules?.body_rules ? au.world_rules.body_rules.substring(0, 50) + '...' : null}
-                  filledCount={au.world_rules?.body_rules ? 1 : 0}
-                  totalFields={1}
-                >
-                  <div className="field-group">
-                    <label className="field-label">
-                      身体规则
-                      <span className="field-description">直接影响欲望、控制和失控的生理机制（最重要）</span>
-                    </label>
-                    <div className="field-display">
-                      {au.world_rules?.body_rules ? (
-                        <ReadingMode 
-                          content={au.world_rules.body_rules}
-                          defaultExpanded={false}
-                          showPreview={true}
-                          previewLines={2}
-                        />
-                      ) : (
-                        <span className="empty-placeholder">未填写</span>
-                      )}
-                    </div>
-                  </div>
-                </CollapsibleSection>
-              </CollapsibleSection>
-
-              {/* 他们在这个世界里的状态 - 3部分，默认收起 */}
-              <CollapsibleSection
-                title="他们在这个世界里的状态"
-                defaultExpanded={false}
-                filledCount={
-                  (au.relationship_surface_layer ? 1 : 0) +
-                  (au.relationship_actual_state ? 1 : 0) +
-                  (au.relationship_conflict ? 1 : 0)
-                }
-                totalFields={3}
-              >
-                {/* 关系表层 */}
+                <div className="section-separator">┈┈┈┈</div>
                 <div className="field-group">
-                  <label className="field-label">关系表层</label>
+                  <label className="field-label">社会规则</label>
                   <div className="field-display">
-                    {au.relationship_surface_layer ? (
-                      <ReadingMode 
-                        content={au.relationship_surface_layer}
-                        defaultExpanded={false}
-                        showPreview={true}
-                        previewLines={2}
-                      />
+                    {au.social_rules ? (
+                      <ReadingMode content={au.social_rules} defaultExpanded={false} showPreview={true} />
                     ) : (
                       <span className="empty-placeholder">未填写</span>
                     )}
                   </div>
                 </div>
+                <div className="field-group">
+                  <label className="field-label">生活规则</label>
+                  <div className="field-display">
+                    {au.life_rules ? (
+                      <ReadingMode content={au.life_rules} defaultExpanded={false} showPreview={true} />
+                    ) : (
+                      <span className="empty-placeholder">未填写</span>
+                    )}
+                  </div>
+                </div>
+                <div className="field-group">
+                  <label className="field-label">身体规则（高优先级）</label>
+                  <div className="field-display">
+                    {au.body_rules ? (
+                      <ReadingMode content={au.body_rules} defaultExpanded={false} showPreview={true} />
+                    ) : (
+                      <span className="empty-placeholder">未填写</span>
+                    )}
+                  </div>
+                </div>
+              </CollapsibleSection>
 
-                {/* 关系实际状态 */}
+              {/* 其他所有section的display模式 */}
+              <CollapsibleSection title="关系和欲望机制" defaultExpanded={false}>
+                <div className="field-group">
+                  <label className="field-label">欲望机制</label>
+                  <div className="field-display">
+                    {au.desire_mechanism ? <ReadingMode content={au.desire_mechanism} defaultExpanded={false} showPreview={true} /> : <span className="empty-placeholder">未填写</span>}
+                  </div>
+                </div>
+                <div className="field-group">
+                  <label className="field-label">关系压力</label>
+                  <div className="field-display">
+                    {au.relationship_pressure ? <ReadingMode content={au.relationship_pressure} defaultExpanded={false} showPreview={true} /> : <span className="empty-placeholder">未填写</span>}
+                  </div>
+                </div>
+                <div className="field-group">
+                  <label className="field-label">情绪后果</label>
+                  <div className="field-display">
+                    {au.emotional_consequences ? <ReadingMode content={au.emotional_consequences} defaultExpanded={false} showPreview={true} /> : <span className="empty-placeholder">未填写</span>}
+                  </div>
+                </div>
+                <div className="field-group">
+                  <label className="field-label">肉体后果</label>
+                  <div className="field-display">
+                    {au.physical_consequences ? <ReadingMode content={au.physical_consequences} defaultExpanded={false} showPreview={true} /> : <span className="empty-placeholder">未填写</span>}
+                  </div>
+                </div>
+              </CollapsibleSection>
+
+              <CollapsibleSection title="AI扩写增强" defaultExpanded={false}>
+                <div className="field-group">
+                  <label className="field-label">AU放大机制</label>
+                  <div className="field-display">
+                    {au.au_amplification ? <ReadingMode content={au.au_amplification} defaultExpanded={false} showPreview={true} /> : <span className="empty-placeholder">未填写</span>}
+                  </div>
+                </div>
+                <div className="field-group">
+                  <label className="field-label">互动逻辑</label>
+                  <div className="field-display">
+                    {au.interaction_logic ? <ReadingMode content={au.interaction_logic} defaultExpanded={false} showPreview={true} /> : <span className="empty-placeholder">未填写</span>}
+                  </div>
+                </div>
+                <div className="field-group">
+                  <label className="field-label">亲密逻辑</label>
+                  <div className="field-display">
+                    {au.intimacy_logic ? <ReadingMode content={au.intimacy_logic} defaultExpanded={false} showPreview={true} /> : <span className="empty-placeholder">未填写</span>}
+                  </div>
+                </div>
+                <div className="field-group">
+                  <label className="field-label">情绪逻辑</label>
+                  <div className="field-display">
+                    {au.emotional_logic ? <ReadingMode content={au.emotional_logic} defaultExpanded={false} showPreview={true} /> : <span className="empty-placeholder">未填写</span>}
+                  </div>
+                </div>
+              </CollapsibleSection>
+
+              <CollapsibleSection title="高级设定" defaultExpanded={false}>
+                <div className="field-group">
+                  <label className="field-label">权力系统</label>
+                  <div className="field-display">
+                    {au.power_system ? <ReadingMode content={au.power_system} defaultExpanded={false} showPreview={true} /> : <span className="empty-placeholder">未填写</span>}
+                  </div>
+                </div>
+                <div className="field-group">
+                  <label className="field-label">禁忌规则</label>
+                  <div className="field-display">
+                    {au.taboo_rules ? <ReadingMode content={au.taboo_rules} defaultExpanded={false} showPreview={true} /> : <span className="empty-placeholder">未填写</span>}
+                  </div>
+                </div>
+                <div className="field-group">
+                  <label className="field-label">不稳定因素</label>
+                  <div className="field-display">
+                    {au.instability_factors ? <ReadingMode content={au.instability_factors} defaultExpanded={false} showPreview={true} /> : <span className="empty-placeholder">未填写</span>}
+                  </div>
+                </div>
+              </CollapsibleSection>
+
+              <CollapsibleSection title="关系状态" defaultExpanded={false}>
+                <div className="field-group">
+                  <label className="field-label">关系表象</label>
+                  <div className="field-display">
+                    {au.relationship_surface_layer ? <ReadingMode content={au.relationship_surface_layer} defaultExpanded={false} showPreview={true} /> : <span className="empty-placeholder">未填写</span>}
+                  </div>
+                </div>
                 <div className="field-group">
                   <label className="field-label">关系实际状态</label>
                   <div className="field-display">
-                    {au.relationship_actual_state ? (
-                      <ReadingMode 
-                        content={au.relationship_actual_state}
-                        defaultExpanded={false}
-                        showPreview={true}
-                        previewLines={2}
-                      />
-                    ) : (
-                      <span className="empty-placeholder">未填写</span>
-                    )}
+                    {au.relationship_actual_state ? <ReadingMode content={au.relationship_actual_state} defaultExpanded={false} showPreview={true} /> : <span className="empty-placeholder">未填写</span>}
                   </div>
                 </div>
-
-                {/* 关系矛盾 */}
                 <div className="field-group">
                   <label className="field-label">关系矛盾</label>
                   <div className="field-display">
-                    {au.relationship_conflict ? (
-                      <ReadingMode 
-                        content={au.relationship_conflict}
-                        defaultExpanded={false}
-                        showPreview={true}
-                        previewLines={2}
-                      />
-                    ) : (
-                      <span className="empty-placeholder">未填写</span>
-                    )}
+                    {au.relationship_conflict ? <ReadingMode content={au.relationship_conflict} defaultExpanded={false} showPreview={true} /> : <span className="empty-placeholder">未填写</span>}
+                  </div>
+                </div>
+                <div className="field-group">
+                  <label className="field-label">关系触发器</label>
+                  <div className="field-display">
+                    {au.relationship_triggers ? <ReadingMode content={au.relationship_triggers} defaultExpanded={false} showPreview={true} /> : <span className="empty-placeholder">未填写</span>}
                   </div>
                 </div>
               </CollapsibleSection>
 
-              {/* 这个AU会放大他们什么 - 新增重点模块 */}
-              <CollapsibleSection
-                title="这个AU会放大他们什么"
-                defaultExpanded={false}
-                summary={au.au_amplification ? au.au_amplification.substring(0, 50) + '...' : null}
-                filledCount={au.au_amplification ? 1 : 0}
-                totalFields={1}
-              >
+              <CollapsibleSection title="高级设定" defaultExpanded={false}>
                 <div className="field-group">
-                  <label className="field-label">
-                    AU核心机制
-                    <span className="field-description">AU不是换皮，而是放大角色某部分。</span>
-                  </label>
+                  <label className="field-label">禁止OOC规则</label>
                   <div className="field-display">
-                    {au.au_amplification ? (
-                      <ReadingMode 
-                        content={au.au_amplification}
-                        defaultExpanded={false}
-                        showPreview={true}
-                        previewLines={2}
-                      />
-                    ) : (
-                      <span className="empty-placeholder">未填写</span>
-                    )}
+                    {au.ooc_rules ? <ReadingMode content={au.ooc_rules} defaultExpanded={false} showPreview={true} /> : <span className="empty-placeholder">未填写</span>}
                   </div>
                 </div>
-              </CollapsibleSection>
-
-              {/* 关系触发器 */}
-              <CollapsibleSection
-                title="关系触发器"
-                defaultExpanded={false}
-                summary={au.relationship_triggers ? au.relationship_triggers.substring(0, 50) + '...' : null}
-                filledCount={au.relationship_triggers ? 1 : 0}
-                totalFields={1}
-              >
                 <div className="field-group">
-                  <label className="field-label">
-                    最容易推动剧情失控的东西
-                    <span className="field-description">这些是最容易推动剧情失控的东西。</span>
-                  </label>
+                  <label className="field-label">世界观备注</label>
                   <div className="field-display">
-                    {au.relationship_triggers ? (
-                      <ReadingMode 
-                        content={au.relationship_triggers}
-                        defaultExpanded={false}
-                        showPreview={true}
-                        previewLines={2}
-                      />
-                    ) : (
-                      <span className="empty-placeholder">未填写</span>
-                    )}
+                    {au.world_notes ? <ReadingMode content={au.world_notes} defaultExpanded={false} showPreview={true} /> : <span className="empty-placeholder">未填写</span>}
                   </div>
                 </div>
-              </CollapsibleSection>
-
-              {/* 日常细节库 */}
-              <CollapsibleSection
-                title="日常细节库"
-                defaultExpanded={false}
-                summary={au.daily_details ? au.daily_details.substring(0, 50) + '...' : null}
-                filledCount={au.daily_details ? 1 : 0}
-                totalFields={1}
-              >
                 <div className="field-group">
-                  <label className="field-label">
-                    无意义但属于人物的细节
-                    <span className="field-description">允许真正"无意义但属于人物"的细节，不要自动提纯。</span>
-                  </label>
+                  <label className="field-label">关系状态备注</label>
                   <div className="field-display">
-                    {au.daily_details ? (
-                      <ReadingMode 
-                        content={au.daily_details}
-                        defaultExpanded={false}
-                        showPreview={true}
-                        previewLines={2}
-                      />
-                    ) : (
-                      <span className="empty-placeholder">未填写</span>
-                    )}
-                  </div>
-                </div>
-              </CollapsibleSection>
-
-              {/* 高级设定 - 默认折叠 */}
-              <CollapsibleSection
-                title="高级设定"
-                defaultExpanded={false}
-                summary={au.ooc_rules ? au.ooc_rules.substring(0, 50) + '...' : null}
-                filledCount={au.ooc_rules ? 1 : 0}
-                totalFields={1}
-              >
-                <div className="field-group">
-                  <label className="field-label">
-                    禁止OOC规则
-                    <span className="field-description">不要使用绝对句式如"绝不会"、"不会爱上"之类。</span>
-                  </label>
-                  <div className="field-display">
-                    {au.ooc_rules ? (
-                      <ReadingMode 
-                        content={au.ooc_rules}
-                        defaultExpanded={false}
-                        showPreview={true}
-                        previewLines={2}
-                      />
-                    ) : (
-                      <span className="empty-placeholder">未填写</span>
-                    )}
+                    {au.relationship_state ? <ReadingMode content={au.relationship_state} defaultExpanded={false} showPreview={true} /> : <span className="empty-placeholder">未填写</span>}
                   </div>
                 </div>
               </CollapsibleSection>
             </div>
           )}
         </section>
+
+        {isEditing && (
+          <FloatingActionBar 
+            onCancel={handleCancelEdit}
+            onSave={handleSaveEdit}
+            saving={isSubmitting}
+            saveText="保存AU"
+          />
+        )}
 
         <section className="inspiration-list-section">
           <h2 className="section-title">已归档灵感</h2>

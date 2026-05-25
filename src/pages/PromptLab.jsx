@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { callDeepSeek } from '../supabase/aiService'
+import ArchiveSymbol from '../components/ArchiveSymbol'
 import './PromptLab.css'
 
 function PromptLab() {
@@ -37,6 +38,7 @@ function PromptLab() {
   return (
     <div className="prompt-lab">
       <header className="prompt-lab-header">
+        <ArchiveSymbol symbol="SCAN_04" position="top-right" size="small" variant="key" />
         <h1>PromptLab</h1>
         <p className="prompt-lab-subtitle">AI Prompt 调试工具</p>
       </header>
@@ -75,13 +77,27 @@ function PromptLab() {
 
         <div className="prompt-lab-column">
           <label className="column-label">AI 生成结果</label>
-          <div className="result-container">
+          <div className="result-container receipt-paper">
+            <div className="receipt-header">
+              <span className="receipt-archive-code">BRAINWAVE OUTPUT_04</span>
+              <span className="receipt-scan-code">SCAN FILE</span>
+            </div>
+            <div className="receipt-perforation-left"></div>
+            <div className="receipt-perforation-right"></div>
             {loading ? (
               <div className="loading-state">生成中...</div>
             ) : generatedResult ? (
               <div className="result-content">{generatedResult}</div>
             ) : (
               <div className="empty-state">点击生成按钮查看结果</div>
+            )}
+            {generatedResult && (
+              <div className="receipt-footer">
+                <div className="receipt-dashed-line"></div>
+                <div className="print-timestamp">
+                  PRINTED: {new Date().toLocaleString('zh-CN')}
+                </div>
+              </div>
             )}
           </div>
         </div>

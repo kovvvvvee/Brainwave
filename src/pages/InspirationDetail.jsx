@@ -19,7 +19,7 @@ function InspirationDetail() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showExpansionModal, setShowExpansionModal] = useState(false)
   const [expansionStyle, setExpansionStyle] = useState('AO3')
-  const [expansionLength, setExpansionLength] = useState('短扩写')
+  const [expansionLength, setExpansionLength] = useState('1000-3000')
   const [expansionPov, setExpansionPov] = useState('第三人称')
   const [isExpanding, setIsExpanding] = useState(false)
   const [expansions, setExpansions] = useState([])
@@ -351,7 +351,6 @@ function InspirationDetail() {
                 content={inspiration.content}
                 defaultExpanded={false}
                 showPreview={true}
-                previewLines={3}
               />
               <p className="inspiration-time">
                 创建于 {new Date(inspiration.created_at).toLocaleString('zh-CN')}
@@ -371,9 +370,21 @@ function InspirationDetail() {
             <div className="version-cards">
               {expansions.map((expansion, index) => {
                 const wordCount = getWordCount(expansion.content)
+                const archiveNumber = String(expansions.length - index).padStart(3, '0')
                 
                 return (
-                  <div key={expansion.id} className={`version-card ${expansion.is_favorite ? 'main-version' : ''}`}>
+                  <div key={expansion.id} className={`version-card printer-edge ${expansion.is_favorite ? 'main-version' : ''}`}>
+                    {/* Printer-style header decorations */}
+                    <div className="printer-header">
+                      <div className="archive-stamp">BRAINWAVE OUTPUT_{archiveNumber}</div>
+                      <div className="scanner-mark">SCANNED FILE</div>
+                      <div className="print-timestamp">
+                        {new Date(expansion.created_at).toLocaleString('zh-CN')}
+                      </div>
+                    </div>
+                    
+                    <div className="receipt-dashed"></div>
+                    
                     <div className="version-card-header">
                       <div className="version-card-title">
                         <div className="version-name">
@@ -481,7 +492,6 @@ function InspirationDetail() {
                           content={expansion.content}
                           defaultExpanded={false}
                           showPreview={true}
-                          previewLines={3}
                         />
                       </div>
                     )}
@@ -523,10 +533,10 @@ function InspirationDetail() {
                     onChange={(e) => setExpansionLength(e.target.value)}
                     disabled={isExpanding}
                   >
-                    <option value="灵感延伸">灵感延伸（300-800字）</option>
-                    <option value="短扩写">短扩写（1000-3000字）</option>
-                    <option value="中篇扩写">中篇扩写（5000-8000字）</option>
-                    <option value="长篇扩写">长篇扩写（10000+字）</option>
+                    <option value="500-1000">短篇（500-1000字）</option>
+                    <option value="1000-3000">中篇（1000-3000字）</option>
+                    <option value="3000-5000">长篇（3000-5000字）</option>
+                    <option value="5000+">超长篇（5000+字）</option>
                   </select>
                 </div>
                 <div className="form-group">

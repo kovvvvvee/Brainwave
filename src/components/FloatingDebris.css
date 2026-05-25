@@ -1,0 +1,54 @@
+.floating-debris-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.debris-item {
+  position: absolute;
+  color: #7c746c;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: none;
+  transition: transform 0.3s ease;
+}
+
+.debris-moon {
+  filter: blur(0.5px);
+}
+
+.debris-diamond {
+  filter: blur(0.3px);
+}
+
+.debris-cross {
+  filter: blur(0.4px);
+}
+
+.debris-circle {
+  filter: blur(0.3px);
+}
+
+.debris-partial {
+  filter: blur(0.5px);
+  opacity: 0.06 !important;
+}
+
+.debris-rhombus {
+  filter: blur(0.4px);
+}
+
+.debris-command {
+  filter: blur(0.3px);
+}
+
+.debris-square {
+  filter: blur(0.5px);
+}

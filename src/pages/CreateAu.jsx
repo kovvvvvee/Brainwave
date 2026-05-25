@@ -216,9 +216,9 @@ function CreateAu() {
             }
             totalFields={3}
           >
-            {/* 关系表层 */}
+            {/* 关系表象 */}
             <div className="field-group">
-              <label className="field-label">关系表层</label>
+              <label className="field-label">关系表象</label>
               <CreativeTextarea
                 value={formData.relationship_surface_layer}
                 onChange={(value) => handleInputChange('relationship_surface_layer', value)}
