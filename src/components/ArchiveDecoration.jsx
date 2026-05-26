@@ -25,6 +25,7 @@ const ArchiveDecoration = () => {
         <div
           key={residue.id}
           className="archive-residue"
+          data-opacity={residue.opacity}
           style={{
             top: `${residue.top}%`,
             left: `${residue.left}%`,

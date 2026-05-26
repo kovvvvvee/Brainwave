@@ -5,6 +5,7 @@ import { getAusByCpId } from '../supabase/auService'
 import { createInspiration, getRecentInspirations, getAllInspirations } from '../supabase/inspirationService'
 import { getTagsForInspiration } from '../supabase/tagService'
 import ArchiveSymbol from '../components/ArchiveSymbol'
+import ArchiveResidue from '../components/ArchiveResidue'
 import './Home.css'
 
 function Home() {
@@ -194,6 +195,19 @@ function Home() {
 
   return (
     <div className="home">
+      {/* Background illustration - rabbit ear at top right */}
+      <ArchiveResidue 
+        imageSrc="/assets/rabbit-girl-ascii.png"
+        position="right-main"
+        opacity={0.15}
+        size="full-height"
+        crop="top-right-corner"
+        grayscale={100}
+        contrast={90}
+        brightness={100}
+        saturate={20}
+      />
+      
       <div className="content-wrapper">
         <header className="archive-header">
           <ArchiveSymbol symbol="✦" position="top-right" size="small" variant="key" />

@@ -29,7 +29,7 @@
 .cp-list {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: 20px;
 }
 
 .archive-empty {
@@ -38,7 +38,9 @@
   background: var(--bg-secondary);
   border: 1px dashed var(--border-color);
   border-radius: var(--radius-card);
+  position: relative;
 }
+
 
 .archive-empty p {
   margin-bottom: var(--spacing-sm);
@@ -57,7 +59,10 @@
   gap: var(--spacing-md);
   transition: all var(--transition-normal);
   margin-bottom: 0;
+  position: relative;
+  margin-left: 2px;
 }
+
 
 .cp-item:hover {
   box-shadow: var(--shadow-medium);
@@ -97,7 +102,9 @@
   font-size: var(--font-size-xs);
   color: var(--text-tertiary);
   margin: 0;
-  font-family: var(--font-mono);
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .cp-actions {
@@ -116,11 +123,12 @@
 @media (max-width: 768px) {
   .archive {
     max-width: 100%;
-    padding: var(--spacing-lg) var(--spacing-md);
+    padding: 32px 20px 24px;
   }
 
   .archive-header {
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: 32px;
+    padding-top: 8px;
   }
 
   .archive-header h1 {
@@ -128,7 +136,7 @@
   }
 
   .archive-actions {
-    margin-bottom: var(--spacing-md);
+    margin-bottom: 48px;
   }
 
   .cp-item {
@@ -136,6 +144,8 @@
     flex-direction: row;
     align-items: center;
     gap: var(--spacing-sm);
+    max-width: 92%;
+    margin-inline: auto;
   }
 
   .cp-main {

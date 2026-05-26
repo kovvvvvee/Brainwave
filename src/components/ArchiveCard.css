@@ -1,0 +1,107 @@
+.archive-card {
+  background: var(--bg-card-warm);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.archive-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: var(--paper-grain);
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.archive-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.archive-card:hover {
+  box-shadow: var(--shadow-hover);
+  border-color: var(--border-medium);
+  transform: translateY(-1px);
+}
+
+/* Variants */
+.archive-card-default {
+  background: var(--bg-card-warm);
+}
+
+.archive-card-subtle {
+  background: var(--bg-card);
+  border-color: var(--border-soft);
+  box-shadow: var(--shadow-soft);
+}
+
+.archive-card-elevated {
+  background: var(--bg-card-warm);
+  box-shadow: var(--shadow-medium);
+}
+
+/* Padding variants */
+.archive-card-padding-default {
+  padding: var(--padding-card);
+}
+
+.archive-card-padding-lg {
+  padding: var(--padding-card-lg);
+}
+
+.archive-card-padding-xl {
+  padding: var(--padding-card-xl);
+}
+
+.archive-card-padding-none {
+  padding: 0;
+}
+
+/* Typography within cards */
+.archive-card h1,
+.archive-card h2,
+.archive-card h3,
+.archive-card h4,
+.archive-card h5,
+.archive-card h6 {
+  font-family: var(--font-family-serif);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.archive-card p {
+  font-family: var(--font-family-sans);
+  color: var(--text-secondary);
+  line-height: var(--line-height-comfortable);
+  margin-bottom: var(--spacing-md);
+}
+
+.archive-card .meta-text {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  letter-spacing: 0.05em;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .archive-card-padding-default {
+    padding: var(--spacing-md);
+  }
+  
+  .archive-card-padding-lg {
+    padding: var(--spacing-lg);
+  }
+  
+  .archive-card-padding-xl {
+    padding: var(--spacing-xl);
+  }
+}

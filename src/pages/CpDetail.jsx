@@ -11,6 +11,7 @@ import InteractionDetailsCard from '../components/InteractionDetailsCard'
 import ReadingMode from '../components/ReadingMode'
 import FloatingActionBar from '../components/FloatingActionBar'
 import ArchiveSymbol from '../components/ArchiveSymbol'
+import ArchiveResidue from '../components/ArchiveResidue'
 import './CpDetail.css'
 
 function CpDetail() {
@@ -128,6 +129,61 @@ function CpDetail() {
     fetchAus()
     fetchUncategorizedInspirations()
   }, [id])
+
+  // Force layout recalculation after all components are rendered
+  useEffect(() => {
+    if (!loading && cp) {
+      const recalculateLayout = () => {
+        // Wait for all components to finish rendering
+        requestAnimationFrame(() => {
+          // First pass: let browser paint
+          requestAnimationFrame(() => {
+            // Force reflow by reading layout
+            document.body.offsetHeight
+
+            // Second pass: after paint is complete
+            setTimeout(() => {
+              // Force reflow again
+              document.body.offsetHeight
+
+              // Trigger resize event for any listeners
+              window.dispatchEvent(new Event('resize'))
+
+              // Force re-measure all textareas
+              const textareas = document.querySelectorAll('.creative-textarea')
+              textareas.forEach(textarea => {
+                textarea.style.height = 'auto'
+                textarea.style.height = textarea.scrollHeight + 'px'
+              })
+
+              // Force re-measure all collapsible sections
+              const sections = document.querySelectorAll('.collapsible-section')
+              sections.forEach(section => {
+                section.style.height = 'auto'
+              })
+
+              // Force re-measure archive decoration symbols
+              const residues = document.querySelectorAll('.archive-residue')
+              residues.forEach(residue => {
+                residue.style.opacity = '0'
+                setTimeout(() => {
+                  residue.style.opacity = residue.dataset.opacity || '0.1'
+                }, 10)
+              })
+
+              // Final layout pass
+              setTimeout(() => {
+                document.body.offsetHeight
+                window.dispatchEvent(new Event('resize'))
+              }, 50)
+            }, 150)
+          })
+        })
+      }
+
+      recalculateLayout()
+    }
+  }, [loading, cp, isEditing])
 
   const fetchCp = async () => {
     try {
@@ -361,6 +417,17 @@ function CpDetail() {
   if (loading) {
     return (
       <div className="cp-detail">
+        <ArchiveResidue 
+          imageSrc="/assets/rabbit-girl-ascii.png"
+          position="right-main"
+          opacity={0.15}
+          size="full-height"
+          crop="top-right-corner"
+          grayscale={100}
+          contrast={90}
+          brightness={100}
+          saturate={20}
+        />
         <div className="archive-loading">
           <p className="archive-loading-text">Reading Relationship File...</p>
         </div>
@@ -371,6 +438,17 @@ function CpDetail() {
   if (!cp) {
     return (
       <div className="cp-detail">
+        <ArchiveResidue 
+          imageSrc="/assets/rabbit-girl-ascii.png"
+          position="right-main"
+          opacity={0.15}
+          size="full-height"
+          crop="top-right-corner"
+          grayscale={100}
+          contrast={90}
+          brightness={100}
+          saturate={20}
+        />
         <div className="archive-empty">
           <p>档案未找到</p>
           <Link to="/cp-list" className="archive-btn">返回档案列表</Link>
@@ -403,6 +481,20 @@ function CpDetail() {
   return (
     <div className="cp-detail">
       {console.log('CpDetail render - cp state:', cp)}
+      
+      {/* Background illustration - subtle mood element */}
+      <ArchiveResidue 
+        imageSrc="/assets/rabbit-girl-ascii.png"
+        position="right-main"
+        opacity={0.15}
+        size="full-height"
+        crop="top-right-corner"
+        grayscale={100}
+        contrast={90}
+        brightness={100}
+        saturate={20}
+      />
+      
       <button 
         className="back-to-archive-button"
         onClick={() => navigate('/archive')}
@@ -411,7 +503,12 @@ function CpDetail() {
       </button>
       
       <header className="page-header">
-        <h1>{cp?.name || 'CP详情'}</h1>
+        <div className="header-main">
+          <h1>{cp?.name || 'CP详情'}</h1>
+          <div className="scan-timestamp">
+          </div>
+        </div>
+        <div className="header-archive-mark"></div>
         <div className="header-actions">
           {!isEditing && (
             <button className="btn btn-primary" onClick={() => setIsEditing(true)}>
@@ -429,7 +526,6 @@ function CpDetail() {
         <section className="cp-section">
           <div className="section-header">
             <h2 className="section-title">基础设定</h2>
-            <span className="section-archive-code">✦ ARCHIVE</span>
           </div>
 
           <div className="section-content">
@@ -439,7 +535,6 @@ function CpDetail() {
               defaultExpanded={false}
             >
               <div className="field-group">
-                <span className="field-archive-symbol">✦ ARCHIVE_01</span>
                 {isEditing ? (
                   <CreativeTextarea
                     value={formData.core_dynamic}
@@ -763,7 +858,6 @@ function CpDetail() {
         <section className="au-list-section">
           <div className="section-header-inline">
             <h2 className="section-title">AU列表</h2>
-            <span className="section-archive-code">☾ FILE_02</span>
             <Link to={`/cp/${id}/create-au`} className="btn btn-secondary btn-small">创建AU</Link>
           </div>
           {aus.length === 0 ? (
@@ -776,9 +870,6 @@ function CpDetail() {
                 <div key={au.id} className="au-item-light">
                   <div className="au-main-inline">
                     <span className="au-name-inline">{au.name}</span>
-                    {au.core_atmosphere && (
-                      <p className="au-subtitle-inline">{au.core_atmosphere}</p>
-                    )}
                   </div>
                   <Link to={`/au/${au.id}`} className="btn btn-secondary btn-small">查看详情</Link>
                 </div>

@@ -5,6 +5,7 @@ import { getCpById } from '../supabase/cpService'
 import { getAuById } from '../supabase/auService'
 import { expandInspiration } from '../supabase/aiService'
 import ReadingMode from '../components/ReadingMode'
+import ArchiveResidue from '../components/ArchiveResidue'
 import './InspirationDetail.css'
 
 function InspirationDetail() {
@@ -298,6 +299,19 @@ function InspirationDetail() {
 
   return (
     <div className="inspiration-detail">
+      {/* Background illustration - ASCII in loading area */}
+      <ArchiveResidue 
+        imageSrc="/assets/rabbit-girl-ascii.png"
+        position="right-main"
+        opacity={0.15}
+        size="full-height"
+        crop="top-right-corner"
+        grayscale={100}
+        contrast={90}
+        brightness={100}
+        saturate={20}
+      />
+      
       <header className="page-header">
         <div className="header-left">
         </div>
@@ -376,10 +390,9 @@ function InspirationDetail() {
                   <div key={expansion.id} className={`version-card printer-edge ${expansion.is_favorite ? 'main-version' : ''}`}>
                     {/* Printer-style header decorations */}
                     <div className="printer-header">
-                      <div className="archive-stamp">BRAINWAVE OUTPUT_{archiveNumber}</div>
-                      <div className="scanner-mark">SCANNED FILE</div>
+                      <div className="archive-stamp"></div>
+                      <div className="scanner-mark"></div>
                       <div className="print-timestamp">
-                        {new Date(expansion.created_at).toLocaleString('zh-CN')}
                       </div>
                     </div>
                     

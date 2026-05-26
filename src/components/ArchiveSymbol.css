@@ -75,28 +75,28 @@
 @media (max-width: 768px) {
   .archive-symbol-tiny {
     font-size: 7px;
-    opacity: 0.08;
+    opacity: 0.10;
   }
 
   .archive-symbol-small {
     font-size: 9px;
-    opacity: 0.10;
+    opacity: 0.12;
   }
 
   .archive-symbol-medium {
     font-size: 10px;
-    opacity: 0.12;
+    opacity: 0.14;
   }
 
   .archive-symbol-normal {
-    opacity: 0.10;
-  }
-
-  .archive-symbol-key {
     opacity: 0.12;
   }
 
+  .archive-symbol-key {
+    opacity: 0.15;
+  }
+
   .archive-symbol-faint {
-    opacity: 0.08;
+    opacity: 0.10;
   }
 }

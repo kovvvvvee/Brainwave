@@ -6,6 +6,8 @@ import CollapsibleSection from '../components/CollapsibleSection'
 import CreativeTextarea from '../components/CreativeTextarea'
 import DetailCard from '../components/DetailCard'
 import InteractionDetailsCard from '../components/InteractionDetailsCard'
+import ArchiveSymbol from '../components/ArchiveSymbol'
+import ArchiveResidue from '../components/ArchiveResidue'
 import './CreateCp.css'
 
 function CreateCp() {
@@ -119,6 +121,13 @@ function CreateCp() {
       await createCp(savePayload)
       alert('CP创建成功')
       navigate('/cp-list')
+      // Force layout recalculation after navigation
+      requestAnimationFrame(() => {
+        window.dispatchEvent(new Event('resize'))
+        setTimeout(() => {
+          window.dispatchEvent(new Event('resize'))
+        }, 100)
+      })
     } catch (error) {
       console.error('创建CP失败:', error)
       alert('创建CP失败，请重试')
@@ -129,10 +138,22 @@ function CreateCp() {
 
   return (
     <div className="create-cp">
+      {/* Background illustration - character silhouette at edge */}
+      <ArchiveResidue 
+        imageSrc="/assets/rabbit-girl-ascii.png"
+        position="right-main"
+        opacity={0.15}
+        size="full-height"
+        crop="top-right-corner"
+        grayscale={100}
+        contrast={90}
+        brightness={100}
+        saturate={20}
+      />
+      
       <header className="page-header">
         <ArchiveSymbol symbol="✦" position="top-right" size="small" variant="key" />
         <h1>建立新的关系档案</h1>
-        <p className="page-subtitle">ARCHIVE INITIALIZATION</p>
       </header>
 
       <main className="create-cp-main">
@@ -140,7 +161,6 @@ function CreateCp() {
           {/* CP名称 */}
           <div className="field-group">
             <label className="field-label">CP名称</label>
-            <span className="field-archive-symbol">ARCHIVE_00</span>
             <input
               type="text"
               value={formData.name}
@@ -160,7 +180,6 @@ function CreateCp() {
             totalFields={1}
           >
             <div className="field-group">
-              <span className="field-archive-symbol">✦ CORE</span>
               <label className="field-label">这是关系核心引擎。不是简介。而是"他们为什么互相上瘾"。</label>
               <CreativeTextarea
                 value={formData.core_one_liner}
@@ -180,7 +199,6 @@ function CreateCp() {
             tags={['情绪惯性', '相处惯性', '欲望惯性']}
           >
             <div className="field-group">
-              <span className="field-archive-symbol">☾ DYNAMIC</span>
               <label className="field-label">不要写剧情。写长期重复出现的关系惯性。</label>
               <div className="nested-fields">
                 <DetailCard
@@ -218,7 +236,6 @@ function CreateCp() {
             tags={['外显状态', '真实状态', '语言习惯']}
           >
             <div className="field-group">
-              <span className="field-archive-symbol">✦ PROFILE</span>
               <label className="field-label">只写会影响互动的部分。不要写百科。</label>
               <div className="character-profiles">
                 <div className="character-profile">
@@ -299,7 +316,6 @@ function CreateCp() {
             tags={['欲望结构', '行为惯性', '基础定位']}
           >
             <div className="field-group">
-              <span className="field-archive-symbol">⋆ SEXUAL</span>
               <label className="field-label">重点是欲望结构和行为惯性。不是简单写谁1谁0。</label>
               <div className="nested-fields">
                 <DetailCard
@@ -336,7 +352,6 @@ function CreateCp() {
             totalFields={1}
           >
             <div className="field-group">
-              <span className="field-archive-symbol">☾ ATMOSPHERE</span>
               <CreativeTextarea
                 value={formData.relationship_atmosphere}
                 onChange={(value) => handleChange('relationship_atmosphere', value)}
@@ -354,7 +369,6 @@ function CreateCp() {
             totalFields={0}
           >
             <div className="field-group">
-              <span className="field-archive-symbol">✦ DETAILS</span>
               <InteractionDetailsCard
                 details={formData.interaction_details}
                 onChange={(value) => handleChange('interaction_details', value)}
@@ -372,7 +386,6 @@ function CreateCp() {
             totalFields={1}
           >
             <div className="field-group">
-              <span className="field-archive-symbol">SCAN_01</span>
               <label className="field-label">只保留：世界观关键规则、重大经历、影响关系的重要事件</label>
               <CreativeTextarea
                 value={formData.source_material}
@@ -391,7 +404,6 @@ function CreateCp() {
             tags={['OOC规则', '权力流动', '关系边界']}
           >
             <div className="field-group">
-              <span className="field-archive-symbol">⋆ ADVANCED</span>
               <label className="field-label">OOC规则</label>
               <CreativeTextarea
                 value={formData.ooc_rules}

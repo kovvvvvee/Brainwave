@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import { createAu } from '../supabase/auService'
 import CollapsibleSection from '../components/CollapsibleSection'
 import CreativeTextarea from '../components/CreativeTextarea'
+import ArchiveSymbol from '../components/ArchiveSymbol'
+import ArchiveResidue from '../components/ArchiveResidue'
 import './CreateAu.css'
 
 function CreateAu() {
@@ -12,7 +14,6 @@ function CreateAu() {
   // New AI-friendly AU structure
   const [formData, setFormData] = useState({
     name: '',
-    description: '',
     core_atmosphere: '',
     world_rules: { social_rules: '', life_rules: '', body_rules: '' },
     relationship_surface_layer: '',
@@ -70,9 +71,22 @@ function CreateAu() {
 
   return (
     <div className="create-au">
+      {/* Background illustration - character silhouette at edge */}
+      <ArchiveResidue 
+        imageSrc="/assets/rabbit-girl-ascii.png"
+        position="right-main"
+        opacity={0.15}
+        size="full-height"
+        crop="top-right-corner"
+        grayscale={100}
+        contrast={90}
+        brightness={100}
+        saturate={20}
+      />
+      
       <header className="page-header">
-        <h1>创建新AU</h1>
-        <p className="page-subtitle">定义这个世界的关系运行规则</p>
+        <ArchiveSymbol symbol="☾" position="top-right" size="small" variant="key" />
+        <h1>建立新的世界档案</h1>
       </header>
 
       <main className="create-au-main">
@@ -92,20 +106,6 @@ function CreateAu() {
             />
           </div>
 
-          {/* AU描述 - 可选 */}
-          <div className="form-group">
-            <label htmlFor="description" className="form-label">AU描述</label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={(e) => handleInputChange('description', e.target.value)}
-              placeholder="对这个AU的简要描述..."
-              rows={3}
-              className="form-textarea"
-            />
-          </div>
-
           {/* AU核心气味 - 最高优先级，默认展开 */}
           <CollapsibleSection
             title="AU核心气味"
@@ -114,7 +114,8 @@ function CreateAu() {
             filledCount={formData.core_atmosphere ? 1 : 0}
             totalFields={1}
           >
-            <div className="field-group">
+            <div className="field-group au-core-field">
+              <ArchiveSymbol symbol="☾" position="top-left" size="small" variant="key" />
               <label className="field-label">
                 这个世界给人的整体感觉
                 <span className="field-description">不是介绍世界，而是这个世界给人的整体感觉。它决定AI写出来有没有"AU味"。</span>
@@ -138,71 +139,45 @@ function CreateAu() {
             }
             totalFields={3}
           >
-            <div className="section-description">
-              这些规则会直接影响人物互动。AI扩写时会读取这些机制来决定人物如何反应。
-            </div>
+            <div className="section-separator">┈┈┈┈</div>
             {/* 社会规则 */}
-            <CollapsibleSection
-              title="社会规则"
-              defaultExpanded={false}
-              summary={formData.world_rules?.social_rules ? formData.world_rules.social_rules.substring(0, 50) + '...' : null}
-              filledCount={formData.world_rules?.social_rules ? 1 : 0}
-              totalFields={1}
-            >
-              <div className="field-group">
-                <label className="field-label">
-                  社会规则
-                  <span className="field-description">影响关系合法性和社会压力的规则</span>
-                </label>
-                <CreativeTextarea
-                  value={formData.world_rules?.social_rules || ''}
-                  onChange={(value) => handleWorldRulesChange('social_rules', value)}
-                  placeholder="哨兵向导需要精神结合才能稳定 / ABO存在信息素压制，弱势方无法反抗 / 仿生人无法合法拥有情感模块 / 公司禁止办公室恋爱，违者降职 / 魔法需要通过身体接触才能稳定"
-                />
-              </div>
-            </CollapsibleSection>
+            <div className="field-group">
+              <label className="field-label">
+                社会规则
+                <span className="field-description">影响关系合法性和社会压力的规则</span>
+              </label>
+              <CreativeTextarea
+                value={formData.world_rules?.social_rules || ''}
+                onChange={(value) => handleWorldRulesChange('social_rules', value)}
+                placeholder="哨兵向导需要精神结合才能稳定 / ABO存在信息素压制，弱势方无法反抗 / 仿生人无法合法拥有情感模块 / 公司禁止办公室恋爱，违者降职 / 魔法需要通过身体接触才能稳定"
+              />
+            </div>
 
             {/* 生活规则 */}
-            <CollapsibleSection
-              title="生活规则"
-              defaultExpanded={false}
-              summary={formData.world_rules?.life_rules ? formData.world_rules.life_rules.substring(0, 50) + '...' : null}
-              filledCount={formData.world_rules?.life_rules ? 1 : 0}
-              totalFields={1}
-            >
-              <div className="field-group">
-                <label className="field-label">
-                  生活规则
-                  <span className="field-description">影响日常相处和情绪状态的规则</span>
-                </label>
-                <CreativeTextarea
-                  value={formData.world_rules?.life_rules || ''}
-                  onChange={(value) => handleWorldRulesChange('life_rules', value)}
-                  placeholder="夜班制导致长期睡眠紊乱，情绪控制力下降 / 长期任务会影响精神状态，需要定期强制休息 / 高层监控私人通讯，无法真正私密 / 这个世界默认亲密关系短暂，没有人期待长久"
-                />
-              </div>
-            </CollapsibleSection>
+            <div className="field-group">
+              <label className="field-label">
+                生活规则
+                <span className="field-description">影响日常相处和情绪状态的规则</span>
+              </label>
+              <CreativeTextarea
+                value={formData.world_rules?.life_rules || ''}
+                onChange={(value) => handleWorldRulesChange('life_rules', value)}
+                placeholder="夜班制导致长期睡眠紊乱，情绪控制力下降 / 长期任务会影响精神状态，需要定期强制休息 / 高层监控私人通讯，无法真正私密 / 这个世界默认亲密关系短暂，没有人期待长久"
+              />
+            </div>
 
             {/* 身体规则 - 最高优先级 */}
-            <CollapsibleSection
-              title="身体规则（高优先级）"
-              defaultExpanded={false}
-              summary={formData.world_rules?.body_rules ? formData.world_rules.body_rules.substring(0, 50) + '...' : null}
-              filledCount={formData.world_rules?.body_rules ? 1 : 0}
-              totalFields={1}
-            >
-              <div className="field-group">
-                <label className="field-label">
-                  身体规则
-                  <span className="field-description">直接影响欲望、控制和失控的生理机制（最重要）</span>
-                </label>
-                <CreativeTextarea
-                  value={formData.world_rules?.body_rules || ''}
-                  onChange={(value) => handleWorldRulesChange('body_rules', value)}
-                  placeholder="精神污染会放大欲望，越污染越渴望接触 / 发情期会影响控制能力，理智下降 / 过载会导致情绪失衡，需要物理降温 / 共感会同步快感/疼痛，无法屏蔽对方感受 / 精神链接会残留情绪，长期接触会互相渗透 / 长期压抑会诱发失控，爆发时更危险"
-                />
-              </div>
-            </CollapsibleSection>
+            <div className="field-group">
+              <label className="field-label">
+                身体规则（高优先级）
+                <span className="field-description">直接影响欲望、控制和失控的生理机制（最重要）</span>
+              </label>
+              <CreativeTextarea
+                value={formData.world_rules?.body_rules || ''}
+                onChange={(value) => handleWorldRulesChange('body_rules', value)}
+                placeholder="精神污染会放大欲望，越污染越渴望接触 / 发情期会影响控制能力，理智下降 / 过载会导致情绪失衡，需要物理降温 / 共感会同步快感/疼痛，无法屏蔽对方感受 / 精神链接会残留情绪，长期接触会互相渗透 / 长期压抑会诱发失控，爆发时更危险"
+              />
+            </div>
           </CollapsibleSection>
 
           {/* 他们在这个世界里的状态 - 3部分，默认收起 */}
@@ -332,9 +307,9 @@ function CreateAu() {
           </CollapsibleSection>
 
           <div className="form-actions">
-            <Link to={`/cp/${cpId}`} className="btn btn-secondary">取消</Link>
-            <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-              {isSubmitting ? '创建中...' : '创建AU'}
+            <Link to={`/cp/${cpId}`} className="archive-cancel-btn">取消</Link>
+            <button type="submit" className="archive-action-btn" disabled={isSubmitting}>
+              {isSubmitting ? '保存中...' : '保存档案'}
             </button>
           </div>
         </form>

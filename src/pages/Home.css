@@ -284,7 +284,7 @@
   font-family: 'Courier New', monospace;
   font-size: 10px;
   color: #7c746c;
-  opacity: 0.12;
+  opacity: 0.16;
   margin-left: var(--spacing-sm);
   letter-spacing: 0.05em;
 }
@@ -296,7 +296,7 @@
   font-family: 'Courier New', monospace;
   font-size: 8px;
   color: #7c746c;
-  opacity: 0.10;
+  opacity: 0.16;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }

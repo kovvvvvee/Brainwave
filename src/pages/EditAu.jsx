@@ -1,6 +1,7 @@
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { getAuById, updateAu } from '../supabase/auService'
+import ArchiveResidue from '../components/ArchiveResidue'
 import './CreateAu.css'
 
 function EditAu() {
@@ -81,6 +82,19 @@ function EditAu() {
 
   return (
     <div className="create-au">
+      {/* Background illustration - character silhouette at edge */}
+      <ArchiveResidue 
+        imageSrc="/assets/rabbit-girl-ascii.png"
+        position="right-main"
+        opacity={0.15}
+        size="full-height"
+        crop="top-right-corner"
+        grayscale={100}
+        contrast={90}
+        brightness={100}
+        saturate={20}
+      />
+      
       <header className="page-header">
         <h1>完善设定</h1>
       </header>

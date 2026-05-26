@@ -403,8 +403,7 @@ export function getCpContextPrompt(cp) {
   let prompt = ''
 
   if (cp.core_dynamic) {
-    prompt += `# CP核心一句话
-${cp.core_dynamic}
+    prompt += `${cp.core_dynamic}
 
 `
   }
@@ -412,23 +411,18 @@ ${cp.core_dynamic}
   // 关系动态
   const hasRelationshipDynamic = relationshipDynamic.emotional_inertia || relationshipDynamic.interaction_inertia || relationshipDynamic.desire_inertia
   if (hasRelationshipDynamic) {
-    prompt += `# 关系动态
-`
     if (relationshipDynamic.emotional_inertia) {
-      prompt += `## 情绪惯性
-${relationshipDynamic.emotional_inertia}
+      prompt += `${relationshipDynamic.emotional_inertia}
 
 `
     }
     if (relationshipDynamic.interaction_inertia) {
-      prompt += `## 相处惯性
-${relationshipDynamic.interaction_inertia}
+      prompt += `${relationshipDynamic.interaction_inertia}
 
 `
     }
     if (relationshipDynamic.desire_inertia) {
-      prompt += `## 欲望惯性
-${relationshipDynamic.desire_inertia}
+      prompt += `${relationshipDynamic.desire_inertia}
 
 `
     }
@@ -438,94 +432,76 @@ ${relationshipDynamic.desire_inertia}
   const hasCharacterA = characterProfiles.character_a?.explicit_state || characterProfiles.character_a?.true_state || characterProfiles.character_a?.language_habits
   const hasCharacterB = characterProfiles.character_b?.explicit_state || characterProfiles.character_b?.true_state || characterProfiles.character_b?.language_habits
   if (hasCharacterA || hasCharacterB) {
-    prompt += `# 角色单独档案
-`
     if (hasCharacterA) {
-      prompt += `## ${characterAName}
-`
       if (characterProfiles.character_a?.explicit_state) {
-        prompt += `### 外显状态
-${characterProfiles.character_a.explicit_state}
+        prompt += `${characterAName}看起来：${characterProfiles.character_a.explicit_state}
+
 `
       }
       if (characterProfiles.character_a?.true_state) {
-        prompt += `### 真实状态
-${characterProfiles.character_a.true_state}
+        prompt += `${characterAName}实际上：${characterProfiles.character_a.true_state}
+
 `
       }
       if (characterProfiles.character_a?.language_habits) {
-        prompt += `### 语言习惯
-${characterProfiles.character_a.language_habits}
+        prompt += `${characterAName}说话：${characterProfiles.character_a.language_habits}
+
 `
       }
-      prompt += `
-`
     }
     if (hasCharacterB) {
-      prompt += `## ${characterBName}
-`
       if (characterProfiles.character_b?.explicit_state) {
-        prompt += `### 外显状态
-${characterProfiles.character_b.explicit_state}
+        prompt += `${characterBName}看起来：${characterProfiles.character_b.explicit_state}
+
 `
       }
       if (characterProfiles.character_b?.true_state) {
-        prompt += `### 真实状态
-${characterProfiles.character_b.true_state}
+        prompt += `${characterBName}实际上：${characterProfiles.character_b.true_state}
+
 `
       }
       if (characterProfiles.character_b?.language_habits) {
-        prompt += `### 语言习惯
-${characterProfiles.character_b.language_habits}
+        prompt += `${characterBName}说话：${characterProfiles.character_b.language_habits}
+
 `
       }
-      prompt += `
-`
     }
   }
 
   // 性关系动态
   const hasSexualDynamic = sexualDynamic.desire_structure || sexualDynamic.behavioral_inertia || sexualDynamic.basic_positioning
   if (hasSexualDynamic) {
-    prompt += `# 性关系动态
-`
     if (sexualDynamic.desire_structure) {
-      prompt += `## 欲望结构
-${sexualDynamic.desire_structure}
+      prompt += `${sexualDynamic.desire_structure}
 
 `
     }
     if (sexualDynamic.behavioral_inertia) {
-      prompt += `## 行为惯性
-${sexualDynamic.behavioral_inertia}
+      prompt += `${sexualDynamic.behavioral_inertia}
 
 `
     }
     if (sexualDynamic.basic_positioning) {
-      prompt += `## 基础定位
-${sexualDynamic.basic_positioning}
+      prompt += `${sexualDynamic.basic_positioning}
 
 `
     }
   }
 
   if (cp.relationship_atmosphere) {
-    prompt += `# 关系氛围
-${cp.relationship_atmosphere}
+    prompt += `${cp.relationship_atmosphere}
 
 `
   }
 
   if (interactionDetails.length > 0) {
-    prompt += `# 互动细节库
-${interactionDetails.join('\n')}
+    prompt += `${interactionDetails.join('\n')}
 
 `
   }
 
   if (cp.source_material) {
-    prompt += `# 原作信息
-${cp.source_material}
+    prompt += `${cp.source_material}
 
 `
   }
@@ -533,23 +509,18 @@ ${cp.source_material}
   // 高级设定
   const hasAdvancedSettings = cp.power_flow || cp.relationship_boundaries || cp.ooc_rules
   if (hasAdvancedSettings) {
-    prompt += `# 高级设定
-`
     if (cp.power_flow) {
-      prompt += `## 权力流动
-${cp.power_flow}
+      prompt += `${cp.power_flow}
 
 `
     }
     if (cp.relationship_boundaries) {
-      prompt += `## 关系边界
-${cp.relationship_boundaries}
+      prompt += `${cp.relationship_boundaries}
 
 `
     }
     if (cp.ooc_rules) {
-      prompt += `## OOC规则
-${cp.ooc_rules}
+      prompt += `${cp.ooc_rules}
 `
     }
   }
@@ -603,8 +574,7 @@ export function getCpLiteContextPrompt(cp) {
   let prompt = ''
 
   if (cp.core_dynamic) {
-    prompt += `# CP核心一句话
-${cp.core_dynamic}
+    prompt += `${cp.core_dynamic}
 
 `
   }
@@ -612,23 +582,18 @@ ${cp.core_dynamic}
   // 关系动态
   const hasRelationshipDynamic = relationshipDynamic.emotional_inertia || relationshipDynamic.interaction_inertia || relationshipDynamic.desire_inertia
   if (hasRelationshipDynamic) {
-    prompt += `# 关系动态
-`
     if (relationshipDynamic.emotional_inertia) {
-      prompt += `## 情绪惯性
-${relationshipDynamic.emotional_inertia}
+      prompt += `${relationshipDynamic.emotional_inertia}
 
 `
     }
     if (relationshipDynamic.interaction_inertia) {
-      prompt += `## 相处惯性
-${relationshipDynamic.interaction_inertia}
+      prompt += `${relationshipDynamic.interaction_inertia}
 
 `
     }
     if (relationshipDynamic.desire_inertia) {
-      prompt += `## 欲望惯性
-${relationshipDynamic.desire_inertia}
+      prompt += `${relationshipDynamic.desire_inertia}
 
 `
     }
@@ -638,87 +603,70 @@ ${relationshipDynamic.desire_inertia}
   const hasCharacterA = characterProfiles.character_a?.explicit_state || characterProfiles.character_a?.true_state || characterProfiles.character_a?.language_habits
   const hasCharacterB = characterProfiles.character_b?.explicit_state || characterProfiles.character_b?.true_state || characterProfiles.character_b?.language_habits
   if (hasCharacterA || hasCharacterB) {
-    prompt += `# 角色单独档案
-`
     if (hasCharacterA) {
-      prompt += `## ${characterAName}
-`
       if (characterProfiles.character_a?.explicit_state) {
-        prompt += `### 外显状态
-${characterProfiles.character_a.explicit_state}
+        prompt += `${characterAName}看起来：${characterProfiles.character_a.explicit_state}
+
 `
       }
       if (characterProfiles.character_a?.true_state) {
-        prompt += `### 真实状态
-${characterProfiles.character_a.true_state}
+        prompt += `${characterAName}实际上：${characterProfiles.character_a.true_state}
+
 `
       }
       if (characterProfiles.character_a?.language_habits) {
-        prompt += `### 语言习惯
-${characterProfiles.character_a.language_habits}
+        prompt += `${characterAName}说话：${characterProfiles.character_a.language_habits}
+
 `
       }
-      prompt += `
-`
     }
     if (hasCharacterB) {
-      prompt += `## ${characterBName}
-`
       if (characterProfiles.character_b?.explicit_state) {
-        prompt += `### 外显状态
-${characterProfiles.character_b.explicit_state}
+        prompt += `${characterBName}看起来：${characterProfiles.character_b.explicit_state}
+
 `
       }
       if (characterProfiles.character_b?.true_state) {
-        prompt += `### 真实状态
-${characterProfiles.character_b.true_state}
+        prompt += `${characterBName}实际上：${characterProfiles.character_b.true_state}
+
 `
       }
       if (characterProfiles.character_b?.language_habits) {
-        prompt += `### 语言习惯
-${characterProfiles.character_b.language_habits}
+        prompt += `${characterBName}说话：${characterProfiles.character_b.language_habits}
+
 `
       }
-      prompt += `
-`
     }
   }
 
   // 性关系动态
   const hasSexualDynamic = sexualDynamic.desire_structure || sexualDynamic.behavioral_inertia || sexualDynamic.basic_positioning
   if (hasSexualDynamic) {
-    prompt += `# 性关系动态
-`
     if (sexualDynamic.desire_structure) {
-      prompt += `## 欲望结构
-${sexualDynamic.desire_structure}
+      prompt += `${sexualDynamic.desire_structure}
 
 `
     }
     if (sexualDynamic.behavioral_inertia) {
-      prompt += `## 行为惯性
-${sexualDynamic.behavioral_inertia}
+      prompt += `${sexualDynamic.behavioral_inertia}
 
 `
     }
     if (sexualDynamic.basic_positioning) {
-      prompt += `## 基础定位
-${sexualDynamic.basic_positioning}
+      prompt += `${sexualDynamic.basic_positioning}
 
 `
     }
   }
 
   if (cp.relationship_atmosphere) {
-    prompt += `# 关系氛围
-${cp.relationship_atmosphere}
+    prompt += `${cp.relationship_atmosphere}
 
 `
   }
 
   if (interactionDetails.length > 0) {
-    prompt += `# 互动细节库
-${interactionDetails.join('\n')}
+    prompt += `${interactionDetails.join('\n')}
 
 `
   }
@@ -726,34 +674,23 @@ ${interactionDetails.join('\n')}
   // 高级设定
   const hasAdvancedSettings = cp.power_flow || cp.relationship_boundaries || cp.ooc_rules
   if (hasAdvancedSettings) {
-    prompt += `# 高级设定
-`
     if (cp.power_flow) {
-      prompt += `## 权力流动
-${cp.power_flow}
+      prompt += `${cp.power_flow}
 
 `
     }
     if (cp.relationship_boundaries) {
-      prompt += `## 关系边界
-${cp.relationship_boundaries}
+      prompt += `${cp.relationship_boundaries}
 
 `
     }
     if (cp.ooc_rules) {
-      prompt += `## OOC规则
-${cp.ooc_rules}
+      prompt += `${cp.ooc_rules}
 `
     }
   }
 
-  prompt += `【重要限制】
-当前存在AU世界观，生成时严禁自动调用：
-原作职业、原作组织、原作社会结构、原作事件、原作剧情。
-
-即使人物名称来自原作，也不要自动恢复原作世界逻辑。
-
-只保留人物的情绪惯性、欲望结构、人格逻辑、关系依赖、语言习惯。`
+  prompt += `这里不是原作世界。人物的情绪惯性、欲望结构、人格逻辑、关系依赖、语言习惯保留，但不要自动恢复原作的职业、组织、社会结构、事件、剧情。`
 
   return prompt
 }
@@ -778,22 +715,19 @@ export function getAuContextPrompt(au) {
   let prompt = ''
 
   if (au.name) {
-    prompt += `【AU核心氛围】
-AU名称：${au.name}
+    prompt += `${au.name}
 
 `
   }
 
   if (au.core_atmosphere) {
-    prompt += `【核心氛围】
-${au.core_atmosphere}
+    prompt += `${au.core_atmosphere}
 
 `
   }
 
   if (au.description) {
-    prompt += `【补充参考（低优先级）】
-${au.description}
+    prompt += `${au.description}
 
 `
   }
@@ -801,37 +735,23 @@ ${au.description}
   // 世界规则层
   const hasWorldRules = au.social_rules || au.life_rules || au.body_rules || au.world_rules
   if (hasWorldRules) {
-    prompt += `【世界规则层】
-这些规则不能只停留在设定层，必须自然渗入身体反应、日常习惯、情绪表达、性关系推进、社会压力、人物互动方式。不要把AU当背景板。
-
-不要解释规则本身。要让规则像现实一样自然存在。人物不会刻意说明自己早已习惯的世界。
-
-避免出现："由于这个世界……"、"因为ABO设定……"、"哨兵向导之间……"这种世界观说明文口吻。
-
-规则应该直接渗入身体反应、情绪变化、日常习惯、亲密关系、欲望推进，而不是被专门讲解。
-
-`
     if (au.social_rules) {
-      prompt += `【社会规则】
-${au.social_rules}
+      prompt += `${au.social_rules}
 
 `
     }
     if (au.life_rules) {
-      prompt += `【生活规则】
-${au.life_rules}
+      prompt += `${au.life_rules}
 
 `
     }
     if (au.body_rules) {
-      prompt += `【身体规则】
-${au.body_rules}
+      prompt += `${au.body_rules}
 
 `
     }
     if (au.world_rules) {
-      prompt += `【世界规则】
-${au.world_rules}
+      prompt += `${au.world_rules}
 
 `
     }
@@ -840,31 +760,23 @@ ${au.world_rules}
   // 欲望与后果机制
   const hasDesireMechanisms = au.desire_mechanism || au.relationship_pressure || au.emotional_consequences || au.physical_consequences
   if (hasDesireMechanisms) {
-    prompt += `【欲望与后果机制】
-这些机制直接影响人物的欲望、情绪、身体反应、行为边界、亲密关系。
-
-`
     if (au.desire_mechanism) {
-      prompt += `【欲望机制】
-${au.desire_mechanism}
+      prompt += `${au.desire_mechanism}
 
 `
     }
     if (au.relationship_pressure) {
-      prompt += `【关系压力】
-${au.relationship_pressure}
+      prompt += `${au.relationship_pressure}
 
 `
     }
     if (au.emotional_consequences) {
-      prompt += `【情感后果】
-${au.emotional_consequences}
+      prompt += `${au.emotional_consequences}
 
 `
     }
     if (au.physical_consequences) {
-      prompt += `【身体后果】
-${au.physical_consequences}
+      prompt += `${au.physical_consequences}
 
 `
     }
@@ -873,25 +785,18 @@ ${au.physical_consequences}
   // 互动逻辑层
   const hasInteractionLogic = au.interaction_logic || au.intimacy_logic || au.emotional_logic
   if (hasInteractionLogic) {
-    prompt += `【互动逻辑层】
-这些逻辑必须自然渗入日常互动、身体习惯、情绪表达、性关系逻辑、社会压力。
-
-`
     if (au.interaction_logic) {
-      prompt += `【互动逻辑】
-${au.interaction_logic}
+      prompt += `${au.interaction_logic}
 
 `
     }
     if (au.intimacy_logic) {
-      prompt += `【亲密逻辑】
-${au.intimacy_logic}
+      prompt += `${au.intimacy_logic}
 
 `
     }
     if (au.emotional_logic) {
-      prompt += `【情感逻辑】
-${au.emotional_logic}
+      prompt += `${au.emotional_logic}
 
 `
     }
@@ -900,31 +805,25 @@ ${au.emotional_logic}
   // 力量与禁忌体系
   const hasPowerSystem = au.power_system || au.taboo_rules || au.instability_factors
   if (hasPowerSystem) {
-    prompt += `【力量与禁忌体系】
-`
     if (au.power_system) {
-      prompt += `【权力结构】
-${au.power_system}
+      prompt += `${au.power_system}
 
 `
     }
     if (au.taboo_rules) {
-      prompt += `【禁忌规则】
-${au.taboo_rules}
+      prompt += `${au.taboo_rules}
 
 `
     }
     if (au.instability_factors) {
-      prompt += `【不稳定因素】
-${au.instability_factors}
+      prompt += `${au.instability_factors}
 
 `
     }
   }
 
   if (au.au_amplification) {
-    prompt += `【AU放大】
-${au.au_amplification}`
+    prompt += `${au.au_amplification}`
   }
 
   return prompt
@@ -997,92 +896,33 @@ export function composeExpansionPrompt(params) {
   prompt += '\n\n'
 
   // Priority Layer: Generation Priority Control
-  prompt += `【生成优先级】
+  prompt += `灵感第一。文风第二。CP关系第三。AU规则第四。其他补充最后。
 
-生成时必须遵循以下优先级：
+如果冲突：灵感优先，文风优先于设定说明，CP关系优先于原作信息，AU规则优先于原作世界观。
 
-1. 灵感内容
-2. 文风层
-3. CP关系核心
-4. AU世界规则
-5. 其他补充设定
-
-如果不同层之间出现冲突：
-- 灵感优先
-- 文风优先于设定说明
-- CP关系优先于原作信息
-- AU规则优先于原作世界观
-- 补充背景权重最低
-
-不要平均使用所有设定。
-
-重点维持：
-人物关系、
-情绪惯性、
-身体逻辑、
-互动气压、
-文风节奏。`
+重点维持人物关系、情绪惯性、身体逻辑、互动气压、文风节奏。`
   prompt += '\n\n'
 
   // Add expansion parameters
-  prompt += `【扩写长度控制】
-
-用户选择的正文长度： ${length}
+  prompt += `用户选择的正文长度： ${length}
 
 目标正文长度： 约 ${currentLength.target} 字。
 
 最低正文长度： 不少于 ${currentLength.min} 字。
 
-【长度要求】
+即使灵感只有一句话，只要用户选择长篇，也必须自然扩展成完整正文。
 
-不要把"灵感字数"当成"正文长度"。
+长度通过动作推进、情绪停顿、身体反应、对话节奏、空间互动、日常细节、关系拉扯、欲望惯性自然扩展。
 
-即使灵感只有一句话，
-只要用户选择长篇，
-也必须自然扩展成完整正文。
+500-1000： 保持短篇密度，但仍需完整场景。
 
-长度必须通过：
-- 动作推进
-- 情绪停顿
-- 身体反应
-- 对话节奏
-- 空间互动
-- 日常细节
-- 关系拉扯
-- 欲望惯性
+1000-3000： 必须形成完整关系推进、互动变化、情绪累积。
 
-自然扩展。
+3000-5000： 必须允许长时间互动、节奏反复、关系拉扯、中段停顿、日常延展。
 
-禁止：
-- 几百字内结束
-- 快速收尾
-- 提前总结
-- 用解释压缩剧情
-- 因为灵感短就缩短正文
+5000+： 允许慢节奏推进、长时间相处、生活流、重复互动、持续关系惯性、复杂情绪堆积。
 
-【长度节奏要求】
-
-500-1000： 保持短篇密度， 但仍需完整场景。
-
-1000-3000： 必须形成完整关系推进、
-互动变化、
-情绪累积。
-
-3000-5000： 必须允许长时间互动、
-节奏反复、
-关系拉扯、
-中段停顿、
-日常延展。
-
-5000+： 允许慢节奏推进、
-长时间相处、
-生活流、
-重复互动、
-持续关系惯性、
-复杂情绪堆积。
-
-在达到最低长度前：
-禁止进入正式收尾。
+在达到最低长度前，不要收尾。
 
 叙事视角：${pov}
 

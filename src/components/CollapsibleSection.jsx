@@ -4,7 +4,8 @@ import './CollapsibleSection.css'
 function CollapsibleSection({ 
   title, 
   defaultExpanded = false, 
-  children
+  children,
+  archiveCode = null
 }) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)
 
@@ -14,7 +15,10 @@ function CollapsibleSection({
         className={`collapsible-header ${isExpanded ? 'expanded' : ''}`}
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <h3 className="section-title">{title}</h3>
+        <div className="header-left">
+          <h3 className="section-title">{title}</h3>
+          {archiveCode && <span className="archive-code-inline">{archiveCode}</span>}
+        </div>
         <span className={`expand-icon ${isExpanded ? 'expanded' : ''}`}>▼</span>
       </div>
       

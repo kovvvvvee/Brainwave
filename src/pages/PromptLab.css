@@ -131,7 +131,7 @@
   font-family: 'Courier New', monospace;
   font-size: 10px;
   color: #7c746c;
-  opacity: 0.14;
+  opacity: 0.22;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   font-weight: 600;
@@ -141,7 +141,7 @@
   font-family: 'Courier New', monospace;
   font-size: 9px;
   color: #7c746c;
-  opacity: 0.12;
+  opacity: 0.20;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -156,8 +156,8 @@
     to bottom,
     transparent,
     transparent 4px,
-    rgba(124, 116, 108, 0.08) 4px,
-    rgba(124, 116, 108, 0.08) 5px
+    rgba(124, 116, 108, 0.18) 4px,
+    rgba(124, 116, 108, 0.18) 5px
   );
 }
 
@@ -171,8 +171,8 @@
     to bottom,
     transparent,
     transparent 4px,
-    rgba(124, 116, 108, 0.08) 4px,
-    rgba(124, 116, 108, 0.08) 5px
+    rgba(124, 116, 108, 0.18) 4px,
+    rgba(124, 116, 108, 0.18) 5px
   );
 }
 
@@ -206,7 +206,7 @@
   font-size: 9px;
   color: #7c746c;
   letter-spacing: 0.05em;
-  opacity: 0.5;
+  opacity: 0.24;
   text-align: center;
 }
 

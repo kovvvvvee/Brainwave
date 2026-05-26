@@ -5,6 +5,33 @@
   margin: 0 auto;
   background-color: transparent;
   font-family: var(--font-family);
+  position: relative;
+}
+
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .au-detail {
+    padding: 32px 20px 24px;
+  }
+
+  .au-content-section {
+    max-width: 92%;
+    margin-inline: auto;
+    margin-bottom: 48px;
+  }
+
+  .page-header {
+    padding-top: 8px;
+  }
+
+  .form-textarea {
+    padding: 16px;
+  }
+
+  .field-display {
+    padding: 16px;
+  }
 }
 
 .back-to-cp-button {
@@ -105,7 +132,7 @@
   font-family: 'Courier New', monospace;
   font-size: 12px;
   color: #7c746c;
-  opacity: 0.14;
+  opacity: 0.18;
   letter-spacing: 0.05em;
 }
 
@@ -113,7 +140,7 @@
   font-family: 'Courier New', monospace;
   font-size: 10px;
   color: #7c746c;
-  opacity: 0.10;
+  opacity: 0.16;
   text-align: center;
   margin: var(--spacing-sm) 0;
   letter-spacing: 0.1em;
@@ -121,12 +148,13 @@
 
 .field-description {
   display: block;
-  font-size: var(--font-size-xs);
+  font-size: 11px;
   font-weight: var(--font-weight-regular);
   color: var(--text-tertiary);
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
   margin-top: var(--spacing-xs);
   font-style: italic;
+  opacity: 0.7;
 }
 
 .section-description {

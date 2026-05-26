@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { getAllInspirations, deleteInspiration, togglePin } from '../supabase/inspirationService'
 import { getCpById } from '../supabase/cpService'
 import { getAuById } from '../supabase/auService'
+import ArchiveResidue from '../components/ArchiveResidue'
 import './UncategorizedInspirations.css'
 
 function UncategorizedInspirations() {
@@ -85,6 +86,19 @@ function UncategorizedInspirations() {
 
   return (
     <div className="uncategorized-inspirations">
+      {/* Background illustration - character silhouette at edge */}
+      <ArchiveResidue 
+        imageSrc="/assets/rabbit-girl-ascii.png"
+        position="right-main"
+        opacity={0.15}
+        size="full-height"
+        crop="top-right-corner"
+        grayscale={100}
+        contrast={90}
+        brightness={100}
+        saturate={20}
+      />
+      
       <h1 className="page-title">灵感</h1>
 
       <main className="inspirations-main">

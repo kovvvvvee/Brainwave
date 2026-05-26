@@ -1,6 +1,7 @@
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { getCpById, updateCp } from '../supabase/cpService'
+import ArchiveResidue from '../components/ArchiveResidue'
 import './CreateCp.css'
 
 function EditCp() {
@@ -88,6 +89,19 @@ function EditCp() {
 
   return (
     <div className="create-cp">
+      {/* Background illustration - character silhouette at edge */}
+      <ArchiveResidue 
+        imageSrc="/assets/rabbit-girl-ascii.png"
+        position="right-main"
+        opacity={0.15}
+        size="full-height"
+        crop="top-right-corner"
+        grayscale={100}
+        contrast={90}
+        brightness={100}
+        saturate={20}
+      />
+      
       <header className="page-header">
         <h1>完善档案</h1>
       </header>

@@ -29,6 +29,9 @@
 
 .header-left {
   flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .section-title {
@@ -37,6 +40,16 @@
   color: #3d3d3d;
   margin: 0;
   letter-spacing: 0.02em;
+}
+
+.archive-code-inline {
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  color: #7c746c;
+  opacity: 0.35;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .expand-icon {
@@ -72,7 +85,7 @@
   font-family: 'Courier New', monospace;
   font-size: 7px;
   color: #7c746c;
-  opacity: 0.08;
+  opacity: 0.14;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }

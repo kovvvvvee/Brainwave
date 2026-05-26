@@ -9,6 +9,7 @@ import CreativeTextarea from '../components/CreativeTextarea'
 import DetailCard from '../components/DetailCard'
 import FloatingActionBar from '../components/FloatingActionBar'
 import ArchiveSymbol from '../components/ArchiveSymbol'
+import ArchiveResidue from '../components/ArchiveResidue'
 import './AuDetail.css'
 
 function AuDetail() {
@@ -202,6 +203,19 @@ function AuDetail() {
 
   return (
     <div className="au-detail">
+      {/* Background illustration - character silhouette at edge */}
+      <ArchiveResidue 
+        imageSrc="/assets/rabbit-girl-ascii.png"
+        position="right-main"
+        opacity={0.15}
+        size="full-height"
+        crop="top-right-corner"
+        grayscale={100}
+        contrast={90}
+        brightness={100}
+        saturate={20}
+      />
+      
       <button 
         className="back-to-cp-button"
         onClick={() => navigate(`/cp/${au.cp_id}`)}

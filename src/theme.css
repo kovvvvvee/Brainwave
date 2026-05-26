@@ -1,16 +1,19 @@
 :root {
-  /* Archive Color System */
-  --bg-primary: #f3f2ef;
+  /* Archive Color System - Unified Hierarchy */
+  --bg-primary: #f5f1eb;
   --bg-secondary: #f7f6f4;
-  --bg-card: #faf9f7;
+  --bg-card: rgba(252, 251, 248, 0.85);
+  --bg-card-warm: rgba(248, 246, 242, 0.85);
   --bg-input: #ffffff;
   --bg-hover: #f0ede8;
+  --bg-overlay: rgba(245, 241, 235, 0.95);
 
-  /* Text Colors */
-  --text-primary: #2a2a2a;
-  --text-secondary: #8e8a83;
-  --text-tertiary: #b0aba5;
-  --text-muted: #c5c0b8;
+  /* Text Colors - Light Hierarchy for Private Recording */
+  --text-primary: #4a4a4a;
+  --text-secondary: #6b665f;
+  --text-tertiary: #8e8a83;
+  --text-muted: #b0aba5;
+  --text-faint: #c5c0b8;
 
   /* Accent Colors */
   --accent-brown: #8c7763;
@@ -21,71 +24,86 @@
   /* AI Status */
   --ai-status: #8b8b95;
 
-  /* Border Colors */
+  /* Border Colors - Archive Feel */
   --border-color: #dedad2;
-  --border-soft: rgba(222, 218, 210, 0.5);
-  --border-medium: rgba(222, 218, 210, 0.7);
+  --border-soft: rgba(222, 218, 210, 0.4);
+  --border-medium: rgba(222, 218, 210, 0.6);
   --border-focus: #8c7763;
+  --border-dotted: rgba(222, 218, 210, 0.5);
 
-  /* Shadows - Subtle, paper-like */
+  /* Shadows - Subtle, paper-like, unified */
   --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.02);
-  --shadow-medium: 0 2px 6px rgba(0, 0, 0, 0.03);
-  --shadow-hover: 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-medium: 0 2px 8px rgba(0, 0, 0, 0.03);
+  --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.04);
+  --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.02);
 
-  /* Border Radius - Slightly softer */
+  /* Border Radius - Unified */
   --radius-card: 12px;
   --radius-button: 8px;
   --radius-input: 6px;
   --radius-small: 4px;
 
   /* Typography - Archive System */
-  --font-family: 'Noto Serif SC', 'Source Han Serif CN', 'Songti SC', serif;
+  --font-family-serif: 'Noto Serif SC', 'Source Han Serif CN', 'Songti SC', serif;
   --font-family-sans: 'Inter', 'Source Han Sans CN', 'Microsoft YaHei', sans-serif;
-  --font-mono: 'IBM Plex Mono', 'Geist Mono', monospace;
+  --font-family-mono: 'IBM Plex Mono', 'Geist Mono', monospace;
+  --font-family: var(--font-family-serif);
 
-  --font-size-base: 1rem;
-  --font-size-sm: 0.875rem;
+  /* Font Sizes - Unified Scale */
   --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
   --font-size-lg: 1.125rem;
   --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
 
-  /* Font Weights */
+  /* Font Weights - Light Hierarchy */
   --font-weight-regular: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
+  --font-weight-medium: 450;
+  --font-weight-semibold: 500;
+  --font-weight-bold: 550;
 
-  /* Line Heights - More breathing room */
+  /* Line Heights - Breathing Room */
+  --line-height-tight: 1.5;
+  --line-height-normal: 1.7;
   --line-height-comfortable: 1.9;
   --line-height-relaxed: 2.1;
-  --line-height-normal: 1.7;
 
-  /* Spacing */
+  /* Spacing - Unified System */
   --spacing-xs: 0.5rem;
   --spacing-sm: 0.75rem;
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
   --spacing-xl: 2rem;
   --spacing-2xl: 2.5rem;
+  --spacing-3xl: 3rem;
 
-  /* Padding */
+  /* Padding - Unified */
   --padding-card: 20px;
   --padding-card-lg: 28px 32px;
+  --padding-card-xl: 36px 40px;
   --padding-input: 0.75rem;
   --padding-button: 0.5rem 1rem;
 
-  /* Transitions - Slower, paper-like */
-  --transition-fast: 0.2s;
-  --transition-normal: 0.35s;
-  --transition-slow: 0.5s;
+  /* Transitions - Slow, Light, Restrained */
+  --transition-fast: 0.2s ease-out;
+  --transition-normal: 0.35s ease-out;
+  --transition-slow: 0.5s ease-out;
+  --transition-gentle: 0.6s ease-in-out;
 
   /* Z-Index */
   --z-dropdown: 1000;
   --z-modal: 1100;
   --z-tooltip: 1200;
+  --z-background: -1;
 
   /* Paper Texture */
   --paper-grain: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZjNmMmVmIi8+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InJnYmEoMCwwLDAsMC4wMikiLz4KPC9zdmc+');
+
+  /* Divider Styles - Archive Feel */
+  --divider-receipt: 1px dashed rgba(222, 218, 210, 0.5);
+  --divider-faded: 1px solid rgba(222, 218, 210, 0.3);
+  --divider-dotted: 1px dotted rgba(222, 218, 210, 0.4);
 }
 
 /* Unified Button System */

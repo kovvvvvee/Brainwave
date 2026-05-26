@@ -20,7 +20,7 @@ const FloatingDebris = () => {
       top: 5 + Math.random() * 90,
       left: 5 + Math.random() * 90,
       rotation: Math.random() * 360,
-      opacity: 0.08 + Math.random() * 0.04,
+      opacity: 0.03 + Math.random() * 0.02,
       fontSize: 7 + Math.random() * 8,
       offsetX: (Math.random() - 0.5) * 20,
       offsetY: (Math.random() - 0.5) * 20

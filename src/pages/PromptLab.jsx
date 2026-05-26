@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { callDeepSeek } from '../supabase/aiService'
 import ArchiveSymbol from '../components/ArchiveSymbol'
+import ArchiveResidue from '../components/ArchiveResidue'
 import './PromptLab.css'
 
 function PromptLab() {
@@ -37,6 +38,19 @@ function PromptLab() {
 
   return (
     <div className="prompt-lab">
+      {/* Background illustration - character silhouette at edge */}
+      <ArchiveResidue 
+        imageSrc="/assets/rabbit-girl-ascii.png"
+        position="right-main"
+        opacity={0.15}
+        size="full-height"
+        crop="top-right-corner"
+        grayscale={100}
+        contrast={90}
+        brightness={100}
+        saturate={20}
+      />
+      
       <header className="prompt-lab-header">
         <ArchiveSymbol symbol="SCAN_04" position="top-right" size="small" variant="key" />
         <h1>PromptLab</h1>
@@ -79,8 +93,8 @@ function PromptLab() {
           <label className="column-label">AI 生成结果</label>
           <div className="result-container receipt-paper">
             <div className="receipt-header">
-              <span className="receipt-archive-code">BRAINWAVE OUTPUT_04</span>
-              <span className="receipt-scan-code">SCAN FILE</span>
+              <span className="receipt-archive-code"></span>
+              <span className="receipt-scan-code"></span>
             </div>
             <div className="receipt-perforation-left"></div>
             <div className="receipt-perforation-right"></div>
