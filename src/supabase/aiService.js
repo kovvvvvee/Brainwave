@@ -269,8 +269,7 @@ ${JSON.stringify(auContext, null, 2)}
  * @returns {string} Expanded content
  */
 export async function expandInspiration(inspirationContent, cp, au, parameters) {
-  alert(import.meta.env.VITE_DEEPSEEK_API_KEY)
-
+ 
   const {
     style = 'AO3',
     length = '1000-3000',
