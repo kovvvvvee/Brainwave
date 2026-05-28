@@ -4,7 +4,7 @@ import './ArchiveResidue.css'
 const ArchiveResidue = ({ 
   imageSrc, 
   position = 'bottom-right',
-  opacity = 0.05,
+  opacity = 0.15,
   blur = 0,
   size = 'medium',
   crop = 'partial',
@@ -32,7 +32,7 @@ const ArchiveResidue = ({
       'ear-only': { top: '-30%', right: '-40%' },
       'leg-partial': { bottom: '-30%', left: '-40%' },
       'hair-fragment': { top: '10%', left: '-35%' },
-      'right-main': { top: '0', right: '-10%', height: '75vh' },
+      'right-main': { top: '0', right: '5%', height: '75vh' },
     }
     return positions[position] || positions['bottom-right']
   }

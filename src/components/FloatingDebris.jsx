@@ -4,12 +4,7 @@ import './FloatingDebris.css'
 const FloatingDebris = () => {
   const debrisItems = [
     { symbol: '☾', type: 'moon' },
-    { symbol: '◈', type: 'diamond' },
-    { symbol: '╳', type: 'cross' },
-    { symbol: '◯', type: 'circle' },
-    { symbol: '▧', type: 'partial' },
     { symbol: '◇', type: 'rhombus' },
-    { symbol: '⌘', type: 'command' },
     { symbol: '⎔', type: 'square' }
   ]
 
@@ -20,7 +15,7 @@ const FloatingDebris = () => {
       top: 5 + Math.random() * 90,
       left: 5 + Math.random() * 90,
       rotation: Math.random() * 360,
-      opacity: 0.03 + Math.random() * 0.02,
+      opacity: 0.05 + Math.random() * 0.1,
       fontSize: 7 + Math.random() * 8,
       offsetX: (Math.random() - 0.5) * 20,
       offsetY: (Math.random() - 0.5) * 20

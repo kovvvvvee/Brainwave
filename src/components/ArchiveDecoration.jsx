@@ -2,19 +2,51 @@ import React from 'react'
 import './ArchiveDecoration.css'
 
 const ArchiveDecoration = () => {
-  const residueSymbols = ['✦', '☾', '⋆', '╱╱', 'ARCHIVE', 'SCAN_04', 'FILE_XX', '001-A', '05/24', 'BRAINWAVE', 'PRINT COPY']
+  const residueSymbols = [  '⋆', 'LIGHT', '¯꒳¯', '(｡ì _ í｡)', 'ᗜ ֊ ᗜ', '( ⩌⤚⩌)', 'KOVE']
   
   const generateResidue = () => {
-    return residueSymbols.map((symbol, index) => ({
-      id: index,
-      symbol,
-      top: Math.random() * 100,
-      left: Math.random() * 100,
-      rotation: Math.random() * 360,
-      opacity: 0.08 + Math.random() * 0.04,
-      fontSize: 9 + Math.random() * 6
-    }))
-  }
+    const items = [];
+    const totalCount = 10;       // 总元素数量（可调整）
+    const minDistance = 12; // 两个元素之间的最小距离（百分比单位），数值越大要求越分散
+  
+    for (let i = 0; i < totalCount; i++) {
+      const randomSymbol = residueSymbols[Math.floor(Math.random() * residueSymbols.length)];
+      
+      let top, left;
+      let attempts = 0;
+      let overlapping = true;
+    
+      while (overlapping && attempts < 200) {
+        top = Math.random() * 100;
+        left = Math.random() * 100;
+        overlapping = false;
+      
+        // 检查是否与已有元素靠得太近
+        for (let j = 0; j < items.length; j++) {
+          const dx = Math.abs(items[j].left - left);
+          const dy = Math.abs(items[j].top - top);
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < minDistance) {
+            overlapping = true;
+            break;
+          }
+        }
+        attempts++;
+     }
+    
+     items.push({
+       id: i,
+       symbol: randomSymbol,
+       top: top,
+       left: left,
+       rotation: Math.random() * 10,
+       opacity: 0.25 + Math.random() * 0.5,
+       fontSize: 10 + Math.random() * 5
+     });  
+   }
+  
+   return items;
+}
 
   const residues = generateResidue()
 

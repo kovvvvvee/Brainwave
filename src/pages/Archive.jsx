@@ -102,13 +102,13 @@ function Archive() {
       <ArchiveResidue 
         imageSrc="/assets/rabbit-girl-ascii.png"
         position="right-main"
-        opacity={0.15}
+        opacity={0.6}
         size="full-height"
         crop="top-right-corner"
-        grayscale={100}
+        grayscale={0}
         contrast={90}
         brightness={100}
-        saturate={20}
+        saturate={100}
       />
       
       {/* Background illustration - partial at bottom left */}
