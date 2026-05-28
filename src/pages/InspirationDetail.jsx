@@ -151,9 +151,17 @@ function InspirationDetail() {
 
   const handleExpansion = async (e) => {
     e.preventDefault()
+
+    console.log('EXPAND DEBUG')
+    console.log('inspiration:', inspiration)
+    console.log('inspiration.content:', inspiration?.content)
+    console.log('content length:', inspiration?.content?.length)
+
     setIsExpanding(true)
+
     try {
       const hasAU = !!au
+
       const expandedContent = await expandInspiration(
         inspiration.content,
         cp,
@@ -183,9 +191,14 @@ function InspirationDetail() {
       alert('AI扩写成功！已创建新版本')
     } catch (error) {
       console.error('AI扩写失败:', error)
-      alert('AI扩写失败，请重试')
+
+      alert(
+       error?.message ||
+       JSON.stringify(error) ||
+       '未知错误'
+     )
     } finally {
-      setIsExpanding(false)
+     setIsExpanding(false)
     }
   }
 

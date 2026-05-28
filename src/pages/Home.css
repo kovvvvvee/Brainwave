@@ -366,11 +366,12 @@
 /* Mobile: Private memo feel */
 @media (max-width: 768px) {
   .archive-header {
-    padding: var(--spacing-lg) var(--spacing-md);
+    padding: 32px 20px 20px;
   }
 
   .archive-title h1 {
     font-size: 20px;
+    margin-bottom: 4px;
   }
 
   .archive-subtitle {
