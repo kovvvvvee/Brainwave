@@ -5,7 +5,7 @@ const DEEPSEEK_API_KEY = import.meta.env.VITE_DEEPSEEK_API_KEY
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions'
 
 console.log(
-  'ENV TEST:',
+  'ENV TEST FULL:',
   import.meta.env.VITE_DEEPSEEK_API_KEY
 )
 
@@ -269,7 +269,14 @@ ${JSON.stringify(auContext, null, 2)}
  * @returns {string} Expanded content
  */
 export async function expandInspiration(inspirationContent, cp, au, parameters) {
-  const { style = 'AO3', length = '1000-3000', pov = '第三人称', hasAU = false } = parameters
+  alert(import.meta.env.VITE_DEEPSEEK_API_KEY)
+
+  const {
+    style = 'AO3',
+    length = '1000-3000',
+    pov = '第三人称',
+    hasAU = false
+  } = parameters
 
   // Use mock mode if enabled
   if (USE_MOCK_MODE) {
