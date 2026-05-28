@@ -94,14 +94,14 @@
 /* Responsive */
 @media (max-width: 768px) {
   .archive-card-padding-default {
+    padding: var(--spacing-sm);
+  }
+
+  .archive-card-padding-lg {
     padding: var(--spacing-md);
   }
-  
-  .archive-card-padding-lg {
-    padding: var(--spacing-lg);
-  }
-  
+
   .archive-card-padding-xl {
-    padding: var(--spacing-xl);
+    padding: var(--spacing-lg);
   }
 }

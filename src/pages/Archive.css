@@ -170,3 +170,19 @@
     flex-shrink: 0;
   }
 }
+
+@media (max-width: 768px) {
+
+  .archive {
+    padding: var(--spacing-lg) var(--spacing-md);
+  }
+
+  .archive-header {
+    margin-bottom: var(--spacing-md);
+  }
+
+  .archive-actions {
+    margin-bottom: var(--spacing-md);
+  }
+
+}

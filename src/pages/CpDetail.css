@@ -779,7 +779,7 @@
   content: '░';
   position: absolute;
   top: 0;
-  left: -4px;
+  left: 0;
   font-family: 'Courier New', monospace;
   font-size: 8px;
   color: #7c746c;

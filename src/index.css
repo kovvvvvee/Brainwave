@@ -188,3 +188,18 @@ p, span, div, label {
 .animate-drift {
   animation: gentle-drift 4s ease-in-out infinite;
 }
+
+@media (max-width: 768px) {
+
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  .page-header::before,
+  .page-header::after,
+  .nested-fields::before {
+    display: none;
+  }
+
+}
