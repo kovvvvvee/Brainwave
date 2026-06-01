@@ -196,18 +196,33 @@ function Home() {
   return (
     <div className="home">
       {/* Background illustration - rabbit ear at top right */}
-      <ArchiveResidue 
-        imageSrc="/assets/rabbit-girl-ascii.png"
-        position="right-main"
-        opacity={0.15}
-        size="full-height"
-        crop="top-right-corner"
-        grayscale={100}
-        contrast={90}
-        brightness={100}
-        saturate={20}
-      />
-      
+      <div style={{
+        position: 'absolute',
+        top: '5px',
+        right: '-5px',
+        width: '125px',
+        height: '180px',
+        overflow: 'hidden',
+        pointerEvents: 'none',
+        zIndex: 1,
+        opacity: 0.3
+      }}>
+        <img 
+          src="/assets/rabbit-girl-ascii.png" 
+          alt="rabbit girl"
+          style={{
+            position: 'absolute',
+            top: '-20px',
+            right: '-10px',
+            width: '125px',
+            height: 'auto',
+            filter: 'grayscale(100%) contrast(90%) saturate(20%)',
+            mixBlendMode: 'multiply', 
+            backgroundColor: 'transparent'
+          }}
+        />
+      </div>
+
       <div className="content-wrapper">
         <header className="archive-header">
           <ArchiveSymbol symbol="✦" position="top-right" size="small" variant="key" />

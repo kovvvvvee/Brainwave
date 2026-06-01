@@ -434,3 +434,111 @@
     font-size: var(--font-size-xs);
   }
 }
+
+/* 整体容器增加呼吸感 */
+.home {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* 标题区域 */
+.home .archive-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.home .archive-title h1 {
+  font-size: 1.8rem;
+  margin-bottom: 0.25rem;
+}
+
+.home .archive-title p {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+/* 搜索框 */
+.home .search-section {
+  margin-bottom: 1.5rem;
+}
+
+.home .search-section input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.1);
+  background: rgba(0,0,0,0.02);
+}
+
+/* 两列布局：CP档案 + AU档案 */
+.home .archive-fields {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.home .archive-fields > div {
+  flex: 1;
+}
+
+/* 灵感碎片输入区 */
+.home .inspiration-section {
+  margin-bottom: 1.5rem;
+}
+
+.home .inspiration-section textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.1);
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* 标签组 */
+.home .tag-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.home .tag {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  background: rgba(0,0,0,0.05);
+  font-size: 0.85rem;
+}
+
+/* 保存按钮 */
+.home .save-button {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: #1a1a1a;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 2rem;
+}
+
+/* 最近记录区域 */
+.home .recent-section h3 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.home .record-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.home .record-item {
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.02);
+}

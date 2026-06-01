@@ -102,26 +102,28 @@ function Archive() {
       <ArchiveResidue 
         imageSrc="/assets/rabbit-girl-ascii.png"
         position="right-main"
-        opacity={0.6}
+        opacity={1}
         size="full-height"
         crop="top-right-corner"
         grayscale={0}
-        contrast={90}
+        contrast={100}
         brightness={100}
         saturate={100}
+        blendMode="normal" 
       />
       
       {/* Background illustration - partial at bottom left */}
       <ArchiveResidue 
         imageSrc="/assets/rabbit-girl-ascii.png"
         position="right-main"
-        opacity={0.15}
+        opacity={1}
         size="full-height"
         crop="top-right-corner"
-        grayscale={100}
-        contrast={90}
+        grayscale={0}
+        contrast={100}
         brightness={100}
-        saturate={20}
+        saturate={100}
+        blendMode="normal"
       />
       
       <header className="archive-header">
