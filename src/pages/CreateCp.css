@@ -1,6 +1,6 @@
 .create-cp {
   min-height: 100vh;
-  background: var(--bg-primary);
+  background: transparent;
   font-family: var(--font-family);
   position: relative;
 }
@@ -335,12 +335,20 @@
   }
 
   .form-actions {
-    flex-direction: column;
+    display: flex;
+    justify-content: center;  /* 水平居中 */
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
   }
 
   .form-actions .archive-action-btn,
   .form-actions .archive-cancel-btn {
-    width: 100%;
+    text-align: center;  /* 文字居中 */
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
   }
 
 }

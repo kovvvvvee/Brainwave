@@ -120,7 +120,7 @@ function CreateCp() {
 
       await createCp(savePayload)
       alert('CP创建成功')
-      navigate('/cp-list')
+      navigate('/archive')
       // Force layout recalculation after navigation
       requestAnimationFrame(() => {
         window.dispatchEvent(new Event('resize'))
@@ -435,7 +435,7 @@ function CreateCp() {
             <button type="submit" className="archive-action-btn" disabled={isSubmitting}>
               {isSubmitting ? '保存中...' : '保存档案'}
             </button>
-            <Link to="/cp-list" className="archive-cancel-btn">取消</Link>
+            <Link to="/archive" className="archive-cancel-btn">取消</Link>
           </div>
         </form>
       </main>

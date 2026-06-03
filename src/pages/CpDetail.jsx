@@ -293,7 +293,7 @@ function CpDetail() {
 
     try {
       await deleteCp(id)
-      navigate('/cp-list')
+      navigate('/archive')
     } catch (error) {
       console.error('删除CP失败:', error)
       alert('删除CP失败，请重试')

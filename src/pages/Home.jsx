@@ -199,13 +199,13 @@ function Home() {
       <div style={{
         position: 'absolute',
         top: '5px',
-        right: '-5px',
-        width: '125px',
+        right: 0,
+        width: '200px',
         height: '180px',
         overflow: 'hidden',
         pointerEvents: 'none',
         zIndex: 1,
-        opacity: 0.3
+        opacity: 0.2
       }}>
         <img 
           src="/assets/rabbit-girl-ascii.png" 
@@ -213,8 +213,8 @@ function Home() {
           style={{
             position: 'absolute',
             top: '-20px',
-            right: '-10px',
-            width: '125px',
+            right: 0,
+            width: '200px',
             height: 'auto',
             filter: 'grayscale(100%) contrast(90%) saturate(20%)',
             mixBlendMode: 'multiply', 

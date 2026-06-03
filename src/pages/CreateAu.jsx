@@ -70,7 +70,7 @@ function CreateAu() {
   }
 
   return (
-    <div className="create-au">
+    <div className="create-au create-au-page">
       {/* Background illustration - character silhouette at edge */}
       <ArchiveResidue 
         imageSrc="/assets/rabbit-girl-ascii.png"
@@ -307,10 +307,10 @@ function CreateAu() {
           </CollapsibleSection>
 
           <div className="form-actions">
-            <Link to={`/cp/${cpId}`} className="archive-cancel-btn">取消</Link>
             <button type="submit" className="archive-action-btn" disabled={isSubmitting}>
               {isSubmitting ? '保存中...' : '保存档案'}
             </button>
+            <Link to={`/cp/${cpId}`} className="archive-cancel-btn">取消</Link>
           </div>
         </form>
       </main>

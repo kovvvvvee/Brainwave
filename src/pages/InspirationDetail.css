@@ -1007,3 +1007,89 @@
     padding: 3px 6px;
   }
 }
+
+.page-title {
+  text-align: center;
+}
+
+.inspiration-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.inspiration-source {
+  font-weight: 500;
+  color: #d4a547;
+}
+
+.inspiration-date {
+  color: #bbb;
+  font-size: 0.7rem;
+}
+
+h1.page-title {
+  font-size: 20px;
+  font-weight: 500;
+  color: #1a1a1a;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.inspiration-item {
+  padding: 12px 16px 8px 16px !important;  /* 上 右 下 左，底部给少点 */
+}
+
+/* 去除头部背景 */
+.page-header {
+  background-color: transparent !important;
+  background: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* 按钮容器 */
+.header-actions {
+  display: flex;
+  gap: 12px;  /* 增加间距，让分割线更清晰 */
+}
+
+/* 按钮样式 */
+.action-text-btn {
+  background: transparent;
+  border: none;
+  padding: 4px 8px;
+  color: #888;
+  font-size: 0.75rem;
+  cursor: pointer;
+  position: relative;
+}
+
+/* 分割线 - 更明显 */
+.action-text-btn:not(:last-child)::after {
+  content: '|';
+  position: absolute;
+  right: -8px;      /* 调整位置 */
+  color: #ccc;      /* 浅灰色，明显但不刺眼 */
+  font-size: 0.8rem;
+  font-weight: 300;
+}
+
+/* 悬停效果 */
+.action-text-btn:hover {
+  color: #d4a547;
+}
+
+.action-text-btn:hover::after {
+  color: #ccc;      /* 悬停时分割线不变色 */
+}
+
+.page-title {
+  position: relative;
+  top: 5px;
+}
+
+.inspiration-list {
+  position: relative;
+  top: 4px;
+}

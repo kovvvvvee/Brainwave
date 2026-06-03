@@ -203,3 +203,26 @@ p, span, div, label {
   }
 
 }
+
+/* 完全取消导航下边距 */
+.navigation {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* 取消导航下方元素的上边距 */
+.navigation + * {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* 取消导航自身的行高额外占位 */
+.navigation {
+  line-height: 1;
+  height: auto;
+  min-height: auto;
+}
+
+.navigation {
+  margin-bottom: 20px !important;  /* 换成你喜欢的数值 */
+}

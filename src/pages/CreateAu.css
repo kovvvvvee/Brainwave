@@ -1,6 +1,6 @@
 .create-au {
   min-height: 100vh;
-  background: var(--bg-primary);
+  background: transparent;
   font-family: var(--font-family);
   position: relative;
 }
@@ -263,4 +263,19 @@
   .section-separator {
     font-size: 10px;
   }
+}
+
+/* 整体内容上移 25px */
+main,
+.create-au-main,
+.au-form-container,
+.cp-detail-main {
+  margin-top: -23px !important;
+}
+
+/* 只影响创建 AU 页面 */
+.create-au-page main {
+  width: 111% !important;
+  max-width: 111% !important;
+  margin-left: -5.5% !important;
 }

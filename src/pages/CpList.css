@@ -128,13 +128,13 @@
 }
 
 .btn-small {
-  background-color: var(--bg-hover);
-  color: var(--text-primary);
+  background-color: var(--accent-dark);
+  color: var(--bg-primary);
   border: 1px solid var(--border-color);
 }
 
 .btn-small:hover {
-  background-color: var(--bg-card);
+  background-color: var(--accent-brown);
   border-color: var(--border-medium);
 }
 
@@ -159,3 +159,51 @@
     max-width: 100%;
   }
 }
+
+/* 卡片容器 - 统一宽度 */
+.cp-item {
+  width: 100% !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  box-sizing: border-box;
+  background: white;
+  border-radius: 16px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.75rem;
+}
+
+/* 内容区域 - 占据剩余空间，允许收缩 */
+.cp-main {
+  flex: 1 !important;
+  min-width: 0 !important;
+  overflow: hidden;
+}
+
+/* CP 名称 - 过长时截断 */
+.cp-name {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 按钮区域 - 固定宽度不收缩 */
+.cp-actions {
+  flex-shrink: 0 !important;
+  margin-left: 1rem;
+}
+
+/* 按钮样式调整 */
+.cp-actions .btn-small {
+  background: #f0f0f0;
+  padding: 0.4rem 1rem;
+  border-radius: 30px;
+  font-size: 0.75rem;
+  text-decoration: none;
+  color: #333;
+  white-space: nowrap;
+}
+

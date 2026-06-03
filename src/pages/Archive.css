@@ -186,3 +186,9 @@
   }
 
 }
+
+.archive-header h1 {
+  font-size: 20px !important;
+  font-weight: 500 !important;
+  color: rgb(26, 26, 26) !important;
+}

@@ -535,3 +535,21 @@
   border-radius: var(--radius-card);
   color: var(--text-secondary);
 }
+
+.au-content-section {
+  width: 103% !important;
+  max-width: 103% !important;
+  margin-left: -1.5% !important;
+}
+
+.back-to-cp-button {
+  font-size: 14px !important;
+  padding: 8px 0 !important;
+  height: 43.9922px !important;
+  line-height: 14px !important;
+}
+
+.au-detail .page-header {
+  margin-top: -23px !important;
+  margin-bottom: 20px !important;
+}

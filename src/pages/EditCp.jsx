@@ -193,10 +193,10 @@ function EditCp() {
           </div>
 
           <div className="form-actions">
+            <Link to={`/cp/${id}`} className="btn btn-secondary">取消</Link>
             <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
               {isSubmitting ? '保存中...' : '保存这段关系'}
             </button>
-            <Link to={`/cp/${id}`} className="btn btn-secondary">取消</Link>
           </div>
         </form>
       </main>

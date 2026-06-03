@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useState, useEffect, useRef } from 'react'
 import { getCps } from '../supabase/cpService'
 import ArchiveDecoration from '../components/ArchiveDecoration'
@@ -6,63 +6,16 @@ import ArchiveResidue from '../components/ArchiveResidue'
 import './CpList.css'
 
 function CpList() {
+  const location = useLocation();
   const [cps, setCps] = useState([])
   const [loading, setLoading] = useState(true)
   const cpGridRef = useRef(null)
 
   useEffect(() => {
     fetchCps()
-  }, [])
+  }, [location.pathname])
 
-  useEffect(() => {
-    // Force layout recalculation after DOM is fully painted
-    const recalculateLayout = () => {
-      // Wait for all components to finish rendering
-      requestAnimationFrame(() => {
-        // First pass: let browser paint
-        requestAnimationFrame(() => {
-          // Force reflow by reading layout
-          document.body.offsetHeight
 
-          // Second pass: after paint is complete
-          setTimeout(() => {
-            // Force reflow again
-            document.body.offsetHeight
-
-            // Trigger resize event for any listeners
-            window.dispatchEvent(new Event('resize'))
-
-            // Force re-measure all card heights
-            const cards = document.querySelectorAll('.cp-card')
-            cards.forEach(card => {
-              card.style.height = 'auto'
-              const height = card.offsetHeight
-              card.style.height = height + 'px'
-            })
-
-            // Force re-measure archive decoration symbols
-            const residues = document.querySelectorAll('.archive-residue')
-            residues.forEach(residue => {
-              residue.style.opacity = '0'
-              setTimeout(() => {
-                residue.style.opacity = residue.dataset.opacity || '0.1'
-              }, 10)
-            })
-
-            // Final layout pass
-            setTimeout(() => {
-              document.body.offsetHeight
-              window.dispatchEvent(new Event('resize'))
-            }, 50)
-          }, 150)
-        })
-      })
-    }
-
-    if (!loading && cps.length > 0) {
-      recalculateLayout()
-    }
-  }, [cps, loading])
 
   const fetchCps = async () => {
     try {
@@ -122,11 +75,13 @@ function CpList() {
         ) : (
           <div className="cp-grid" ref={cpGridRef}>
             {cps.map(cp => (
-              <div key={cp.id} className="cp-card">
-                <h3 className="cp-name">{cp.name}</h3>
-                {cp.core_one_liner && (
-                  <p className="cp-subtitle">{cp.core_one_liner}</p>
-                )}
+              <div key={cp.id} className="cp-item">
+                <div className="cp-main">
+                  <h3 className="cp-name">{cp.name}</h3>
+                  {cp.core_one_liner && (
+                    <p className="cp-subtitle">{cp.core_one_liner}</p>
+                  )}
+                </div>
                 <div className="cp-actions">
                   <Link to={`/cp/${cp.id}`} className="btn btn-small">查看详情</Link>
                 </div>
