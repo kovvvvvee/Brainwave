@@ -13,7 +13,7 @@ console.log(
 const USE_MOCK_MODE = false
 
 // DeepSeek model
-const DEEPSEEK_MODEL = 'deepseek-chat'
+const DEEPSEEK_MODEL = 'deepseek-v4-flash'
 
 /**
  * Count Chinese characters in text
@@ -104,6 +104,15 @@ export async function callDeepSeek(systemPrompt, userPrompt) {
     console.log('DeepSeek API 请求URL:', DEEPSEEK_API_URL)
     console.log('使用模型:', DEEPSEEK_MODEL)
 
+    console.log('====================')
+    console.log('SYSTEM CHARS:', systemPrompt.length)
+    console.log('USER CHARS:', userPrompt.length)
+    console.log(
+      'TOTAL CHARS:',
+      systemPrompt.length + userPrompt.length
+    )
+    console.log('====================')
+
     const response = await fetch(DEEPSEEK_API_URL, {
       method: 'POST',
       headers: {
@@ -136,6 +145,15 @@ export async function callDeepSeek(systemPrompt, userPrompt) {
     }
 
     const data = await response.json()
+
+    console.log(
+      'TOKEN USAGE RAW:',
+      JSON.stringify(data.usage, null, 2)
+    )
+
+    console.log('PROMPT TOKENS:', data.usage?.prompt_tokens)
+    console.log('COMPLETION TOKENS:', data.usage?.completion_tokens)
+    console.log('TOTAL TOKENS:', data.usage?.total_tokens)
 
     if (!data.choices || !data.choices[0] || !data.choices[0].message || !data.choices[0].message.content) {
       console.error('DeepSeek 返回数据格式异常:', data)
