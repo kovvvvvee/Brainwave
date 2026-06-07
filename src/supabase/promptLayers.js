@@ -497,7 +497,7 @@ export function getAuContextPrompt(au) {
   if (!au) return ''
 
   console.log(
-    'AU RAW:'
+    'AU RAW:',
     JSON.stringify(au).length
   )
 
