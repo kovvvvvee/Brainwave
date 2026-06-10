@@ -6,6 +6,7 @@ import { createInspiration, getRecentInspirations, getAllInspirations } from '..
 import { getTagsForInspiration } from '../supabase/tagService'
 import ArchiveSymbol from '../components/ArchiveSymbol'
 import ArchiveResidue from '../components/ArchiveResidue'
+import CollapsibleText from '../components/CollapsibleText'
 import './Home.css'
 
 function Home() {
@@ -396,8 +397,7 @@ function Home() {
                         )}
                       </div>
                       <Link to={`/inspiration/${inspiration.id}`} className="record-content">
-                        {inspiration.content.split('\n').slice(0, 2).join('\n')}
-                        {inspiration.content.split('\n').length > 2 && '…'}
+                        <CollapsibleText content={inspiration.content} threshold={50} defaultExpanded={false} embedded={true} />
                       </Link>
                       {(index + 1) % 3 === 0 && (
                         <div className="archive-edge-symbol">SCAN_04</div>

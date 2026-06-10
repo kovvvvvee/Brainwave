@@ -1,0 +1,83 @@
+.collapsible-text {
+  width: 100%;
+  background: transparent;
+}
+
+.collapsible-text.embedded {
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+}
+
+.collapsible-content {
+  line-height: 1.6;
+  color: #3d3d3d;
+  letter-spacing: 0.01em;
+  white-space: pre-wrap;
+  font-weight: 400;
+  transition: max-height 0.3s ease;
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.collapsible-text.embedded .collapsible-content {
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  width: 100%;
+}
+
+.collapsible-content.collapsed {
+  max-height: none;
+  padding-top: 8px !important;
+}
+
+.inspiration-detail-main .collapsible-content.collapsed {
+  padding-top: 15px !important;
+  padding-bottom: 2px !important;
+}
+
+.collapsible-content.expanded {
+  max-height: none;
+}
+
+.collapsible-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 8px;
+  padding: 4px 8px;
+  background: transparent;
+  border: none;
+  color: #8b7355;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.collapsible-text.embedded .collapsible-toggle {
+  margin-top: 4px;
+}
+
+.collapsible-toggle:hover {
+  color: #6b5344;
+  text-decoration: underline;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .collapsible-content {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .collapsible-toggle {
+    font-size: 12px;
+  }
+}

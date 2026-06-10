@@ -4,6 +4,7 @@ import { getAllInspirations, deleteInspiration, togglePin } from '../supabase/in
 import { getCpById } from '../supabase/cpService'
 import { getAuById } from '../supabase/auService'
 import ArchiveResidue from '../components/ArchiveResidue'
+import CollapsibleText from '../components/CollapsibleText'
 import './UncategorizedInspirations.css'
 
 function UncategorizedInspirations() {
@@ -120,7 +121,7 @@ function UncategorizedInspirations() {
                   )}
                 </div>
                 <Link to={`/inspiration/${inspiration.id}`} className="inspiration-content">
-                  {inspiration.content}
+                  <CollapsibleText content={inspiration.content} threshold={50} defaultExpanded={false} embedded={true} />
                 </Link>
                 <div className="inspiration-footer">
                   <span className="inspiration-time">

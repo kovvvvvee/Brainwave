@@ -4,7 +4,7 @@ import { getInspirationById, updateInspiration, deleteInspiration, togglePin, cr
 import { getCpById } from '../supabase/cpService'
 import { getAuById } from '../supabase/auService'
 import { expandInspiration } from '../supabase/aiService'
-import ReadingMode from '../components/ReadingMode'
+import CollapsibleText from '../components/CollapsibleText'
 import ArchiveResidue from '../components/ArchiveResidue'
 import './InspirationDetail.css'
 
@@ -374,10 +374,10 @@ function InspirationDetail() {
             </form>
           ) : (
             <div className="inspiration-content-display">
-              <ReadingMode 
+              <CollapsibleText 
                 content={inspiration.content}
-                defaultExpanded={false}
-                showPreview={true}
+                threshold={50}
+                defaultExpanded={true}
               />
               <p className="inspiration-time">
                 创建于 {new Date(inspiration.created_at).toLocaleString('zh-CN')}
@@ -514,10 +514,10 @@ function InspirationDetail() {
                       </div>
                     ) : (
                       <div className="version-content">
-                        <ReadingMode 
+                        <CollapsibleText 
                           content={expansion.content}
-                          defaultExpanded={false}
-                          showPreview={true}
+                          threshold={50}
+                          defaultExpanded={true}
                         />
                       </div>
                     )}
